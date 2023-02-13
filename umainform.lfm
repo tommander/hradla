@@ -1,0 +1,174 @@
+object Form1: TForm1
+  Left = 2677
+  Height = 606
+  Top = 232
+  Width = 1028
+  Caption = 'Form1'
+  ClientHeight = 606
+  ClientWidth = 1028
+  OnCreate = FormCreate
+  LCLVersion = '2.3.0.0'
+  object Image1: TImage
+    Left = 175
+    Height = 496
+    Top = 55
+    Width = 614
+    Align = alClient
+    AutoSize = True
+    OnMouseMove = Image1MouseMove
+    OnMouseUp = Image1MouseUp
+    OnResize = Image1Resize
+    Stretch = True
+  end
+  object Panel1: TPanel
+    Left = 794
+    Height = 496
+    Top = 55
+    Width = 234
+    Align = alRight
+    BevelInner = bvRaised
+    BevelOuter = bvLowered
+    ClientHeight = 496
+    ClientWidth = 234
+    TabOrder = 0
+    object Memo1: TMemo
+      Left = 2
+      Height = 452
+      Top = 2
+      Width = 230
+      Align = alClient
+      ReadOnly = True
+      ScrollBars = ssAutoBoth
+      TabOrder = 0
+    end
+    object Panel5: TPanel
+      Left = 2
+      Height = 32
+      Top = 462
+      Width = 230
+      Align = alBottom
+      AutoSize = True
+      BorderSpacing.Top = 8
+      Caption = 'Panel5'
+      ClientHeight = 32
+      ClientWidth = 230
+      TabOrder = 1
+      object BitBtn1: TBitBtn
+        Left = 1
+        Height = 30
+        Top = 1
+        Width = 228
+        Align = alTop
+        Caption = 'Delete'
+        OnClick = BitBtn1Click
+        TabOrder = 0
+      end
+    end
+  end
+  object Splitter1: TSplitter
+    Left = 789
+    Height = 496
+    Top = 55
+    Width = 5
+    Align = alRight
+    ResizeAnchor = akRight
+  end
+  object Panel2: TPanel
+    Left = 0
+    Height = 50
+    Top = 0
+    Width = 1028
+    Align = alTop
+    BevelInner = bvRaised
+    BevelOuter = bvLowered
+    TabOrder = 2
+  end
+  object Panel3: TPanel
+    Left = 0
+    Height = 496
+    Top = 55
+    Width = 170
+    Align = alLeft
+    BevelInner = bvRaised
+    BevelOuter = bvLowered
+    ClientHeight = 496
+    ClientWidth = 170
+    TabOrder = 3
+    object rbSelect: TRadioButton
+      Left = 2
+      Height = 23
+      Top = 2
+      Width = 166
+      Align = alTop
+      Caption = 'Select'
+      Checked = True
+      TabOrder = 2
+      TabStop = True
+    end
+    object rbAdd: TRadioButton
+      Left = 2
+      Height = 23
+      Top = 25
+      Width = 166
+      Align = alTop
+      Caption = 'Add'
+      TabOrder = 0
+    end
+    object ListView1: TListView
+      Left = 2
+      Height = 304
+      Top = 48
+      Width = 166
+      Align = alTop
+      Columns = <      
+        item
+          AutoSize = True
+          Caption = 'Name'
+          Width = 151
+        end>
+      TabOrder = 1
+      ViewStyle = vsReport
+    end
+  end
+  object Splitter2: TSplitter
+    Left = 170
+    Height = 496
+    Top = 55
+    Width = 5
+  end
+  object Splitter3: TSplitter
+    Cursor = crVSplit
+    Left = 0
+    Height = 5
+    Top = 50
+    Width = 1028
+    Align = alTop
+    ResizeAnchor = akTop
+  end
+  object Panel4: TPanel
+    Left = 0
+    Height = 50
+    Top = 556
+    Width = 1028
+    Align = alBottom
+    BevelInner = bvRaised
+    BevelOuter = bvLowered
+    TabOrder = 6
+  end
+  object Splitter4: TSplitter
+    Cursor = crVSplit
+    Left = 0
+    Height = 5
+    Top = 551
+    Width = 1028
+    Align = alBottom
+    ResizeAnchor = akBottom
+  end
+  object Timer1: TTimer
+    Enabled = False
+    Interval = 500
+    OnTimer = Timer1Timer
+    Left = 253
+    Top = 115
+  end
+end
