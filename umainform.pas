@@ -13,9 +13,9 @@ const
   intMapHeight: word = 10;
 
 type
-  TMapField = record
+{  TMapField = record
     FComponent: integer;
-  end;
+  end;}
 
   { TForm1 }
 
@@ -52,11 +52,11 @@ type
     function ComponentBounds(const ptrCmp: PMapComponent; const fX,fY: integer): TRect;
     procedure _(const strText: string; const boolTime: boolean = true);
     procedure _(const strText: string; arrParams: array of const; const boolTime: boolean = true);
-    function InitMapField(): TMapField;
-    function GetMapField(const fX,fY: integer): TMapField;
+//    function InitMapField(): TMapField;
+//    function GetMapField(const fX,fY: integer): TMapField;
     function GetMapComponent(const fX,fY: integer): PMapComponent;
 //    function ComponentFromString(const strDef: string): integer;
-    function PlaceComponent(const intComponent,intX,intY: integer): boolean;
+    function PlaceComponent(ptrCmp: PMapComponent;intX,intY: integer): boolean;
     procedure ComponentList(var lv: TListView);
     procedure UpdateSelectedComponent();
   public
@@ -65,7 +65,7 @@ type
 
 var
   Form1: TForm1;
-  arrMap: array of array of TMapField;
+  arrMap: array of array of PMapComponent;
   arrComponents: array of TMapComponent;
   sglFieldWidth: single;
   sglFieldHeight: single;
@@ -213,14 +213,15 @@ begin
   TMapComponent.DrawEmpty(Image1.Canvas, ComponentBounds(ptrCmp,fX,fY), boolSelected);
 end;
 
-function TForm1.InitMapField(): TMapField;
+{function TForm1.InitMapField(): TMapField;
 begin
   result.FComponent := -1;
-end;
+end;}
 
-function TForm1.GetMapField(const fX,fY: integer): TMapField;
+{function TForm1.GetMapField(const fX,fY: integer): TMapField;}
+function TForm1.GetMapComponent(const fX,fY: integer): PMapComponent;
 begin
-  result := InitMapField();
+  result := nil;
   if (fX < Low(arrMap)) or (fX > High(arrMap)) then
   begin
     Exit;
@@ -234,7 +235,7 @@ begin
   result := arrMap[fX][fY];
 end;
 
-function TForm1.GetMapComponent(const fX,fY: integer): PMapComponent;
+{function TForm1.GetMapComponent(const fX,fY: integer): PMapComponent;
 var fld: TMapField;
 begin
   result := nil;
@@ -249,7 +250,7 @@ begin
   end;
 
   result := @arrComponents[fld.FComponent];
-end;
+end;}
 
 function TForm1.FieldBounds(const fX,fY: integer): TRect;
 begin
@@ -301,7 +302,7 @@ begin
     SetLength(arrMap[x], intMapHeight);
     for y := Low(arrMap[x]) to High(arrMap[x]) do
     begin
-      arrMap[x][y] := InitMapField();
+      arrMap[x][y] := nil;
     end;
   end;
   sglFieldWidth := 0;
@@ -365,27 +366,27 @@ begin
   arrComponents[result] := TMapComponent.Create(strName, intWidth, intHeight, intColor);
 end;}
 
-function TForm1.PlaceComponent(const intComponent,intX,intY: integer): boolean;
+function TForm1.PlaceComponent(ptrCmp: PMapComponent;intX,intY: integer): boolean;
 var x,y: integer;
     b: boolean;
 begin
   result := false;
 
   b := true;
-  for x := 0 to arrComponents[intComponent].Width-1 do
+  for x := 0 to ptrCmp^.Width-1 do
   begin
-    for y := 0 to arrComponents[intComponent].Height-1 do
+    for y := 0 to ptrCmp^.Height-1 do
     begin
       if ((intX+x) < Low(arrMap)) or ((intX+x) > High(arrMap)) or ((intY+y) < Low(arrMap[intX+x])) or ((intY+y) > High(arrMap[intX+x])) then
       begin
         b := false;
         break;
       end;
-      if (arrMap[intX+x][intY+y].FComponent < Low(arrComponents)) or (arrMap[intX+x][intY+y].FComponent > High(arrComponents)) then
+      if not Assigned(arrMap[intX+x][intY+y]) then
       begin
         continue;
       end;
-      if not arrComponents[arrMap[intX+x][intY+y].FComponent].Active then
+      if not arrMap[intX+x][intY+y]^.Active then
       begin
         continue;
       end;
@@ -399,11 +400,11 @@ begin
     Exit;
   end;
 
-  for x := 0 to arrComponents[intComponent].Width-1 do
+  for x := 0 to ptrCmp^.Width-1 do
   begin
-    for y := 0 to arrComponents[intComponent].Height-1 do
+    for y := 0 to ptrCmp^.Height-1 do
     begin
-      arrMap[intX+x][intY+y].FComponent := intComponent;
+      arrMap[intX+x][intY+y] := ptrCmp;
     end;
   end;
 
@@ -446,17 +447,17 @@ begin
       Exit;
     end;
 
+    XYToField(X,Y,fX,fY);
     SetLength(arrComponents, Length(arrComponents)+1);
-    intCmp := High(arrComponents);
-    arrComponents[intCmp] := TMapComponent.Create(TMapComponentType(ListView1.Selected.Index));
-    if intCmp = -1 then
+//    intCmp := ;
+    arrComponents[High(arrComponents)] := TMapComponent.Create(TMapComponentType(ListView1.Selected.Index), fX, fY);
+    if arrComponents[High(arrComponents)] = nil then
     begin
       ShowMessage('Could not create component instance');
       Exit;
     end;
 
-    XYToField(X,Y,fX,fY);
-    if not PlaceComponent(intCmp,fX,fY) then
+    if not PlaceComponent(@arrComponents[High(arrComponents)],fX,fY) then
     begin
       ShowMessage('Could not place component on map');
       Exit;
