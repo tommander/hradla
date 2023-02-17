@@ -38,6 +38,7 @@ type
     Timer1: TTimer;
     procedure BitBtn1Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
     procedure Image1MouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer
       );
     procedure Image1MouseUp(Sender: TObject; Button: TMouseButton;
@@ -45,18 +46,18 @@ type
     procedure Image1Resize(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
   private
-    procedure DrawMap(const boolComplete: boolean = false);
-    procedure DrawField(const fX,fY: integer; const boolSelected: boolean);
-    procedure XYToField(const X,Y: integer; var fX,fY: integer);
-    function FieldBounds(const fX,fY: integer): TRect;
-    function ComponentBounds(const ptrCmp: PMapComponent; const fX,fY: integer): TRect;
+    //procedure DrawMap(const boolComplete: boolean = false);
+    //procedure DrawField(const fX,fY: integer; const boolSelected: boolean);
+    //procedure XYToField(const X,Y: integer; var fX,fY: integer);
+//    function FieldBounds(const fX,fY: integer): TRect;
+//    function ComponentBounds(const ptrCmp: PMapComponent; const fX,fY: integer): TRect;
     procedure _(const strText: string; const boolTime: boolean = true);
     procedure _(const strText: string; arrParams: array of const; const boolTime: boolean = true);
 //    function InitMapField(): TMapField;
 //    function GetMapField(const fX,fY: integer): TMapField;
-    function GetMapComponent(const fX,fY: integer): PMapComponent;
+    //function GetMapComponent(const fX,fY: integer): PMapComponent;
 //    function ComponentFromString(const strDef: string): integer;
-    function PlaceComponent(ptrCmp: PMapComponent;intX,intY: integer): boolean;
+//    function PlaceComponent(ptrCmp: PMapComponent;intX,intY: integer): boolean;
     procedure ComponentList(var lv: TListView);
     procedure UpdateSelectedComponent();
   public
@@ -65,10 +66,11 @@ type
 
 var
   Form1: TForm1;
-  arrMap: array of array of PMapComponent;
-  arrComponents: array of TMapComponent;
-  sglFieldWidth: single;
-  sglFieldHeight: single;
+  cmpRoot: TMapComponent;
+  //arrMap: array of array of PMapComponent;
+  //arrComponents: array of TMapComponent;
+  //sglFieldWidth: single;
+  //sglFieldHeight: single;
   intFieldLMMX: integer; //Last MouseMove
   intFieldLMMY: integer;
   intFieldMMX: integer; //Current MouseMove
@@ -113,105 +115,7 @@ begin
   _(Format(strText, arrParams), boolTime);
 end;
 
-procedure TForm1.DrawMap(const boolComplete: boolean = false);
-var fX,fY: integer;
-    intCmp,intCmpX,intCmpY: integer;
-    pt: TPoint;
-//    sglFieldWidthOld,sglFieldHeightOld: single;
-begin
-  if boolComplete then
-  begin
-    Image1.Canvas.Pen.Style := psClear;
-    Image1.Canvas.Pen.Width := 0;
-    Image1.Canvas.Pen.Color := clNone;
-    Image1.Canvas.Brush.Color := clBtnFace;
-    Image1.Canvas.Rectangle(0,0,Image1.Canvas.Width,Image1.Canvas.Height);
 
-//    sglFieldWidthOld := sglFieldWidth;
-//    sglFieldHeightOld := sglFieldHeight;
-
-    sglFieldWidth := Image1.Canvas.Width / intMapWidth;
-    sglFieldHeight := Image1.Canvas.Height / intMapHeight;
-
-//    _('Complete draw [%.2f;%.2f] => [%.2f;%.2f] (%d,%d)', [sglFieldWidthOld,sglFieldHeightOld,sglFieldWidth,sglFieldHeight,Image1.Canvas.Width,Image1.Canvas.Height]);
-
-    for fX := 0 to intMapWidth-1 do
-    begin
-      for fY := 0 to intMapHeight-1 do
-      begin
-        DrawField(fX,fY,false);
-      end;
-    end;
-
-    Exit;
-  end;
-
-  intCmp := -1;
-  intCmpX := -1;
-  intCmpY := -1;
-  if rbAdd.Checked and Assigned(ListView1.Selected) then
-  begin
-    intCmp := ListView1.Selected.Index;
-    pt := TMapComponent.MCTToSize(TMapComponentType(intCmp));
-    intCmpX := pt.X;
-    intCmpY := pt.Y;
-  end;
-
-  if (intFieldLMMX <> -1) and (intFieldLMMY <> -1) and (intFieldLMMX = intFieldMMX) and (intFieldLMMY = intFieldMMY) and (intFieldLCmp = intCmp) then
-  begin
-    Exit;
-  end;
-
-//  _('Partial draw');
-
-  if intFieldLCmp = -1 then
-  begin
-    DrawField(intFieldLMMX,intFieldLMMY, false);
-  end
-  else
-  begin
-    for fX := 0 to intFieldLCmpX-1 do
-    begin
-      for fY := 0 to intFieldLCmpY-1 do
-      begin
-        DrawField(intFieldLMMX+fX,intFieldLMMY+fY, false);
-      end;
-    end;
-  end;
-  intFieldLMMX := intFieldMMX;
-  intFieldLMMY := intFieldMMY;
-  intFieldLCmp := intCmp;
-  intFieldLCmpX := intCmpX;
-  intFieldLCmpY := intCmpY;
-  if intFieldLCmp = -1 then
-  begin
-    DrawField(intFieldLMMX,intFieldLMMY, true);
-  end
-  else
-  begin
-    for fX := 0 to intFieldLCmpX-1 do
-    begin
-      for fY := 0 to intFieldLCmpY-1 do
-      begin
-        DrawField(intFieldLMMX+fX,intFieldLMMY+fY, true);
-      end;
-    end;
-  end;
-end;
-
-procedure TForm1.DrawField(const fX,fY: integer; const boolSelected: boolean);
-var ptrCmp: PMapComponent;
-begin
-  ptrCmp := GetMapComponent(fX,fY);
-
-  if Assigned(ptrCmp) then
-  begin
-    ptrCmp^.Draw(Image1.Canvas, ComponentBounds(ptrCmp,fX,fY), boolSelected);
-    Exit;
-  end;
-
-  TMapComponent.DrawEmpty(Image1.Canvas, ComponentBounds(ptrCmp,fX,fY), boolSelected);
-end;
 
 {function TForm1.InitMapField(): TMapField;
 begin
@@ -219,7 +123,7 @@ begin
 end;}
 
 {function TForm1.GetMapField(const fX,fY: integer): TMapField;}
-function TForm1.GetMapComponent(const fX,fY: integer): PMapComponent;
+{function TForm1.GetMapComponent(const fX,fY: integer): PMapComponent;
 begin
   result := nil;
   if (fX < Low(arrMap)) or (fX > High(arrMap)) then
@@ -233,7 +137,7 @@ begin
   end;
 
   result := arrMap[fX][fY];
-end;
+end;}
 
 {function TForm1.GetMapComponent(const fX,fY: integer): PMapComponent;
 var fld: TMapField;
@@ -252,10 +156,9 @@ begin
   result := @arrComponents[fld.FComponent];
 end;}
 
-function TForm1.FieldBounds(const fX,fY: integer): TRect;
+{function TForm1.FieldBounds(const fX,fY: integer): TRect;
 begin
   result.Create(Round(fX*sglFieldWidth),Round(fY*sglFieldHeight),Round((fX+1)*sglFieldWidth),Round((fY+1)*sglFieldHeight));
-//  _('FieldBounds [%d;%d] => [%d;%d;%d;%d]', [fX,fY,result.Left,result.Top,result.Right,result.Bottom]);
 end;
 
 function TForm1.ComponentBounds(const ptrCmp: PMapComponent; const fX,fY: integer): TRect;
@@ -283,30 +186,26 @@ begin
   Inc(y);
 
   result.Create(Round(x*sglFieldWidth),Round(y*sglFieldHeight),Round((x+ptrCmp^.Width)*sglFieldWidth),Round((y+ptrCmp^.Height)*sglFieldHeight));
-end;
+end; }
 
-procedure TForm1.XYToField(const X,Y: integer; var fX,fY: integer);
-begin
-  fX := Math.Floor(X / sglFieldWidth);
-  fY := Math.Floor(Y / sglFieldHeight);
-//  _('XYToField [%d;%d] => [%d;%d]', [X,Y,fX,fY]);
-end;
 
 procedure TForm1.FormCreate(Sender: TObject);
 var x,y: integer;
 begin
-  SetLength(arrComponents, 0);
-  SetLength(arrMap, intMapWidth);
-  for x := Low(arrMap) to High(arrMap) do
-  begin
-    SetLength(arrMap[x], intMapHeight);
-    for y := Low(arrMap[x]) to High(arrMap[x]) do
-    begin
-      arrMap[x][y] := nil;
-    end;
-  end;
-  sglFieldWidth := 0;
-  sglFieldHeight := 0;
+  cmpRoot := TMapComponent.Create(mctMap, 0, 0);
+  cmpRoot.SetMap(Format('w=%d;h=%d', [intMapWidth,intMapHeight]));
+  //SetLength(arrComponents, 0);
+  //SetLength(arrMap, intMapWidth);
+  //for x := Low(arrMap) to High(arrMap) do
+  //begin
+  //  SetLength(arrMap[x], intMapHeight);
+  //  for y := Low(arrMap[x]) to High(arrMap[x]) do
+  //  begin
+  //    arrMap[x][y] := nil;
+  //  end;
+  //end;
+  //sglFieldWidth := 0;
+  //sglFieldHeight := 0;
   intFieldLMMX := -1;
   intFieldLMMY := -1;
   intFieldMMX := -1;
@@ -316,7 +215,13 @@ begin
   intFieldLCmpY := -1;
   ptrSelCmp := nil;
   ComponentList(ListView1);
-  DrawMap(true);
+  cmpRoot.Draw(Image1.Canvas, TRect.Empty, [mcdfComplete]);
+  //DrawMap(true);
+end;
+
+procedure TForm1.FormDestroy(Sender: TObject);
+begin
+  cmpRoot.Free;
 end;
 
 procedure TForm1.BitBtn1Click(Sender: TObject);
@@ -327,15 +232,16 @@ begin
   end;
 
   ptrSelCmp^.Active := false;
-  DrawMap(true);
+  cmpRoot.Draw(Image1.Canvas, TRect.Empty, [mcdfComplete]);
 end;
 
 procedure TForm1.Image1MouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
 begin
-  XYToField(X,Y,intFieldMMX,intFieldMMY);
+  cmpRoot.XYToField(X,Y,intFieldMMX,intFieldMMY);
   //Label1.Caption := Format('[%d;%d]', [intFieldMMX, intFieldMMY]);
-  DrawMap();
+  cmpRoot.FieldMouseOver := TPoint.Create(intFieldMMX,intFieldMMY);
+  cmpRoot.Draw(Image1.Canvas, TRect.Empty, []);
 end;
 
 {function TForm1.ComponentFromString(const strDef: string): integer;
@@ -366,7 +272,7 @@ begin
   arrComponents[result] := TMapComponent.Create(strName, intWidth, intHeight, intColor);
 end;}
 
-function TForm1.PlaceComponent(ptrCmp: PMapComponent;intX,intY: integer): boolean;
+(*function TForm1.PlaceComponent(ptrCmp: PMapComponent;intX,intY: integer): boolean;
 var x,y: integer;
     b: boolean;
 begin
@@ -409,7 +315,7 @@ begin
   end;
 
   result := true;
-end;
+end;  *)
 
 procedure TForm1.UpdateSelectedComponent();
 begin
@@ -433,8 +339,8 @@ var fX,fY: integer;
 begin
   if rbSelect.Checked then
   begin
-    XYToField(X,Y,fX,fY);
-    ptrSelCmp := GetMapComponent(fX,fY);
+    cmpRoot.XYToField(X,Y,fX,fY);
+    ptrSelCmp := cmpRoot.GetSubcomponentPtr(fX,fY);
     UpdateSelectedComponent();
     Exit;
   end;
@@ -447,23 +353,24 @@ begin
       Exit;
     end;
 
-    XYToField(X,Y,fX,fY);
-    SetLength(arrComponents, Length(arrComponents)+1);
+    cmpRoot.XYToField(X,Y,fX,fY);
+    cmpRoot.CreateSubcomponent(TMapComponentType(ListView1.Selected.Index), fX, fY);
+//    SetLength(arrComponents, Length(arrComponents)+1);
 //    intCmp := ;
-    arrComponents[High(arrComponents)] := TMapComponent.Create(TMapComponentType(ListView1.Selected.Index), fX, fY);
-    if arrComponents[High(arrComponents)] = nil then
-    begin
-      ShowMessage('Could not create component instance');
-      Exit;
-    end;
+//    arrComponents[High(arrComponents)] := TMapComponent.Create();
+//    if arrComponents[High(arrComponents)] = nil then
+//    begin
+//      ShowMessage('Could not create component instance');
+//      Exit;
+//    end;
 
-    if not PlaceComponent(@arrComponents[High(arrComponents)],fX,fY) then
-    begin
-      ShowMessage('Could not place component on map');
-      Exit;
-    end;
+    //if not PlaceComponent(@arrComponents[High(arrComponents)],fX,fY) then
+    //begin
+    //  ShowMessage('Could not place component on map');
+    //  Exit;
+    //end;
 
-    DrawMap(true);
+    cmpRoot.Draw(Image1.Canvas, TRect.Empty, [mcdfComplete]);
     Exit;
   end;
 end;
@@ -477,7 +384,7 @@ end;
 procedure TForm1.Timer1Timer(Sender: TObject);
 begin
   Image1.Picture.Bitmap.SetSize(Image1.Width, Image1.Height);
-  DrawMap(true);
+  cmpRoot.Draw(Image1.Canvas, TRect.Empty, [mcdfComplete]);
   Timer1.Enabled := false;
 end;
 

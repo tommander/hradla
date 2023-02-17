@@ -5,7 +5,8 @@ unit umapcomponent;
 interface
 
 uses
-  Classes, SysUtils, Graphics, uhelper;
+  Classes, SysUtils, Graphics, Math,
+  uhelper;
 
 const
   PIN_IN: byte = 0;
@@ -13,6 +14,8 @@ const
   PIN_BOTH: byte = 2;
 
 type
+  TMapComponentDrawFlag = (mcdfComplete,mcdfSelected,mcdfDoSelect,mcdfDoAdd);
+  TMapComponentDrawFlags = set of TMapComponentDrawFlag;
   TMapComponentType = (mctNone,mctMap,mctLR,mctTB,mctTR,mctTL,mctBR,mctBL,mctLTR,mctLBR,mctTLB,mctTRB,mctLRTB,mctIn,mctOut,mctAnd);
   TMapComponentPin = record
     FActive: boolean;
@@ -32,11 +35,19 @@ type
       var FTop: byte;
       var FWidth: byte;
       var FHeight: byte;
+      var FFieldWidth: single;
+      var FFieldHeight: single;
+      var FFieldMouseOver: TPoint;
+      var FFieldMouseOverLast: TPoint;
+      var FComponentListSelection: integer;
+      var FComponentListSelectionLast: integer;
+      var FComponentListSelectionPointLast: TPoint;
 //      var FColor: TColor;
       var FActive: boolean;
       var FType: TMapComponentType;
       var FPins: array of TMapComponentPin;
-      var FMap: array of array of PMapComponent;
+      var FMap: array of array of integer;
+      var FSubcomponents: array of TMapComponent;
 
       function GetName(): string;
       function GetLeft(): byte;
@@ -48,9 +59,14 @@ type
 //      function GetColor(): TColor;
       procedure SetActive(AValue: boolean);
       function GetActive(): boolean;
+      function GetFieldMouseOver(): TPoint;
+      procedure SetFieldMouseOver(AValue: TPoint);
       function GetPinValue(AIndex: integer): boolean;
       procedure SetPinValue(AIndex: integer; AValue: boolean);
-
+      function GetComponentListSelection(): integer;
+      procedure SetComponentListSelection(AValue: integer);
+      procedure DrawMap(ACanvas: TCanvas; const AFlags: TMapComponentDrawFlags);
+      procedure DrawField(ACanvas: TCanvas; const fX,fY: integer; AFlags: TMapComponentDrawFlags);
     public
       property Name: string read GetName;
       property Left: byte read GetLeft;
@@ -61,18 +77,27 @@ type
 //      property Color: TColor read GetColor;
       property Active: boolean read GetActive write SetActive;
       property PinValue[AIndex: integer]: boolean read GetPinValue write SetPinValue;
+      property FieldMouseOver: TPoint read GetFieldMouseOver write SetFieldMouseOver;
 
       constructor Create(const AType: TMapComponentType; const ALeft,ATop: byte);
       destructor Destroy; override;
-      procedure Draw(const ACanvas: TCanvas; const ARect:TRect; const boolSelected: boolean);
+      procedure Draw(ACanvas: TCanvas; ARect:TRect; AFlags: TMapComponentDrawFlags);
       procedure Tick();
       procedure SetMap(const strMapDef: string);
       function GetPinIndex(const fX,fY: integer): integer;
       function GetPinPos(const AIndex: integer): TPoint;
+      function CreateSubcomponent(const AType: TMapComponentType; const ALeft,ATop: byte): integer;
+      procedure DeleteSubcomponent(AIndex: integer);
+      function GetSubcomponentIndex(const fX,fY: integer): integer;
+      function GetSubcomponentPtr(const fX,fY: integer): PMapComponent;
+      function FieldBounds(const fX,fY: integer): TRect;
+      function ComponentBounds(const ptrCmp: PMapComponent; const fX,fY: integer): TRect;
+      procedure XYToField(const X,Y: integer; var fX,fY: integer);
+
 
       class function MCTToStr(AMCT: TMapComponentType): string;
       class function MCTToSize(AMCT: TMapComponentType): TPoint;
-      class procedure DrawEmpty(const ACanvas: TCanvas; const ARect:TRect; const boolSelected: boolean);
+      class procedure DrawEmpty(const ACanvas: TCanvas; const ARect:TRect; AFlags: TMapComponentDrawFlags);
   end;
 
 function InitPin(AActive: boolean; AType: byte; AValue: boolean; AWrite: boolean): TMapComponentPin;
@@ -86,6 +111,99 @@ begin
   result.FValue := AValue;
   result.FWrite := AWrite;
 end;
+
+function TMapComponent.CreateSubcomponent(const AType: TMapComponentType; const ALeft,ATop: byte): integer;
+begin
+
+end;
+
+procedure TMapComponent.DeleteSubcomponent(AIndex: integer);
+begin
+end;
+
+function TMapComponent.GetComponentListSelection(): integer;
+begin
+  result := FComponentListSelection;
+end;
+
+procedure TMapComponent.SetComponentListSelection(AValue: integer);
+begin
+  FComponentListSelection := AValue;
+end;
+
+function TMapComponent.GetFieldMouseOver(): TPoint;
+begin
+  result := FFieldMouseOver;
+end;
+
+procedure TMapComponent.SetFieldMouseOver(AValue: TPoint);
+begin
+  FFieldMouseOver := AValue;
+  //Redraw MAP
+end;
+
+function TMapComponent.GetSubcomponentIndex(const fX,fY: integer): integer;
+begin
+  result := -1;
+  if (fX < Low(FMap)) or (fX > High(FMap)) then
+  begin
+    Exit;
+  end;
+
+  if (fY < Low(FMap[fX])) or (fY > High(FMap[fX])) then
+  begin
+    Exit;
+  end;
+
+  result := FMap[fX][fY];
+end;
+
+function TMapComponent.GetSubcomponentPtr(const fX,fY: integer): PMapComponent;
+var i: integer;
+begin
+  result := nil;
+
+  i := GetSubcomponentIndex(fX,fY);
+  if (i < Low(FMap)) or (i > High(FMap)) then
+  begin
+    Exit;
+  end;
+
+  result := @FSubcomponents[i];
+end;
+
+function TMapComponent.FieldBounds(const fX,fY: integer): TRect;
+begin
+  result.Create(Round(fX*FFieldWidth),Round(fY*FFieldHeight),Round((fX+1)*FFieldWidth),Round((fY+1)*FFieldHeight));
+end;
+
+function TMapComponent.ComponentBounds(const ptrCmp: PMapComponent; const fX,fY: integer): TRect;
+var x,y: integer;
+    p: PMapComponent;
+begin
+  if ptrCmp = nil then
+  begin
+    result := FieldBounds(fX,fY);
+    Exit;
+  end;
+  x := fX;
+  y := fY;
+  repeat
+    Dec(x);
+    p := GetSubcomponentPtr(x,y);
+  until
+    (x < Low(FMap)) or (p <> ptrCmp);
+  Inc(x);
+  repeat
+    Dec(y);
+    p := GetSubcomponentPtr(x,y);
+  until
+    (y < Low(FMap[x])) or (p <> ptrCmp);
+  Inc(y);
+
+  result.Create(Round(x*FFieldWidth),Round(y*FFieldHeight),Round((x+ptrCmp^.Width)*FFieldWidth),Round((y+ptrCmp^.Height)*FFieldHeight));
+end;
+
 
 constructor TMapComponent.Create(const AType: TMapComponentType; const ALeft,ATop: byte);
 begin
@@ -140,6 +258,7 @@ begin
   FWidth := pt.X;
   FHeight := pt.Y;
   FActive := (FType <> mctNone);
+  SetLength(FSubcomponents, 0);
   SetLength(FMap, 0);
   if FType = mctMap then
   begin
@@ -271,25 +390,24 @@ begin
   FPins[AIndex].FValue := AValue;
 end;
 
-class procedure TMapComponent.DrawEmpty(const ACanvas: TCanvas; const ARect:TRect; const boolSelected: boolean);
+class procedure TMapComponent.DrawEmpty(const ACanvas: TCanvas; const ARect:TRect; AFlags: TMapComponentDrawFlags);
 begin
-  if boolSelected then
+  if mcdfSelected in AFlags then
   begin
     SetPen(ACanvas, clMaroon, 1, psSolid);
     SetBrush(ACanvas, clRed, bsSolid);
     ACanvas.Rectangle(ARect);
     SetPen(ACanvas);
-  end
-  else
-  begin
-    SetPen(ACanvas, clBlack, 1, psSolid);
-    SetBrush(ACanvas, clBtnFace, bsSolid);
-    ACanvas.Rectangle(ARect);
-    SetPen(ACanvas);
+    Exit;
   end;
+
+  SetPen(ACanvas, clBlack, 1, psSolid);
+  SetBrush(ACanvas, clBtnFace, bsSolid);
+  ACanvas.Rectangle(ARect);
+  SetPen(ACanvas);
 end;
 
-procedure TMapComponent.Draw(const ACanvas: TCanvas; const ARect:TRect; const boolSelected: boolean);
+procedure TMapComponent.Draw(ACanvas: TCanvas; ARect:TRect; AFlags: TMapComponentDrawFlags);
 var //intTW,intTH: integer;
     //strT: string;
     intTemp1,intTemp2,intTemp3Xa,intTemp3Xb,intTemp3Ya,intTemp3Yb: integer;
@@ -297,7 +415,13 @@ var //intTW,intTH: integer;
     i: integer;
     pt: TPoint;
 begin
-  DrawEmpty(ACanvas, ARect, boolSelected);
+  if FType = mctMap then
+  begin
+    DrawMap(ACanvas, AFlags);
+    Exit;
+  end;
+
+  DrawEmpty(ACanvas, ARect, AFlags);
 
   intTemp1 := ARect.Top+((ARect.Bottom-ARect.Top) div 2);
   intTemp2 := ARect.Left+((ARect.Right-ARect.Left) div 2);
@@ -568,6 +692,109 @@ begin
   end;
 
   result.Create(FLeft+(FHeight-FWidth-FHeight-FWidth-1-AIndex), FTop-1);
+end;
+
+procedure TMapComponent.DrawMap(ACanvas: TCanvas; const AFlags: TMapComponentDrawFlags);
+var fX,fY: integer;
+    intCmp,intCmpX,intCmpY: integer;
+    pt: TPoint;
+//    sglFieldWidthOld,sglFieldHeightOld: single;
+begin
+  if mcdfComplete in AFlags then
+  begin
+    SetPen(ACanvas);
+    SetBrush(ACanvas,clBtnFace,bsSolid);
+    ACanvas.Rectangle(0,0,ACanvas.Width,ACanvas.Height);
+
+//    sglFieldWidthOld := sglFieldWidth;
+//    sglFieldHeightOld := sglFieldHeight;
+
+    FFieldWidth := ACanvas.Width / FWidth;
+    FFieldHeight := ACanvas.Height / FHeight;
+
+//    _('Complete draw [%.2f;%.2f] => [%.2f;%.2f] (%d,%d)', [sglFieldWidthOld,sglFieldHeightOld,sglFieldWidth,sglFieldHeight,Image1.Canvas.Width,Image1.Canvas.Height]);
+
+    for fX := 0 to FWidth-1 do
+    begin
+      for fY := 0 to FHeight-1 do
+      begin
+        DrawField(ACanvas,fX,fY,AFlags);
+      end;
+    end;
+
+    Exit;
+  end;
+
+  intCmpX := -1;
+  intCmpY := -1;
+  if (mcdfDoAdd in AFlags) and (FComponentListSelection <> -1) then
+  begin
+    pt := TMapComponent.MCTToSize(TMapComponentType(FComponentListSelection));
+    intCmpX := pt.X;
+    intCmpY := pt.Y;
+  end;
+
+  if (FFieldMouseOverLast.X <> -1) and (FFieldMouseOverLast.Y <> -1) and (FFieldMouseOverLast.X = FFieldMouseOver.X) and (FFieldMouseOverLast.Y = FFieldMouseOver.Y) and (FComponentListSelectionLast = FComponentListSelection) then
+  begin
+    Exit;
+  end;
+
+//  _('Partial draw');
+
+  if FComponentListSelectionLast = -1 then
+  begin
+    DrawField(ACanvas, FFieldMouseOverLast.X,FFieldMouseOverLast.Y, AFlags-[mcdfSelected]);
+  end
+  else
+  begin
+    for fX := 0 to FComponentListSelectionPointLast.X-1 do
+    begin
+      for fY := 0 to FComponentListSelectionPointLast.Y-1 do
+      begin
+        DrawField(ACanvas, FFieldMouseOverLast.X+fX, FFieldMouseOverLast.Y+fY, AFlags-[mcdfSelected]);
+      end;
+    end;
+  end;
+  FFieldMouseOverLast := FFieldMouseOver;
+//  intFieldLMMY := intFieldMMY;
+  FComponentListSelectionLast := FComponentListSelection;
+  FComponentListSelectionPointLast.X := intCmpX;
+  FComponentListSelectionPointLast.Y := intCmpY;
+  if FComponentListSelectionLast = -1 then
+  begin
+    DrawField(ACanvas, FFieldMouseOverLast.X,FFieldMouseOverLast.Y, AFlags+[mcdfSelected]);
+  end
+  else
+  begin
+    for fX := 0 to FComponentListSelectionPointLast.X-1 do
+    begin
+      for fY := 0 to FComponentListSelectionPointLast.Y-1 do
+      begin
+        DrawField(ACanvas, FFieldMouseOverLast.X+fX,FFieldMouseOverLast.Y+fY, AFlags+[mcdfSelected]);
+      end;
+    end;
+  end;
+end;
+
+procedure TMapComponent.DrawField(ACanvas: TCanvas; const fX,fY: integer; AFlags: TMapComponentDrawFlags);
+var ptrCmp: PMapComponent;
+begin
+  ptrCmp := GetSubcomponentPtr(fX,fY);
+
+  if Assigned(ptrCmp) then
+  begin
+    ptrCmp^.Draw(ACanvas, ComponentBounds(ptrCmp,fX,fY), AFlags);
+    Exit;
+  end;
+
+  DrawEmpty(ACanvas, ComponentBounds(ptrCmp,fX,fY), AFlags);
+end;
+
+procedure TMapComponent.XYToField(const X,Y: integer; var fX,fY: integer);
+begin
+  fX := Math.Floor(X / FFieldWidth);
+  fY := Math.Floor(Y / FFieldHeight);
+//  _('XYToField [%d;%d] => [%d;%d]', [X,Y,fX,fY]);
 end;
 
 class function TMapComponent.MCTToStr(AMCT: TMapComponentType): string;
