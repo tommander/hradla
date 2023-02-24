@@ -58,6 +58,7 @@ hradla
 *.projdata
 *.tvsconfig
 *.dsk
+log.txt
 
 # Delphi history and backups
 __history/
