@@ -30,26 +30,28 @@ type
       var FParent: TMapComponentBase; //Component's parent
 
       function GetName(): string;
+      procedure SetName(AValue: string);
       function GetFullName(): string;
       function GetSize(): TMCSize;
+      procedure SetSize(AValue: TMCSize);
       function GetPos(): TMCPos;
+      procedure SetPos(AValue: TMCPos);
       function GetParent(): TMapComponentBase;
+      procedure SetParent(AValue: TMapComponentBase);
 
     protected
 
       var FLogger: TLogger;
 
-      function GetMCDef(): string; virtual;
-      procedure SetMCDef(const AValue: string); virtual;
 
     public
 
-      property Name: string read GetName;
+      property Name: string read GetName write SetName;
       property FullName: string read GetFullName;
-      property Size: TMCSize read GetSize;
-      property Pos: TMCPos read GetPos;
-      property Parent: TMapComponentBase read GetParent;
-      property MCDef: string read GetMCDef write SetMCDef;
+      property Size: TMCSize read GetSize write SetSize;
+      property Pos: TMCPos read GetPos write SetPos;
+      property Parent: TMapComponentBase read GetParent write SetParent;
+//      property MCDef: string read GetMCDef write SetMCDef;
 
       constructor Create(const AName: string; ASize: TMCSize; APos: TMCPos; AParent: TMapComponentBase);
       destructor Destroy(); override;
@@ -59,11 +61,16 @@ type
       procedure RequestTick(AFrom,ATo: TMCPos); virtual;
       procedure Rotate(AClockwise: boolean); virtual;
       function Contains(APos: TMCPos; ASize: TMCSize): boolean;
+      function GetMCDef(ALevel: byte; AIgnorePos: boolean = false): string; virtual;
+      procedure SetMCDef(ALevel: byte; const AValue: string); virtual;
+
 
       class procedure DrawEmpty(ACanvas: TCanvas; ARect: TRect; AStyle: TMCDrawStyle);
 
   end;
 
+function LevelStr(ALevel: byte): string;
+function LevelPrefix(ALevel: byte): string;
 function MCSize(AWidth: word = 0; AHeight: word = 0): TMCSize;
 function MCPos(AX: smallint = -1; AY: smallint = -1): TMCPos;
 procedure SetPen(ACanvas: TCanvas; AColor: TColor = clBlack; AWidth: integer = 1; AStyle: TPenStyle = psSolid);
@@ -87,6 +94,29 @@ end;
 operator = (p1,p2: TMCPos) b: boolean;
 begin
   result := (p1.x = p2.x) and (p1.y = p2.y);
+end;
+
+function LevelStr(ALevel: byte): string;
+var i: integer;
+begin
+  result := '';
+  if ALevel = 0 then
+  begin
+    Exit;
+  end;
+  for i := 1 to ALevel do
+  begin
+    result := result + ' ';
+  end;
+end;
+
+function LevelPrefix(ALevel: byte): string;
+begin
+  result := '^';
+  if ALevel > 0 then
+  begin
+    result := result + Format('\s{%d}', [ALevel]);
+  end;
 end;
 
 function MCSize(AWidth: word = 0; AHeight: word = 0): TMCSize;
@@ -142,6 +172,16 @@ begin
   FLogger._e(result);
 end;
 
+procedure TMapComponentBase.SetName(AValue: string);
+const METHOD: string = 'TMapComponentBase.SetName';
+begin
+  FLogger._s(METHOD);
+
+  FName := AValue;
+
+  FLogger._e();
+end;
+
 function TMapComponentBase.GetFullName(): string;
 const METHOD: string = 'TMapComponentBase.GetFullName';
 begin
@@ -166,12 +206,32 @@ begin
   FLogger._e();
 end;
 
+procedure TMapComponentBase.SetSize(AValue: TMCSize);
+const METHOD: string = 'TMapComponentBase.SetSize';
+begin
+  FLogger._s(METHOD);
+
+  FSize := AValue;
+
+  FLogger._e();
+end;
+
 function TMapComponentBase.GetPos(): TMCPos;
 const METHOD: string = 'TMapComponentBase.GetPos';
 begin
   FLogger._s(METHOD);
 
   result := FPos;
+
+  FLogger._e();
+end;
+
+procedure TMapComponentBase.SetPos(AValue: TMCPos);
+const METHOD: string = 'TMapComponentBase.SetPos';
+begin
+  FLogger._s(METHOD);
+
+  FPos := AValue;
 
   FLogger._e();
 end;
@@ -186,19 +246,34 @@ begin
   FLogger._e();
 end;
 
-(* PROTECTED *)
-
-function TMapComponentBase.GetMCDef(): string;
-const METHOD: string = 'TMapComponentBase.GetMCDef';
+procedure TMapComponentBase.SetParent(AValue: TMapComponentBase);
+const METHOD: string = 'TMapComponentBase.SetParent';
 begin
   FLogger._s(METHOD);
 
-  result := Format('name="%d:%s";size="%d,%d";pos="%d,%d"', [Length(FName), FName, FSize.w, FSize.h, FPos.x, FPos.y]);
+  FParent := AValue;
 
   FLogger._e();
 end;
 
-procedure TMapComponentBase.SetMCDef(const AValue: string);
+(* PROTECTED *)
+
+function TMapComponentBase.GetMCDef(ALevel: byte; AIgnorePos: boolean = false): string;
+const METHOD: string = 'TMapComponentBase.GetMCDef';
+begin
+  FLogger._s(METHOD);
+
+  result := Format('%0:sname="%1:d:%2:s"'#13#10'%0:ssize="%3:d,%4:d"', [LevelStr(ALevel), Length(FName), FName, FSize.w, FSize.h]);
+  if not AIgnorePos then
+  begin
+    result := result + Format(#13#10'%spos="%d,%d"', [LevelStr(ALevel), FPos.x, FPos.y]);
+
+  end;
+
+  FLogger._e();
+end;
+
+procedure TMapComponentBase.SetMCDef(ALevel: byte; const AValue: string);
 const METHOD: string = 'TMapComponentBase.SetMCDef';
 var re: TRegExpr;
 begin
@@ -210,23 +285,30 @@ begin
     Exit;
   end;
   re := TRegExpr.Create();
+  re.ModifierM:=true;
   try
-    re.Expression := 'name="(\d+):';
+    re.Expression := LevelPrefix(ALevel)+'name="(\d+):';
     if re.Exec(AValue) then
     begin
-      FName := copy(AValue, re.MatchPos[1]+re.MatchLen[1], StrToIntDef(re.Match[1], 0));
+      FLogger._(ltInfo, 'Old name is "%s"' ,[FName]);
+      FName := copy(AValue, re.MatchPos[0]+re.MatchLen[0], StrToIntDef(re.Match[1], 0));
+      FLogger._(ltInfo, 'New name is "%s"' ,[FName]);
     end;
 
-    re.Expression := 'size="(\d+),(\d+)"';
+    re.Expression := LevelPrefix(ALevel)+'size="([^,]+),([^"]+)"';
     if re.Exec(AValue) then
     begin
+      FLogger._(ltInfo, 'Old size is [%d;%d]' ,[FSize.w,FSize.h]);
       FSize := MCSize(StrToIntDef(re.Match[1], 0), StrToIntDef(re.Match[2], 0));
+      FLogger._(ltInfo, 'New size is [%d;%d]' ,[FSize.w,FSize.h]);
     end;
 
-    re.Expression := 'pos="(\d+),(\d+)"';
+    re.Expression := LevelPrefix(ALevel)+'pos="([^,]+),([^"]+)"';
     if re.Exec(AValue) then
     begin
+      FLogger._(ltInfo, 'Old pos is [%d;%d]' ,[FPos.x,FPos.y]);
       FPos := MCPos(StrToIntDef(re.Match[1], -1), StrToIntDef(re.Match[2], -1));
+      FLogger._(ltInfo, 'New pos is [%d;%d]' ,[FPos.x,FPos.y]);
     end;
   finally
     re.Free();

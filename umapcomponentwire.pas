@@ -5,7 +5,7 @@ unit umapcomponentwire;
 interface
 
 uses
-  Classes, SysUtils, Graphics, umapcomponentpinned, umapcomponentbase;
+  Classes, SysUtils, Graphics, RegExpr, umapcomponentpinned, umapcomponentbase;
 
 type
   TMCPinConnection = record
@@ -21,8 +21,6 @@ type
 
     protected
 
-      function GetMCDef(): string; override;
-      procedure SetMCDef(const AValue: string); override;
 
     public
 
@@ -31,6 +29,8 @@ type
       procedure Clear();
       procedure Draw(ACanvas: TCanvas; ARect: TRect; AStyle: TMCDrawStyle); override;
       procedure Tick(ANeighbourField: TMCPos);
+      function GetMCDef(ALevel: byte; AIgnorePos: boolean = false): string; override;
+      procedure SetMCDef(ALevel: byte; const AValue: string); override;
       procedure Connect(APinA, APinB: integer);
       procedure Disconnect(APinA, APinB: integer);
       function Connected(APinA, APinB: integer): integer;
@@ -42,28 +42,69 @@ implementation
 
 (* PROTECTED *)
 
-function TMapComponentWire.GetMCDef(): string;
+function TMapComponentWire.GetMCDef(ALevel: byte; AIgnorePos: boolean = false): string;
 const METHOD: string = 'TMapComponentWire.GetMCDef';
 var i: integer;
 begin
   FLogger._s(METHOD);
 
-  result := inherited GetMCDef;
-  result := result + Format(';pinconns="%d"', [Length(FPinConnections)]);
+  result := inherited GetMCDef(ALevel, AIgnorePos);
+  result := result + Format(#13#10'%spinconns="%d"', [LevelStr(ALevel),Length(FPinConnections)]);
   for i := Low(FPinConnections) to High(FPinConnections) do
   begin
-    result := result + Format(';pinconn="%d;%d;%d"', [i, FPinConnections[i].PinA, FPinConnections[i].PinB]);
+    result := result + Format(#13#10'%spinconn="%d,%d,%d"', [LevelStr(ALevel),i, FPinConnections[i].PinA, FPinConnections[i].PinB]);
   end;
 
   FLogger._e();
 end;
 
-procedure TMapComponentWire.SetMCDef(const AValue: string);
+procedure TMapComponentWire.SetMCDef(ALevel: byte; const AValue: string);
 const METHOD: string = 'TMapComponentWire.SetMCDef';
+var re: TRegExpr;
+    i,ii,intA,intB: integer;
 begin
   FLogger._s(METHOD);
 
-  inherited SetMCDef(AValue);
+  inherited SetMCDef(ALevel, AValue);
+
+  re := TRegExpr.Create();
+  re.ModifierM := true;
+  try
+    re.Expression := LevelPrefix(ALevel)+'pinconns="([^"]+)"';
+    if re.Exec(AValue) then
+    begin
+      i := StrToIntDef(re.Match[1], 0);
+      if i >= 0 then
+      begin
+        SetLength(FPinConnections, i);
+        for ii := Low(FPinConnections) to High(FPinConnections) do
+        begin
+          FPinConnections[ii].PinA := -1;
+          FPinConnections[ii].PinB := -1;
+        end;
+      end;
+
+      re.Expression := LevelPrefix(ALevel)+'pinconn="([^,]+),([^,]+),([^"]+)"';
+      if re.Exec(AValue) then
+      begin
+        repeat
+          i := StrToIntDef(re.Match[1], 0);
+          intA := StrToIntDef(re.Match[2], 0);
+          intB := StrToIntDef(re.Match[3], 0);
+          if (i >= Low(FPinConnections)) and (i <= High(FPinConnections)) and
+             (intA >= PinLow()) and (intA <= PinHigh()) and
+             (intB >= PinLow()) and (intB <= PinHigh()) then
+          begin
+            FPinConnections[i].PinA := intA;
+            FPinConnections[i].PinB := intB;
+          end;
+        until
+          not re.ExecNext;
+      end;
+    end;
+  finally
+    re.Free;
+  end;
 
   FLogger._e();
 end;

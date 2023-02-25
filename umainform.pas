@@ -24,6 +24,9 @@ type
     BitBtn11: TBitBtn;
     BitBtn12: TBitBtn;
     BitBtn13: TBitBtn;
+    BitBtn14: TBitBtn;
+    BitBtn15: TBitBtn;
+    BitBtn16: TBitBtn;
     BitBtn2: TBitBtn;
     BitBtn3: TBitBtn;
     BitBtn4: TBitBtn;
@@ -38,6 +41,8 @@ type
     ComboBox4: TComboBox;
     ComboBox5: TComboBox;
     ComboBox6: TComboBox;
+    ComboBox7: TComboBox;
+    ComboBox8: TComboBox;
     Edit1: TEdit;
     Edit2: TEdit;
     Image1: TImage;
@@ -55,6 +60,9 @@ type
     Label18: TLabel;
     Label19: TLabel;
     Label2: TLabel;
+    Label20: TLabel;
+    Label21: TLabel;
+    Label22: TLabel;
     Label3: TLabel;
     Label4: TLabel;
     Label5: TLabel;
@@ -73,6 +81,7 @@ type
     Panel6: TPanel;
     Panel7: TPanel;
     Panel8: TPanel;
+    Panel9: TPanel;
     pnlR: TPanel;
     pnlT: TPanel;
     pnlL: TPanel;
@@ -93,6 +102,9 @@ type
     procedure BitBtn11Click(Sender: TObject);
     procedure BitBtn12Click(Sender: TObject);
     procedure BitBtn13Click(Sender: TObject);
+    procedure BitBtn14Click(Sender: TObject);
+    procedure BitBtn15Click(Sender: TObject);
+    procedure BitBtn16Click(Sender: TObject);
     procedure BitBtn1Click(Sender: TObject);
     procedure BitBtn2Click(Sender: TObject);
     procedure BitBtn3Click(Sender: TObject);
@@ -113,6 +125,7 @@ type
     procedure Timer1Timer(Sender: TObject);
     procedure UpdateSelection();
     procedure ToggleInput();
+    procedure ListCustmaps();
   private
     var map: TMapComponentMap;
     var act: TMapAction;
@@ -163,7 +176,7 @@ begin
 
   if not Assigned(cmp) then
   begin
-    Exit;
+    cmp := map;
   end;
 
   Label6.Caption := cmp.Name;
@@ -259,13 +272,72 @@ begin
     ImageList1.GetBitmap(4, Image1.Picture.Bitmap);
     Label2.Caption := 'Map';
     PageControl1.ActivePageIndex := tsMap.PageIndex;
+    Label21.Caption := IntToStr(TMapComponentMap(cmp).SubcomponentCount());
+    Label22.Caption := '';
+    ComboBox7.Items.Clear;
+    for i := TMapComponentMap(cmp).PinLow() to TMapComponentMap(cmp).PinHigh() do
+    begin
+      ComboBox7.Items.Add('Pin %d', [i]);
+    end;
+    ComboBox8.Items.Clear;
+    for i := 0 to TMapComponentMap(cmp).SubcomponentCount()-1 do
+    begin
+      if Label22.Caption <> '' then
+      begin
+        Label22.Caption := Label22.Caption + #13#10;
+      end;
+      if not Assigned(TMapComponentMap(cmp).Subcomponent(i)) then
+      begin
+        Label22.Caption := Label22.Caption + Format('#%d'#9'nil', [i]);
+        ComboBox8.Items.Add('nil', []);
+      end
+      else
+      begin
+        Label22.Caption := Label22.Caption + Format('#%d'#9'%s'#9'%s', [i, TMapComponentMap(cmp).Subcomponent(i).Name, MCTypeIntToStr(MCTypeInt(TMapComponentMap(cmp).Subcomponent(i)))]);
+        ComboBox8.Items.Add('%s (%s)', [TMapComponentMap(cmp).Subcomponent(i).Name, MCTypeIntToStr(MCTypeInt(TMapComponentMap(cmp).Subcomponent(i)))]);
+      end;
+    end;
   end;
 end;
+
+procedure TfMainForm.ListCustmaps();
+var sr: TSearchRec;
+    li: TListItem;
+begin
+  ListView2.Items.Clear;
+
+  if not DirectoryExists(AppDir('custmaps')) then
+  begin
+    try
+      mkdir(AppDir('custmaps'));
+    except
+      showmessage('Please create the subdirectory "custmaps" first.');
+    end;
+    Exit;
+  end;
+
+  if FindFirst(AppDir('custmaps/*.mcdef'), faReadOnly, sr) <> -1 then
+  begin
+    try
+      repeat
+        li := ListView2.Items.Add;
+        li.Caption := ChangeFileExt(sr.Name, '');
+        li.SubItems.Add(AppDir('custmaps/'+sr.Name));
+      until
+        FindNext(sr) <> 0;
+    finally
+      FindClose(sr);
+    end;
+  end;
+end;
+
+
 
 (* EVENTS *)
 
 procedure TfMainForm.imgMainMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
+var sl: TStringList;
 begin
   cmp := map.Subcomponent(map.SubcomponentByField(map.CursorPos));
 
@@ -308,11 +380,21 @@ begin
 
   if act = maAddCust then
   begin
-    if (not Assigned(ListView2.Selected)) or (ListView2.Selected.SubItems.Count = 0) then
+    if (not Assigned(ListView2.Selected)) or (ListView2.Selected.SubItems.Count = 0) or (not FileExists(ListView2.Selected.SubItems[0])) then
     begin
       Exit;
     end;
 
+    sl := TStringList.Create;
+    try
+      sl.LoadFromFile(ListView2.Selected.SubItems[0]);
+      map.AddMap(MCSize(0,0), map.CursorPos, sl.Text);
+    finally
+      sl.Free;
+    end;
+    map.RedrawField := map.CursorPos;
+    DrawMap(mdmsRedraw);
+    Exit;
   end;
 end;
 
@@ -335,6 +417,7 @@ begin
   act := maSelect;
   cmp := nil;
   Timer1Timer(nil);
+  ListCustmaps();
 end;
 
 procedure TfMainForm.BitBtn2Click(Sender: TObject);
@@ -353,7 +436,7 @@ end;
 
 procedure TfMainForm.BitBtn11Click(Sender: TObject);
 begin
-  map.MCDef := Format('size="%d,%d"', [SpinEdit1.Value, SpinEdit2.Value]);
+  map.SetMCDef(0,Format('size="%d,%d"', [SpinEdit1.Value, SpinEdit2.Value]));
   DrawMap(mdmsComplete);
 end;
 
@@ -382,6 +465,38 @@ begin
   Label1.Font.Color := clGreen;
   Label1.Caption := 'ADD CUSTOM';
   imgMain.Cursor := crDrag;
+end;
+
+procedure TfMainForm.BitBtn14Click(Sender: TObject);
+begin
+  if (not Assigned(cmp)) or (not (cmp is TMapComponentMap)) then
+  begin
+    Exit;
+  end;
+
+  TMapComponentMap(cmp).AddIOConnection(ComboBox7.ItemIndex, ComboBox8.ItemIndex);
+  UpdateSelection();
+  map.RedrawField := cmp.Pos;
+  DrawMap(mdmsRedraw);
+end;
+
+procedure TfMainForm.BitBtn15Click(Sender: TObject);
+begin
+  if (not Assigned(cmp)) or (not (cmp is TMapComponentMap)) then
+  begin
+    Exit;
+  end;
+
+  TMapComponentMap(cmp).RemoveIOConnection(ComboBox7.ItemIndex, ComboBox8.ItemIndex);
+  UpdateSelection();
+  map.RedrawField := cmp.Pos;
+  DrawMap(mdmsRedraw);
+end;
+
+procedure TfMainForm.BitBtn16Click(Sender: TObject);
+begin
+  map.Clear(true);
+  DrawMap(mdmsComplete);
 end;
 
 procedure TfMainForm.BitBtn3Click(Sender: TObject);
@@ -453,7 +568,7 @@ end;
 
 procedure TfMainForm.BitBtn9Click(Sender: TObject);
 begin
-  fMCDef.SynEdit1.Lines.Text := map.MCDef;
+  fMCDef.SynEdit1.Lines.Text := map.GetMCDef(0,true);
   fMCDef.Show;
 end;
 

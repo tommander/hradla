@@ -5,7 +5,7 @@ unit umapcomponentgate;
 interface
 
 uses
-  Classes, SysUtils, Graphics, umapcomponentpinned, umapcomponentbase;
+  Classes, SysUtils, Graphics, RegExpr, umapcomponentpinned, umapcomponentbase;
 
 type
   TMCGate = (mcgNone, mcgBuf, mcgInv, mcgAnd, mcgNand, mcgOr, mcgNor, mcgXor, mcgXnor);
@@ -31,8 +31,6 @@ type
 
     protected
 
-      function GetMCDef(): string; override;
-      procedure SetMCDef(const AValue: string); override;
 
     public
 
@@ -46,6 +44,8 @@ type
       procedure Clear();
       procedure Draw(ACanvas: TCanvas; ARect: TRect; AStyle: TMCDrawStyle); override;
       procedure Tick();
+      function GetMCDef(ALevel: byte; AIgnorePos: boolean = false): string; override;
+      procedure SetMCDef(ALevel: byte; const AValue: string); override;
 //      procedure SetPinTypes(APinI1,APinI2,APinO1: integer);
 
   end;
@@ -175,24 +175,72 @@ end;
 
 (* PROTECTED *)
 
-function TMapComponentGate.GetMCDef(): string;
+function TMapComponentGate.GetMCDef(ALevel: byte; AIgnorePos: boolean = false): string;
 const METHOD: string = 'TMapComponentGate.GetMCDef';
 var i: integer;
 begin
   FLogger._s(METHOD);
 
-  result := inherited GetMCDef;
-  result := result + Format(';gate="%d";pini1="%d";pini2="%d";pino1="%d"', [Integer(FGate), FPinI1, FPinI2, FPinO1]);
+  result := inherited GetMCDef(ALevel, AIgnorePos);
+  result := result + Format(#13#10'%0:sgate="%1:d"'#13#10'%0:spini1="%2:d"'#13#10'%0:spini2="%3:d"'#13#10'%0:spino1="%4:d"', [LevelStr(ALevel),Integer(FGate), FPinI1, FPinI2, FPinO1]);
 
   FLogger._e();
 end;
 
-procedure TMapComponentGate.SetMCDef(const AValue: string);
+procedure TMapComponentGate.SetMCDef(ALevel: byte; const AValue: string);
 const METHOD: string = 'TMapComponentGate.SetMCDef';
+var re: TRegExpr;
+    i: integer;
 begin
   FLogger._s(METHOD);
 
-  inherited SetMCDef(AValue);
+  inherited SetMCDef(ALevel, AValue);
+
+  re := TRegExpr.Create();
+  re.ModifierM := true;
+  try
+    re.Expression := LevelPrefix(ALevel)+'gate="([^"]+)"';
+    if re.Exec(AValue) then
+    begin
+      i := StrToIntDef(re.Match[1], -1);
+      if (i >= Integer(Low(TMCGate))) and (i <= Integer(High(TMCGate))) then
+      begin
+        FGate := TMCGate(i);
+      end;
+    end;
+
+    re.Expression := LevelPrefix(ALevel)+'pini1="([^"]+)"';
+    if re.Exec(AValue) then
+    begin
+      i := StrToIntDef(re.Match[1], -1);
+      if (i >= PinLow()) and (i <= PinHigh()) then
+      begin
+        FPinI1 := i;
+      end;
+    end;
+
+    re.Expression := LevelPrefix(ALevel)+'pini2="([^"]+)"';
+    if re.Exec(AValue) then
+    begin
+      i := StrToIntDef(re.Match[1], -1);
+      if (i >= PinLow()) and (i <= PinHigh()) then
+      begin
+        FPinI2 := i;
+      end;
+    end;
+
+    re.Expression := LevelPrefix(ALevel)+'pino1="([^"]+)"';
+    if re.Exec(AValue) then
+    begin
+      i := StrToIntDef(re.Match[1], -1);
+      if (i >= PinLow()) and (i <= PinHigh()) then
+      begin
+        FPinO1 := i;
+      end;
+    end;
+  finally
+    re.Free;
+  end;
 
   FLogger._e();
 end;

@@ -5,7 +5,7 @@ unit umapcomponentpinned;
 interface
 
 uses
-  Classes, SysUtils, Graphics, umapcomponentbase, ulogger;
+  Classes, SysUtils, Graphics, RegExpr, umapcomponentbase, ulogger;
 
 type
   TMapComponentPin = record
@@ -28,8 +28,6 @@ type
 
     protected
 
-      function GetMCDef(): string; override;
-      procedure SetMCDef(const AValue: string); override;
 
     public
 
@@ -41,8 +39,11 @@ type
       procedure Clear();
       procedure Null();
       procedure Draw(ACanvas: TCanvas; ARect: TRect; AStyle: TMCDrawStyle); override;
+      procedure DrawPinsOnly(ACanvas: TCanvas; ARect: TRect);
       procedure Tick();
       procedure Rotate(AClockwise: boolean); override;
+      function GetMCDef(ALevel: byte; AIgnorePos: boolean = false): string; override;
+      procedure SetMCDef(ALevel: byte; const AValue: string); override;
       function PinLow(): integer;
       function PinHigh(): integer;
       function PinCount(): integer;
@@ -172,28 +173,70 @@ end;
 
 (* PROTECTED *)
 
-function TMapComponentPinned.GetMCDef(): string;
+function TMapComponentPinned.GetMCDef(ALevel: byte; AIgnorePos: boolean = false): string;
 const METHOD: string = 'TMapComponentPinned.GetMCDef';
 var i: integer;
 begin
   FLogger._s(METHOD);
 
-  result := inherited GetMCDef;
-  result := result + Format(';pins="%d"', [Length(FPins)]);
+  result := inherited GetMCDef(ALevel, AIgnorePos);
+//  result := result + Format(#13#10'pins="%d"', [Length(FPins)]);
   for i := Low(FPins) to High(FPins) do
   begin
-    result := result + Format(';pin="%d;%d;%d"', [i, Integer(FPins[i].Active), Integer(FPins[i].Value)]);
+    if FPins[i].Active then
+    begin
+      result := result + Format(#13#10'%spin="%d,%d,%d"', [LevelStr(ALevel), i, Integer(FPins[i].Active), Integer(FPins[i].Value)]);
+    end;
   end;
 
   FLogger._e();
 end;
 
-procedure TMapComponentPinned.SetMCDef(const AValue: string);
+procedure TMapComponentPinned.SetMCDef(ALevel: byte; const AValue: string);
 const METHOD: string = 'TMapComponentPinned.SetMCDef';
+var re: TRegExpr;
+    i,ii: integer;
+    iW,iH: integer;
 begin
   FLogger._s(METHOD);
 
-  inherited SetMCDef(AValue);
+  iW := Size.w;
+  iH := Size.h;
+
+  inherited SetMCDef(ALevel, AValue);
+
+  if (iW <> Size.w) or (iH <> Size.h) then
+  begin
+    SetLength(FPins, 2*(Size.w+Size.h));
+    for i := Low(FPins) to High(FPins) do
+    begin
+      FPins[i].Active := false;
+      FPins[i].Value := false;
+    end;
+  end;
+
+  re := TRegExpr.Create();
+  re.ModifierM := true;
+  try
+    re.Expression := LevelPrefix(ALevel)+'pin="([^,]+),([^,]+),([^"]+)"';
+    if re.Exec(AValue) then
+    begin
+      repeat
+        i := StrToIntDef(re.Match[1], 0);
+        if (i >= Low(FPins)) and (i <= High(FPins)) then
+        begin
+          FPins[i].Active := re.Match[2] = '1';
+          if FPins[i].Active then
+          begin
+            FPins[i].Value := re.Match[3] = '1';
+          end;
+        end;
+      until
+        not re.ExecNext;
+    end;
+  finally
+    re.Free;
+  end;
 
   FLogger._e();
 end;
@@ -250,6 +293,17 @@ begin
   FLogger._s(METHOD);
 
   inherited Draw(ACanvas, ARect, AStyle);
+  DrawPinsOnly(ACanvas, ARect);
+
+  FLogger._e();
+end;
+
+procedure TMapComponentPinned.DrawPinsOnly(ACanvas: TCanvas; ARect: TRect);
+const METHOD: string = 'TMapComponentPinned.DrawPinsOnly';
+var i: integer;
+begin
+  FLogger._s(METHOD);
+
   for i := Low(FPins) to High(FPins) do
   begin
     if FPins[i].Active then
@@ -269,7 +323,6 @@ begin
 
   FLogger._e();
 end;
-
 procedure TMapComponentPinned.Tick();
 const METHOD: string = 'TMapComponentPinned.Tick';
 begin

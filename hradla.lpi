@@ -86,6 +86,7 @@
         <Filename Value="umcdef.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="fMCDef"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
       </Unit>
     </Units>

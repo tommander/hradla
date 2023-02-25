@@ -1,7 +1,7 @@
 object fMainForm: TfMainForm
-  Left = 87
+  Left = 1777
   Height = 637
-  Top = 105
+  Top = 310
   Width = 1184
   Caption = 'fMainForm'
   ClientHeight = 637
@@ -37,9 +37,9 @@ object fMainForm: TfMainForm
       Height = 367
       Top = 158
       Width = 327
-      ActivePage = tsWire
+      ActivePage = tsMap
       Align = alClient
-      TabIndex = 0
+      TabIndex = 4
       TabOrder = 0
       TabPosition = tpLeft
       object tsWire: TTabSheet
@@ -316,6 +316,105 @@ object fMainForm: TfMainForm
       end
       object tsMap: TTabSheet
         Caption = 'Map'
+        ClientHeight = 363
+        ClientWidth = 256
+        object Panel9: TPanel
+          Left = 0
+          Height = 25
+          Top = 136
+          Width = 256
+          Align = alTop
+          AutoSize = True
+          BevelOuter = bvNone
+          ClientHeight = 25
+          ClientWidth = 256
+          TabOrder = 0
+          object Label20: TLabel
+            Left = 6
+            Height = 19
+            Top = 6
+            Width = 115
+            Align = alLeft
+            BorderSpacing.Left = 6
+            BorderSpacing.Top = 6
+            BorderSpacing.Right = 6
+            Caption = 'Subcomponents:'
+            Font.Style = [fsBold]
+            Layout = tlCenter
+            ParentFont = False
+          end
+          object Label21: TLabel
+            Left = 127
+            Height = 19
+            Top = 6
+            Width = 117
+            Align = alClient
+            BorderSpacing.Top = 6
+            BorderSpacing.Right = 12
+            Caption = '0'
+            Layout = tlCenter
+          end
+        end
+        object Label22: TLabel
+          Left = 6
+          Height = 19
+          Top = 167
+          Width = 244
+          Align = alTop
+          BorderSpacing.Left = 6
+          BorderSpacing.Top = 6
+          BorderSpacing.Right = 6
+          Caption = 'Label22'
+        end
+        object ComboBox7: TComboBox
+          Left = 6
+          Height = 35
+          Top = 6
+          Width = 244
+          Align = alTop
+          BorderSpacing.Left = 6
+          BorderSpacing.Top = 6
+          BorderSpacing.Right = 6
+          ItemHeight = 0
+          Style = csDropDownList
+          TabOrder = 1
+        end
+        object ComboBox8: TComboBox
+          Left = 6
+          Height = 35
+          Top = 41
+          Width = 244
+          Align = alTop
+          BorderSpacing.Left = 6
+          BorderSpacing.Right = 6
+          ItemHeight = 0
+          Style = csDropDownList
+          TabOrder = 2
+        end
+        object BitBtn14: TBitBtn
+          Left = 6
+          Height = 30
+          Top = 76
+          Width = 244
+          Align = alTop
+          BorderSpacing.Left = 6
+          BorderSpacing.Right = 6
+          Caption = 'Connect'
+          OnClick = BitBtn14Click
+          TabOrder = 3
+        end
+        object BitBtn15: TBitBtn
+          Left = 6
+          Height = 30
+          Top = 106
+          Width = 244
+          Align = alTop
+          BorderSpacing.Left = 6
+          BorderSpacing.Right = 6
+          Caption = 'Disconnect'
+          OnClick = BitBtn15Click
+          TabOrder = 4
+        end
       end
     end
     object Panel1: TPanel
@@ -602,7 +701,7 @@ object fMainForm: TfMainForm
     ClientWidth = 1184
     TabOrder = 2
     object BitBtn1: TBitBtn
-      Left = 2
+      Left = 85
       Height = 46
       Top = 2
       Width = 42
@@ -613,7 +712,7 @@ object fMainForm: TfMainForm
       TabOrder = 0
     end
     object BitBtn8: TBitBtn
-      Left = 44
+      Left = 127
       Height = 46
       Top = 2
       Width = 47
@@ -624,7 +723,7 @@ object fMainForm: TfMainForm
       TabOrder = 1
     end
     object BitBtn9: TBitBtn
-      Left = 91
+      Left = 174
       Height = 46
       Top = 2
       Width = 61
@@ -635,10 +734,10 @@ object fMainForm: TfMainForm
       TabOrder = 2
     end
     object Edit1: TEdit
-      Left = 152
+      Left = 235
       Height = 46
       Top = 2
-      Width = 589
+      Width = 506
       Align = alClient
       TabOrder = 3
       Text = 'Edit1'
@@ -662,6 +761,17 @@ object fMainForm: TfMainForm
       Align = alRight
       TabOrder = 5
       Text = 'Edit2'
+    end
+    object BitBtn16: TBitBtn
+      Left = 2
+      Height = 46
+      Top = 2
+      Width = 83
+      Align = alLeft
+      AutoSize = True
+      Caption = 'Clear map'
+      OnClick = BitBtn16Click
+      TabOrder = 6
     end
   end
   object pnlL: TPanel
@@ -763,6 +873,32 @@ object fMainForm: TfMainForm
       BorderSpacing.Left = 6
       BorderSpacing.Right = 6
       Columns = <>
+      Items.LazData = {
+        F602000001000000FFFFFFFFFFFFFFFFFFFFFFFF010000000600000054657374
+        2031CC0200006E616D653D22333A6D6170223B73697A653D22332C32223B7069
+        6E733D223630223B6D6170733D22332C32223B6D61703D22302C302C31223B6D
+        61703D22302C312C32223B6D61703D22312C302C34223B6D61703D22312C312C
+        30223B6D61703D22322C302C33223B737562733D2235223B7375623D22302C31
+        32382C3522626D46745A5430694D6A70334D43493763326C365A5430694D5377
+        78496A747762334D39496A45734D53493763476C75637A30694E43493763476C
+        75505349774F7A45374D43493763476C755053497A4F7A45374D43493763476C
+        7559323975626E4D39496A45694F334270626D4E76626D3439496A41374D4473
+        7A49673D3D3B7375623D22312C38342C3122626D46745A5430694D6A70704D43
+        493763326C365A5430694D537778496A747762334D39496A41734D4349376347
+        6C75637A30694E43493763476C75505349794F7A45374D434937646D46736457
+        5539496A41693B7375623D22322C38342C3122626D46745A5430694D6A70704D
+        53493763326C365A5430694D537778496A747762334D39496A41734D53493763
+        476C75637A30694E43493763476C75505349794F7A45374D434937646D467364
+        575539496A41693B7375623D22332C38342C3222626D46745A5430694D6A7076
+        4D43493763326C365A5430694D537778496A747762334D39496A49734D434937
+        63476C75637A30694E43493763476C75505349774F7A45374D434937646D4673
+        64575539496A41693B7375623D22342C3135362C3422626D46745A5430694D6A
+        706E4D43493763326C365A5430694D537778496A747762334D39496A45734D43
+        493763476C75637A30694E43493763476C75505349774F7A45374D4349376347
+        6C75505349784F7A45374D43493763476C75505349794F7A45374D4349375A32
+        46305A5430694D79493763476C7561544539496A41694F334270626D6B795053
+        4978496A7477615735764D5430694D69493DFFFFFFFF
+      }
       TabOrder = 5
     end
   end

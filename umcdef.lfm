@@ -1,7 +1,7 @@
 object fMCDef: TfMCDef
-  Left = 2130
+  Left = 1844
   Height = 520
-  Top = 339
+  Top = 208
   Width = 653
   Caption = 'fMCDef'
   ClientHeight = 520
@@ -530,6 +530,7 @@ object fMCDef: TfMCDef
       BorderSpacing.Top = 6
       BorderSpacing.Bottom = 6
       Caption = 'Clear'
+      OnClick = BitBtn1Click
       TabOrder = 0
     end
     object BitBtn2: TBitBtn
@@ -542,6 +543,7 @@ object fMCDef: TfMCDef
       BorderSpacing.Top = 6
       BorderSpacing.Bottom = 6
       Caption = 'Load from file'
+      OnClick = BitBtn2Click
       TabOrder = 1
     end
     object BitBtn3: TBitBtn
@@ -554,6 +556,7 @@ object fMCDef: TfMCDef
       BorderSpacing.Top = 6
       BorderSpacing.Bottom = 6
       Caption = 'Save to file'
+      OnClick = BitBtn3Click
       TabOrder = 2
     end
     object BitBtn4: TBitBtn
@@ -567,7 +570,21 @@ object fMCDef: TfMCDef
       BorderSpacing.Right = 6
       BorderSpacing.Bottom = 6
       Caption = 'Close'
+      OnClick = BitBtn4Click
       TabOrder = 3
+    end
+    object BitBtn5: TBitBtn
+      Left = 252
+      Height = 35
+      Top = 8
+      Width = 147
+      Align = alLeft
+      AutoSize = True
+      BorderSpacing.Top = 6
+      BorderSpacing.Bottom = 6
+      Caption = 'Add to custom maps'
+      OnClick = BitBtn5Click
+      TabOrder = 4
     end
   end
   object SynAnySyn1: TSynAnySyn
@@ -581,5 +598,17 @@ object fMCDef: TfMCDef
     ActiveDot = False
     Left = 472
     Top = 64
+  end
+  object dlgOpen: TOpenDialog
+    Filter = 'MCDef (*.mcdef)|*.mcdef|All files|*'
+    Options = [ofPathMustExist, ofFileMustExist, ofEnableSizing, ofViewDetail]
+    Left = 229
+    Top = 157
+  end
+  object dlgSave: TSaveDialog
+    Filter = 'MCDef (*.mcdef)|*.mcdef|All files|*'
+    Options = [ofOverwritePrompt, ofPathMustExist, ofEnableSizing, ofViewDetail]
+    Left = 226
+    Top = 207
   end
 end
