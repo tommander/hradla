@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, Buttons,
-  SynEdit, SynHighlighterAny, ComCtrls, umapcomponentmap, umapcomponentbase;
+  SynEdit, SynHighlighterAny, SynHighlighterIni, ComCtrls;
 
 type
 
@@ -85,11 +85,11 @@ end;
 
 procedure TfMCDef.BitBtn5Click(Sender: TObject);
 var strName,strFile: string;
-    li: TListItem;
 begin
   strName := '';
   if not InputQuery('New custom map', 'Name?', strName) then
   begin
+    showmessage('Cancelled');
     Exit;
   end;
 

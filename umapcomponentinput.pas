@@ -5,7 +5,7 @@ unit umapcomponentinput;
 interface
 
 uses
-  Classes, SysUtils, Graphics, umapcomponentio, umapcomponentbase;
+  Classes, SysUtils, Graphics, ulogger, umapcomponentio, umapcomponentbase;
 
 type
   TMapComponentInput = class(TMapComponentIO)
@@ -41,35 +41,45 @@ procedure TMapComponentInput.Clear();
 const METHOD: string = 'TMapComponentInput.Clear';
 begin
   FLogger._s(METHOD);
+  try
 
-  //
+    //
 
-  FLogger._e();
+  finally
+    FLogger._e();
+  end;
 end;
 
 procedure TMapComponentInput.Draw(ACanvas: TCanvas; ARect: TRect; AStyle: TMCDrawStyle);
 const METHOD: string = 'TMapComponentInput.Draw';
 begin
-  FLogger._s(METHOD);
+  FLogger._ss(METHOD);
+  try
+    FLogger._pe('ACanvas', TypeInfo(ACanvas), @ACanvas);
+    FLogger._pe('ARect', TypeInfo(ARect), @ARect);
+    FLogger._pe('AStyle', TypeInfo(AStyle), @AStyle);
+    FLogger._se();
 
-  inherited Draw(ACanvas, ARect, AStyle);
-  SetPen(ACanvas);
-  if Value then
-  begin
-    SetBrush(ACanvas, clLime);
-  end
-  else
-  begin
-    SetBrush(ACanvas, clGreen);
+    inherited Draw(ACanvas, ARect, AStyle);
+    SetPen(ACanvas);
+    if Value then
+    begin
+      SetBrush(ACanvas, clLime);
+    end
+    else
+    begin
+      SetBrush(ACanvas, clGreen);
+    end;
+    ACanvas.Ellipse(
+      ARect.Left + (ARect.Width div 3),
+      ARect.Top + (ARect.Height div 3),
+      ARect.Left + ((ARect.Width div 3)*2),
+      ARect.Top + ((ARect.Height div 3)*2)
+    );
+
+  finally
+    FLogger._e();
   end;
-  ACanvas.Ellipse(
-    ARect.Left + (ARect.Width div 3),
-    ARect.Top + (ARect.Height div 3),
-    ARect.Left + ((ARect.Width div 3)*2),
-    ARect.Top + ((ARect.Height div 3)*2)
-  );
-
-  FLogger._e();
 end;
 
 procedure TMapComponentInput.Tick();
@@ -77,18 +87,21 @@ const METHOD: string = 'TMapComponentInput.Tick';
 var i: integer;
 begin
   FLogger._s(METHOD);
+  try
 
-  for i := PinLow() to PinHigh() do
-  begin
-    if PinActive[i] then
+    for i := PinLow() to PinHigh() do
     begin
-      PinValue[i] := Value;
-      Parent.RequestTick(GetPinField(i),GetPinNeighbourField(i));
-      break;
+      if PinActive[i] then
+      begin
+        PinValue[i] := Value;
+        Parent.RequestTick(GetPinField(i),GetPinNeighbourField(i));
+        break;
+      end;
     end;
-  end;
 
-  FLogger._e();
+  finally
+    FLogger._e();
+  end;
 end;
 
 end.

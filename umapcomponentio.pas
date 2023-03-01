@@ -5,7 +5,7 @@ unit umapcomponentio;
 interface
 
 uses
-  Classes, SysUtils, RegExpr, umapcomponentpinned, umapcomponentbase;
+  Classes, SysUtils, RegExpr, ulogger, umapcomponentpinned, umapcomponentbase;
 
 type
   TMapComponentIO = class(TMapComponentPinned)
@@ -27,7 +27,7 @@ type
       constructor Create(const AName: string; ASize: TMCSize; APos: TMCPos; AParent: TMapComponentBase);
       destructor Destroy(); override;
       procedure Clear();
-      function GetMCDef(ALevel: byte; AIgnorePos: boolean = false): string; override;
+      function GetMCDef(ALevel: byte{; AIgnorePos: boolean = false}): string; override;
       procedure SetMCDef(ALevel: byte; const AValue: string); override;
   end;
 
@@ -38,57 +38,77 @@ implementation
 procedure TMapComponentIO.SetValue(AValue: boolean);
 const METHOD: string = 'TMapComponentIO.SetValue';
 begin
-  FLogger._s(METHOD);
+  FLogger._ss(METHOD);
+  try
+    FLogger._pe('AValue', TypeInfo(AValue), @AValue);
+    FLogger._se();
 
-  FValue := AValue;
+    FValue := AValue;
 
-  FLogger._e();
+  finally
+    FLogger._e();
+  end;
 end;
 
 function TMapComponentIO.GetValue(): boolean;
 const METHOD: string = 'TMapComponentIO.GetValue';
 begin
   FLogger._s(METHOD);
+  try
 
-  result := FValue;
+    result := FValue;
 
-  FLogger._e(result);
+  finally
+    FLogger._e(TypeInfo(result), @result);
+  end;
 end;
 
 (* PROTECTED *)
 
-function TMapComponentIO.GetMCDef(ALevel: byte; AIgnorePos: boolean = false): string;
+function TMapComponentIO.GetMCDef(ALevel: byte{; AIgnorePos: boolean = false}): string;
 const METHOD: string = 'TMapComponentIO.GetMCDef';
 begin
-  FLogger._s(METHOD);
+  FLogger._ss(METHOD);
+  try
+    FLogger._pe('ALevel', TypeInfo(ALevel), @ALevel);
+//    FLogger._pe('AIgnorePos', TypeInfo(AIgnorePos), @AIgnorePos);
+    FLogger._se();
 
-  result := inherited GetMCDef(ALevel, AIgnorePos);
-  result := result + Format(#13#10'%svalue="%d"', [LevelStr(ALevel),Integer(FValue)]);
+    result := inherited GetMCDef(ALevel{, AIgnorePos});
+    result := result + Format(#13#10'%svalue="%d"', [LevelStr(ALevel),Integer(FValue)]);
 
-  FLogger._e(result);
+  finally
+    FLogger._e(TypeInfo(result), @result);
+  end;
 end;
 
 procedure TMapComponentIO.SetMCDef(ALevel: byte; const AValue: string);
 const METHOD: string = 'TMapComponentIO.SetMCDef';
 var re: TRegExpr;
 begin
-  FLogger._s(METHOD);
-
-  inherited SetMCDef(ALevel, AValue);
-
-  re := TRegExpr.Create;
-  re.ModifierM := true;
+  FLogger._ss(METHOD);
   try
-    re.Expression := LevelPrefix(ALevel)+'value="([^"]+)"';
-    if re.Exec(AValue) then
-    begin
-      FValue := (re.Match[1] <> '0');
-    end;
-  finally
-    re.Free;
-  end;
+    FLogger._pe('ALevel', TypeInfo(ALevel), @ALevel);
+    FLogger._pe('AValue', TypeInfo(AValue), @AValue);
+    FLogger._se();
 
-  FLogger._e();
+    inherited SetMCDef(ALevel, AValue);
+
+    re := TRegExpr.Create;
+    re.ModifierM := true;
+    try
+      re.Expression := LevelPrefix(ALevel)+'value="([^"]+)"';
+      if re.Exec(AValue) then
+      begin
+        FValue := (re.Match[1] <> '0');
+      end;
+    finally
+      re.Free;
+    end;
+
+  finally
+    FLogger._e();
+  end;
 end;
 
 (* PUBLIC *)
@@ -109,10 +129,13 @@ procedure TMapComponentIO.Clear();
 const METHOD: string = 'TMapComponentIO.Clear';
 begin
   FLogger._s(METHOD);
+  try
 
-  FValue := false;
+    FValue := false;
 
-  FLogger._e();
+  finally
+    FLogger._e();
+  end;
 end;
 
 end.

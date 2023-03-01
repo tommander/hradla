@@ -5,7 +5,7 @@ unit umapcomponentwire;
 interface
 
 uses
-  Classes, SysUtils, Graphics, RegExpr, umapcomponentpinned, umapcomponentbase;
+  Classes, SysUtils, Graphics, RegExpr, ulogger, umapcomponentpinned, umapcomponentbase;
 
 type
   TMCPinConnection = record
@@ -28,13 +28,13 @@ type
       destructor Destroy(); override;
       procedure Clear();
       procedure Draw(ACanvas: TCanvas; ARect: TRect; AStyle: TMCDrawStyle); override;
-      procedure Tick(ANeighbourField: TMCPos);
-      function GetMCDef(ALevel: byte; AIgnorePos: boolean = false): string; override;
+      procedure Tick(APin: integer);
+      function GetMCDef(ALevel: byte{; AIgnorePos: boolean = false}): string; override;
       procedure SetMCDef(ALevel: byte; const AValue: string); override;
       procedure Connect(APinA, APinB: integer);
       procedure Disconnect(APinA, APinB: integer);
       function Connected(APinA, APinB: integer): integer;
-      function ConnectsTo(APin: integer): integer;
+      function HasConnection(APin: integer): boolean;
 
   end;
 
@@ -42,71 +42,60 @@ implementation
 
 (* PROTECTED *)
 
-function TMapComponentWire.GetMCDef(ALevel: byte; AIgnorePos: boolean = false): string;
+function TMapComponentWire.GetMCDef(ALevel: byte{; AIgnorePos: boolean = false}): string;
 const METHOD: string = 'TMapComponentWire.GetMCDef';
 var i: integer;
 begin
-  FLogger._s(METHOD);
+  FLogger._ss(METHOD);
+  try
+    FLogger._pe('ALevel', TypeInfo(ALevel), @ALevel);
+//    FLogger._pe('AIgnorePos', TypeInfo(AIgnorePos), @AIgnorePos);
+    FLogger._se();
 
-  result := inherited GetMCDef(ALevel, AIgnorePos);
-  result := result + Format(#13#10'%spinconns="%d"', [LevelStr(ALevel),Length(FPinConnections)]);
-  for i := Low(FPinConnections) to High(FPinConnections) do
-  begin
-    result := result + Format(#13#10'%spinconn="%d,%d,%d"', [LevelStr(ALevel),i, FPinConnections[i].PinA, FPinConnections[i].PinB]);
+    result := inherited GetMCDef(ALevel{, AIgnorePos});
+    for i := Low(FPinConnections) to High(FPinConnections) do
+    begin
+      result := result + Format(#13#10'%spinconn="%d,%d,%d"', [LevelStr(ALevel),i, FPinConnections[i].PinA, FPinConnections[i].PinB]);
+    end;
+
+  finally
+    FLogger._e(TypeInfo(result), @result);
   end;
-
-  FLogger._e();
 end;
 
 procedure TMapComponentWire.SetMCDef(ALevel: byte; const AValue: string);
 const METHOD: string = 'TMapComponentWire.SetMCDef';
 var re: TRegExpr;
-    i,ii,intA,intB: integer;
+    intA,intB: integer;
 begin
-  FLogger._s(METHOD);
-
-  inherited SetMCDef(ALevel, AValue);
-
-  re := TRegExpr.Create();
-  re.ModifierM := true;
+  FLogger._ss(METHOD);
   try
-    re.Expression := LevelPrefix(ALevel)+'pinconns="([^"]+)"';
-    if re.Exec(AValue) then
-    begin
-      i := StrToIntDef(re.Match[1], 0);
-      if i >= 0 then
-      begin
-        SetLength(FPinConnections, i);
-        for ii := Low(FPinConnections) to High(FPinConnections) do
-        begin
-          FPinConnections[ii].PinA := -1;
-          FPinConnections[ii].PinB := -1;
-        end;
-      end;
+    FLogger._pe('ALevel', TypeInfo(ALevel), @ALevel);
+    FLogger._pe('AValue', TypeInfo(AValue), @AValue);
+    FLogger._se();
 
+    inherited SetMCDef(ALevel, AValue);
+
+    re := TRegExpr.Create();
+    re.ModifierM := true;
+    try
       re.Expression := LevelPrefix(ALevel)+'pinconn="([^,]+),([^,]+),([^"]+)"';
       if re.Exec(AValue) then
       begin
         repeat
-          i := StrToIntDef(re.Match[1], 0);
           intA := StrToIntDef(re.Match[2], 0);
           intB := StrToIntDef(re.Match[3], 0);
-          if (i >= Low(FPinConnections)) and (i <= High(FPinConnections)) and
-             (intA >= PinLow()) and (intA <= PinHigh()) and
-             (intB >= PinLow()) and (intB <= PinHigh()) then
-          begin
-            FPinConnections[i].PinA := intA;
-            FPinConnections[i].PinB := intB;
-          end;
+          Connect(intA,intB);
         until
           not re.ExecNext;
       end;
+    finally
+      re.Free;
     end;
-  finally
-    re.Free;
-  end;
 
-  FLogger._e();
+  finally
+    FLogger._e();
+  end;
 end;
 
 (* PUBLIC *)
@@ -127,10 +116,13 @@ procedure TMapComponentWire.Clear();
 const METHOD: string = 'TMapComponentWire.Clear';
 begin
   FLogger._s(METHOD);
+  try
 
-  SetLength(FPinConnections, 0);
+    SetLength(FPinConnections, 0);
 
-  FLogger._e();
+  finally
+    FLogger._e();
+  end;
 end;
 
 procedure TMapComponentWire.Draw(ACanvas: TCanvas; ARect: TRect; AStyle: TMCDrawStyle);
@@ -138,130 +130,174 @@ const METHOD: string = 'TMapComponentWire.Draw';
 var i: integer;
     rctA,rctB: TRect;
 begin
-  FLogger._s(METHOD);
+  FLogger._ss(METHOD);
+  try
+    FLogger._pe('ACanvas', TypeInfo(ACanvas), @ACanvas);
+    FLogger._pe('ARect', TypeInfo(ARect), @ARect);
+    FLogger._pe('AStyle', TypeInfo(AStyle), @AStyle);
+    FLogger._se();
 
-  inherited Draw(ACanvas, ARect, AStyle);
-  SetPen(ACanvas);
-  if Length(FPinConnections) = 0 then
-  begin
-    ACanvas.MoveTo(ARect.Left, ARect.Top);
-    ACanvas.LineTo(ARect.Right, ARect.Bottom);
-    ACanvas.MoveTo(ARect.Right, ARect.Top);
-    ACanvas.LineTo(ARect.Left, ARect.Bottom);
-  end
-  else
-  begin
-    for i := Low(FPinConnections) to High(FPinConnections) do
+    inherited Draw(ACanvas, ARect, AStyle);
+    SetPen(ACanvas);
+    if Length(FPinConnections) = 0 then
     begin
-      rctA := GetPinRect(FPinConnections[i].PinA, ARect);
-      rctB := GetPinRect(FPinConnections[i].PinB, ARect);
-      ACanvas.MoveTo(rctA.Left+(rctA.Width div 2), rctA.Top+(rctA.Height div 2));
-      ACanvas.LineTo(rctB.Left+(rctB.Width div 2), rctB.Top+(rctB.Height div 2));
+      ACanvas.MoveTo(ARect.Left, ARect.Top);
+      ACanvas.LineTo(ARect.Right, ARect.Bottom);
+      ACanvas.MoveTo(ARect.Right, ARect.Top);
+      ACanvas.LineTo(ARect.Left, ARect.Bottom);
+    end
+    else
+    begin
+      for i := Low(FPinConnections) to High(FPinConnections) do
+      begin
+        rctA := GetPinRect(FPinConnections[i].PinA, ARect);
+        rctB := GetPinRect(FPinConnections[i].PinB, ARect);
+        ACanvas.MoveTo(rctA.Left+(rctA.Width div 2), rctA.Top+(rctA.Height div 2));
+        ACanvas.LineTo(rctB.Left+(rctB.Width div 2), rctB.Top+(rctB.Height div 2));
+      end;
     end;
-  end;
 
-  FLogger._e();
+  finally
+    FLogger._e();
+  end;
 end;
 
-procedure TMapComponentWire.Tick(ANeighbourField: TMCPos);
+procedure TMapComponentWire.Tick(APin: integer);
 const METHOD: string = 'TMapComponentWire.Tick';
-var i,ii: integer;
+var ii: integer;
 begin
-  FLogger._s(METHOD);
+  FLogger._ss(METHOD);
+  try
+//    FLogger._pe('ANeighbourField', TypeInfo(ANeighbourField), @ANeighbourField);
+    FLogger._pe('APin', TypeInfo(APin), @APin);
+    FLogger._se();
 
-  i := GetPinIndexFromNeighbourField(ANeighbourField);
-  ii := ConnectsTo(i);
-  if ii > -1 then
-  begin
-    PinValue[ii] := PinValue[i];
-    Parent.RequestTick(GetPinField(ii),GetPinNeighbourField(ii));
+//    i := GetPinIndexFromNeighbourField(ANeighbourField);
+    for ii := Low(FPinConnections) to High(FPinConnections) do
+    begin
+      if FPinConnections[ii].PinA = APin then
+      begin
+        PinValue[FPinConnections[ii].PinB] := PinValue[APin];
+        Parent.RequestTick(GetPinField(FPinConnections[ii].PinB),GetPinNeighbourField(FPinConnections[ii].PinB));
+      end
+      else if FPinConnections[ii].PinB = APin then
+      begin
+        PinValue[FPinConnections[ii].PinA] := PinValue[APin];
+        Parent.RequestTick(GetPinField(FPinConnections[ii].PinA),GetPinNeighbourField(FPinConnections[ii].PinA));
+      end;
+    end;
+
+  finally
+    FLogger._e();
   end;
-
-  FLogger._e();
 end;
 
 procedure TMapComponentWire.Connect(APinA, APinB: integer);
 const METHOD: string = 'TMapComponentWire.Connect';
 begin
-  FLogger._s(METHOD);
+  FLogger._ss(METHOD);
+  try
+    FLogger._pe('APinA', TypeInfo(APinA), @APinA);
+    FLogger._pe('APinB', TypeInfo(APinB), @APinB);
+    FLogger._se();
 
-  if Connected(APinA,APinB) > -1 then
-  begin
+    if Connected(APinA,APinB) > -1 then
+    begin
+      FLogger._(ltInfo, 'Pins are already connected.');
+      Exit;
+    end;
+    SetLength(FPinConnections, Length(FPinConnections)+1);
+    FPinConnections[High(FPinConnections)].PinA := APinA;
+    FPinConnections[High(FPinConnections)].PinB := APinB;
+    PinActive[APinA] := true;
+    PinActive[APinB] := true;
+
+  finally
     FLogger._e();
-    Exit;
   end;
-  SetLength(FPinConnections, Length(FPinConnections)+1);
-  FPinConnections[High(FPinConnections)].PinA := APinA;
-  FPinConnections[High(FPinConnections)].PinB := APinB;
-  PinActive[APinA] := true;
-  PinActive[APinB] := true;
-
-  FLogger._e();
 end;
 
 procedure TMapComponentWire.Disconnect(APinA, APinB: integer);
 const METHOD: string = 'TMapComponentWire.Disconnect';
 var i: integer;
 begin
-  FLogger._s(METHOD);
+  FLogger._ss(METHOD);
+  try
+    FLogger._pe('APinA', TypeInfo(APinA), @APinA);
+    FLogger._pe('APinB', TypeInfo(APinB), @APinB);
+    FLogger._se();
 
-  repeat
-    i := Connected(APinA, APinB);
-    if (i >= Low(FPinConnections)) and (i <= High(FPinConnections)) then
-    begin
-      FPinConnections[i].PinA := -1;
-      FPinConnections[i].PinB := -1;
-    end;
-  until
-    i = -1;
-  PinActive[APinA] := (ConnectsTo(APinA) > -1);
-  PinActive[APinB] := (ConnectsTo(APinB) > -1);
+    repeat
+      i := Connected(APinA, APinB);
+      if (i >= Low(FPinConnections)) and (i <= High(FPinConnections)) then
+      begin
+        FPinConnections[i].PinA := -1;
+        FPinConnections[i].PinB := -1;
+      end;
+    until
+      i = -1;
 
-  FLogger._e();
+    PinActive[APinA] := HasConnection(APinA);
+    PinActive[APinB] := HasConnection(APinB);
+
+  finally
+    FLogger._e();
+  end;
 end;
 
 function TMapComponentWire.Connected(APinA, APinB: integer): integer;
 const METHOD: string = 'TMapComponentWire.Connected';
 var i: integer;
 begin
-  FLogger._s(METHOD);
+  FLogger._ss(METHOD);
+  try
+    FLogger._pe('APinA', TypeInfo(APinA), @APinA);
+    FLogger._pe('APinB', TypeInfo(APinB), @APinB);
+    FLogger._se();
 
-  result := -1;
-  for i := Low(FPinConnections) to High(FPinConnections) do
-  begin
-    if ((FPinConnections[i].PinA = APinA) and (FPinConnections[i].PinB = APinB)) or
-       ((FPinConnections[i].PinA = APinB) and (FPinConnections[i].PinB = APinA)) then
+    result := -1;
+    for i := Low(FPinConnections) to High(FPinConnections) do
     begin
-      result := i;
-      break;
+      if ((FPinConnections[i].PinA = APinA) and (FPinConnections[i].PinB = APinB)) or
+         ((FPinConnections[i].PinA = APinB) and (FPinConnections[i].PinB = APinA)) then
+      begin
+        result := i;
+        break;
+      end;
     end;
-  end;
 
-  FLogger._e(result);
+  finally
+    FLogger._e(TypeInfo(result), @result);
+  end;
 end;
 
-function TMapComponentWire.ConnectsTo(APin: integer): integer;
-const METHOD: string = 'TMapComponentWire.ConnectsTo';
+function TMapComponentWire.HasConnection(APin: integer): boolean;
+const METHOD: string = 'TMapComponentWire.HasConnection';
 var i: integer;
 begin
-  FLogger._s(METHOD);
+  FLogger._ss(METHOD);
+  try
+    FLogger._pe('APin', TypeInfo(APin), @APin);
+    FLogger._se();
 
-  result := -1;
-  for i := Low(FPinConnections) to High(FPinConnections) do
-  begin
-    if FPinConnections[i].PinA = APin then
+    result := false;
+    for i := Low(FPinConnections) to High(FPinConnections) do
     begin
-      result := FPinConnections[i].PinB;
-      break;
+      if FPinConnections[i].PinA = APin then
+      begin
+        result := true;
+        break;
+      end;
+      if FPinConnections[i].PinB = APin then
+      begin
+        result := true;
+        break;
+      end;
     end;
-    if FPinConnections[i].PinB = APin then
-    begin
-      result := FPinConnections[i].PinA;
-      break;
-    end;
+
+  finally
+    FLogger._e(TypeInfo(result), @result);
   end;
-
-  FLogger._e(result);
 end;
 
 end.

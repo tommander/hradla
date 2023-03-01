@@ -1,7 +1,7 @@
 object fMCDef: TfMCDef
-  Left = 1844
+  Left = 2900
   Height = 520
-  Top = 208
+  Top = 461
   Width = 653
   Caption = 'fMCDef'
   ClientHeight = 520
@@ -20,7 +20,7 @@ object fMCDef: TfMCDef
     ParentColor = False
     ParentFont = False
     TabOrder = 0
-    Gutter.Width = 57
+    Gutter.Width = 65
     Gutter.MouseActions = <>
     RightGutter.Width = 0
     RightGutter.MouseActions = <>
@@ -450,7 +450,127 @@ object fMCDef: TfMCDef
     MouseTextActions = <>
     MouseSelActions = <>
     Lines.Strings = (
-      'SynEdit1'
+      'name="3:map"'
+      'size="5,3"'
+      'map="0,0,0"'
+      'map="0,1,1"'
+      'map="1,0,5"'
+      'map="1,1,6"'
+      'map="1,2,8"'
+      'map="2,0,2"'
+      'map="2,1,7"'
+      'map="2,2,9"'
+      'map="3,0,11"'
+      'map="3,1,4"'
+      'map="3,2,10"'
+      'map="4,1,12"'
+      'subs="13"'
+      'sub="0,65,1"'
+      ' name="2:i0"'
+      ' size="1,1"'
+      ' pos="0,0"'
+      ' pin="2,1,0"'
+      ' value="0"'
+      'sub="1,65,1"'
+      ' name="2:i1"'
+      ' size="1,1"'
+      ' pos="0,1"'
+      ' pin="2,1,0"'
+      ' value="0"'
+      'sub="2,128,4"'
+      ' name="2:g0"'
+      ' size="1,1"'
+      ' pos="2,0"'
+      ' pin="0,1,0"'
+      ' pin="1,1,0"'
+      ' pin="2,1,0"'
+      ' gate="7"'
+      ' pini1="0"'
+      ' pini2="1"'
+      ' pino1="2"'
+      'sub="4,128,4"'
+      ' name="2:g1"'
+      ' size="1,1"'
+      ' pos="3,1"'
+      ' pin="0,1,0"'
+      ' pin="1,1,0"'
+      ' pin="2,1,0"'
+      ' gate="3"'
+      ' pini1="0"'
+      ' pini2="1"'
+      ' pino1="2"'
+      'sub="5,132,5"'
+      ' name="2:w0"'
+      ' size="1,1"'
+      ' pos="1,0"'
+      ' pin="0,1,0"'
+      ' pin="1,1,0"'
+      ' pin="2,1,0"'
+      ' pinconns="2"'
+      ' pinconn="0,0,2"'
+      ' pinconn="1,0,1"'
+      'sub="6,166,5"'
+      ' name="2:w1"'
+      ' size="1,1"'
+      ' pos="1,1"'
+      ' pin="0,1,0"'
+      ' pin="1,1,0"'
+      ' pin="2,1,0"'
+      ' pin="3,1,0"'
+      ' pinconns="2"'
+      ' pinconn="0,0,2"'
+      ' pinconn="1,1,3"'
+      'sub="7,151,5"'
+      ' name="2:w2"'
+      ' size="1,1"'
+      ' pos="2,1"'
+      ' pin="0,1,0"'
+      ' pin="2,1,0"'
+      ' pin="3,1,0"'
+      ' pinconns="3"'
+      ' pinconn="0,0,3"'
+      ' pinconn="2,0,2"'
+      'sub="8,100,5"'
+      ' name="2:w3"'
+      ' size="1,1"'
+      ' pos="1,2"'
+      ' pin="2,1,0"'
+      ' pin="3,1,0"'
+      ' pinconns="1"'
+      ' pinconn="0,3,2"'
+      'sub="9,100,5"'
+      ' name="2:w4"'
+      ' size="1,1"'
+      ' pos="2,2"'
+      ' pin="0,1,0"'
+      ' pin="2,1,0"'
+      ' pinconns="1"'
+      ' pinconn="0,0,2"'
+      'sub="10,100,5"'
+      ' name="2:w5"'
+      ' size="1,1"'
+      ' pos="3,2"'
+      ' pin="0,1,0"'
+      ' pin="3,1,0"'
+      ' pinconns="1"'
+      ' pinconn="0,0,3"'
+      'sub="11,65,2"'
+      ' name="2:o0"'
+      ' size="1,1"'
+      ' pos="3,0"'
+      ' pin="0,1,0"'
+      ' value="0"'
+      'sub="12,65,2"'
+      ' name="2:o1"'
+      ' size="1,1"'
+      ' pos="4,1"'
+      ' pin="0,1,0"'
+      ' value="0"'
+      'ioconns="4"'
+      'ioconn="0,0,0"'
+      'ioconn="1,1,1"'
+      'ioconn="2,9,12"'
+      'ioconn="3,10,11"'
     )
     VisibleSpecialChars = [vscSpace, vscTabAtLast]
     SelectedColor.BackPriority = 50
@@ -477,7 +597,7 @@ object fMCDef: TfMCDef
         MouseActions = <>
       end
       object SynGutterLineNumber1: TSynGutterLineNumber
-        Width = 17
+        Width = 25
         MouseActions = <>
         MarkupInfo.Background = clBtnFace
         MarkupInfo.Foreground = clNone
@@ -592,6 +712,27 @@ object fMCDef: TfMCDef
     Comments = []
     DetectPreprocessor = False
     IdentifierChars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz'
+    KeyWords.Strings = (
+      'GATE'
+      'IOCONN'
+      'MAP'
+      'NAME'
+      'PIN'
+      'PINCONN'
+      'PINI1'
+      'PINI2'
+      'PINO1'
+      'POS'
+      'SIZE'
+      'SUB'
+      'SUBS'
+      'VALUE'
+    )
+    Objects.Strings = (
+      'MAP'
+      'SUB'
+      'SUBS'
+    )
     Markup = False
     Entity = False
     DollarVariables = False

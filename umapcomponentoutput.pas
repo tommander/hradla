@@ -5,7 +5,7 @@ unit umapcomponentoutput;
 interface
 
 uses
-  Classes, SysUtils, Graphics, umapcomponentio, umapcomponentbase;
+  Classes, SysUtils, Graphics, ulogger, umapcomponentio, umapcomponentbase;
 
 type
   TMapComponentOutput = class(TMapComponentIO)
@@ -41,35 +41,45 @@ procedure TMapComponentOutput.Clear();
 const METHOD: string = 'TMapComponentOutput.Clear';
 begin
   FLogger._s(METHOD);
+  try
 
-  //
+    //
 
-  FLogger._e();
+  finally
+    FLogger._e();
+  end;
 end;
 
 procedure TMapComponentOutput.Draw(ACanvas: TCanvas; ARect: TRect; AStyle: TMCDrawStyle);
 const METHOD: string = 'TMapComponentOutput.Draw';
 begin
-  FLogger._s(METHOD);
+  FLogger._ss(METHOD);
+  try
+    FLogger._pe('ACanvas', TypeInfo(ACanvas), @ACanvas);
+    FLogger._pe('ARect', TypeInfo(ARect), @ARect);
+    FLogger._pe('AStyle', TypeInfo(AStyle), @AStyle);
+    FLogger._se();
 
-  inherited Draw(ACanvas, ARect, AStyle);
-  SetPen(ACanvas);
-  if Value then
-  begin
-    SetBrush(ACanvas, clAqua);
-  end
-  else
-  begin
-    SetBrush(ACanvas, clTeal);
+    inherited Draw(ACanvas, ARect, AStyle);
+    SetPen(ACanvas);
+    if Value then
+    begin
+      SetBrush(ACanvas, clAqua);
+    end
+    else
+    begin
+      SetBrush(ACanvas, clTeal);
+    end;
+    ACanvas.Ellipse(
+      ARect.Left + (ARect.Width div 3),
+      ARect.Top + (ARect.Height div 3),
+      ARect.Left + ((ARect.Width div 3)*2),
+      ARect.Top + ((ARect.Height div 3)*2)
+    );
+
+  finally
+    FLogger._e();
   end;
-  ACanvas.Ellipse(
-    ARect.Left + (ARect.Width div 3),
-    ARect.Top + (ARect.Height div 3),
-    ARect.Left + ((ARect.Width div 3)*2),
-    ARect.Top + ((ARect.Height div 3)*2)
-  );
-
-  FLogger._e();
 end;
 
 procedure TMapComponentOutput.Tick();
@@ -77,17 +87,20 @@ const METHOD: string = 'TMapComponentOutput.Tick';
 var i: integer;
 begin
   FLogger._s(METHOD);
+  try
 
-  for i := PinLow() to PinHigh() do
-  begin
-    if PinActive[i] then
+    for i := PinLow() to PinHigh() do
     begin
-      Value := PinValue[i];
-      break;
+      if PinActive[i] then
+      begin
+        Value := PinValue[i];
+        break;
+      end;
     end;
-  end;
 
-  FLogger._e();
+  finally
+    FLogger._e();
+  end;
 end;
 
 end.

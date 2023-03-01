@@ -14,7 +14,7 @@ const
   intMapHeight: word = 10;
 
 type
-  TMapAction = (maSelect,maDelete,maAddStd,maAddCust);
+  TMapAction = (maSelect,maDelete,maAdd);
 
   { TfMainForm }
 
@@ -27,8 +27,9 @@ type
     BitBtn14: TBitBtn;
     BitBtn15: TBitBtn;
     BitBtn16: TBitBtn;
+    BitBtn17: TBitBtn;
+    BitBtn18: TBitBtn;
     BitBtn2: TBitBtn;
-    BitBtn3: TBitBtn;
     BitBtn4: TBitBtn;
     BitBtn5: TBitBtn;
     BitBtn6: TBitBtn;
@@ -47,6 +48,7 @@ type
     Edit2: TEdit;
     Image1: TImage;
     ImageList1: TImageList;
+    ImageList2: TImageList;
     imgMain: TImage;
     Label1: TLabel;
     Label10: TLabel;
@@ -63,17 +65,42 @@ type
     Label20: TLabel;
     Label21: TLabel;
     Label22: TLabel;
+    Label23: TLabel;
+    Label24: TLabel;
+    Label25: TLabel;
+    Label26: TLabel;
+    Label27: TLabel;
+    Label28: TLabel;
+    Label29: TLabel;
     Label3: TLabel;
+    Label30: TLabel;
+    Label31: TLabel;
+    Label32: TLabel;
+    Label33: TLabel;
+    Label34: TLabel;
+    Label35: TLabel;
+    Label36: TLabel;
+    Label37: TLabel;
+    Label38: TLabel;
+    Label39: TLabel;
     Label4: TLabel;
+    Label40: TLabel;
+    Label41: TLabel;
     Label5: TLabel;
     Label6: TLabel;
     Label7: TLabel;
     Label8: TLabel;
     Label9: TLabel;
-    ListView1: TListView;
     ListView2: TListView;
+    dlgOpen: TOpenDialog;
     PageControl1: TPageControl;
     Panel1: TPanel;
+    Panel10: TPanel;
+    Panel11: TPanel;
+    Panel12: TPanel;
+    Panel13: TPanel;
+    Panel14: TPanel;
+    Panel15: TPanel;
     Panel2: TPanel;
     Panel3: TPanel;
     Panel4: TPanel;
@@ -86,18 +113,25 @@ type
     pnlT: TPanel;
     pnlL: TPanel;
     pnlB: TPanel;
+    ScrollBox1: TScrollBox;
+    ScrollBox2: TScrollBox;
+    ScrollBox3: TScrollBox;
+    ScrollBox4: TScrollBox;
+    ScrollBox5: TScrollBox;
     SpinEdit1: TSpinEdit;
     SpinEdit2: TSpinEdit;
     splR: TSplitter;
     splL: TSplitter;
     splT: TSplitter;
     splB: TSplitter;
+    Timer2: TTimer;
     tsWire: TTabSheet;
     tsInput: TTabSheet;
     tsOutput: TTabSheet;
     tsGate: TTabSheet;
     tsMap: TTabSheet;
     Timer1: TTimer;
+    (* EVENTS *)
     procedure BitBtn10Click(Sender: TObject);
     procedure BitBtn11Click(Sender: TObject);
     procedure BitBtn12Click(Sender: TObject);
@@ -105,9 +139,10 @@ type
     procedure BitBtn14Click(Sender: TObject);
     procedure BitBtn15Click(Sender: TObject);
     procedure BitBtn16Click(Sender: TObject);
+    procedure BitBtn17Click(Sender: TObject);
+    procedure BitBtn18Click(Sender: TObject);
     procedure BitBtn1Click(Sender: TObject);
     procedure BitBtn2Click(Sender: TObject);
-    procedure BitBtn3Click(Sender: TObject);
     procedure BitBtn4Click(Sender: TObject);
     procedure BitBtn5Click(Sender: TObject);
     procedure BitBtn6Click(Sender: TObject);
@@ -118,13 +153,15 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure imgMainMouseMove(Sender: TObject; Shift: TShiftState; X,
       Y: Integer);
-    procedure DrawMap(AStyle: TMCDrawMapStyle);
     procedure imgMainMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure imgMainResize(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
-    procedure UpdateSelection();
+    procedure Timer2Timer(Sender: TObject);
+    (* MINE *)
+    procedure DrawMap(AStyle: TMCDrawMapStyle);
     procedure ToggleInput();
+    procedure UpdateSelection();
     procedure ListCustmaps();
   private
     var map: TMapComponentMap;
@@ -147,7 +184,7 @@ implementation
 
 procedure TfMainForm.DrawMap(AStyle: TMCDrawMapStyle);
 begin
-  map.Draw(imgMain.Canvas, TRect.Create(0, 0, imgMain.Width, imgMain.Height), AStyle);
+  map.Draw(imgMain.Canvas, TRect.Create(0, 0, imgMain.Width, imgMain.Height), AStyle, mdsNormal);
 end;
 
 procedure TfMainForm.ToggleInput();
@@ -191,7 +228,6 @@ begin
     Label2.Caption := 'Wire';
     PageControl1.ActivePageIndex := tsWire.PageIndex;
     Label11.Caption := '';
-    Label19.Caption := '';
     ComboBox1.Items.Clear;
     ComboBox2.Items.Clear;
     for i := TMapComponentWire(cmp).PinLow() to TMapComponentWire(cmp).PinHigh() do
@@ -202,7 +238,7 @@ begin
       begin
         Label11.Caption := Label11.Caption + #13#10;
       end;
-      Label11.Caption := Label11.Caption + Format('#%d'#9'%s'#9'%s'#9'%d', [i, BoolToStr(TMapComponentWire(cmp).PinActive[i], 'active', 'inactive'), BoolToStr(TMapComponentWire(cmp).PinValue[i], 'true', 'false'), TMapComponentWire(cmp).ConnectsTo(i)]);
+      Label11.Caption := Label11.Caption + Format('#%d'#9'%s'#9'%s'#9'%s', [i, BoolToStr(TMapComponentWire(cmp).PinActive[i], 'active', 'inactive'), BoolToStr(TMapComponentWire(cmp).PinValue[i], 'true', 'false'), BoolToStr(TMapComponentWire(cmp).HasConnection(i), 'yes', 'no')]);
     end;
   end
   else if cmp is TMapComponentInput then
@@ -274,6 +310,8 @@ begin
     PageControl1.ActivePageIndex := tsMap.PageIndex;
     Label21.Caption := IntToStr(TMapComponentMap(cmp).SubcomponentCount());
     Label22.Caption := '';
+    Label29.Caption := IntToStr(TMapComponentMap(cmp).IOConnectionCount());
+    Label30.Caption := '';
     ComboBox7.Items.Clear;
     for i := TMapComponentMap(cmp).PinLow() to TMapComponentMap(cmp).PinHigh() do
     begin
@@ -293,9 +331,17 @@ begin
       end
       else
       begin
-        Label22.Caption := Label22.Caption + Format('#%d'#9'%s'#9'%s', [i, TMapComponentMap(cmp).Subcomponent(i).Name, MCTypeIntToStr(MCTypeInt(TMapComponentMap(cmp).Subcomponent(i)))]);
+        Label22.Caption := Label22.Caption + Format('#%d'#9'%s'#9'%s'#9'[%d;%d][%d;%d]', [i, TMapComponentMap(cmp).Subcomponent(i).Name, MCTypeIntToStr(MCTypeInt(TMapComponentMap(cmp).Subcomponent(i))), TMapComponentMap(cmp).Subcomponent(i).Pos.x, TMapComponentMap(cmp).Subcomponent(i).Pos.y, TMapComponentMap(cmp).Subcomponent(i).Size.w, TMapComponentMap(cmp).Subcomponent(i).Size.h]);
         ComboBox8.Items.Add('%s (%s)', [TMapComponentMap(cmp).Subcomponent(i).Name, MCTypeIntToStr(MCTypeInt(TMapComponentMap(cmp).Subcomponent(i)))]);
       end;
+    end;
+    for i := 0 to TMapComponentMap(cmp).IOConnectionCount()-1 do
+    begin
+      if Label30.Caption <> '' then
+      begin
+        Label30.Caption := Label30.Caption + #13#10;
+      end;
+      Label30.Caption := Label30.Caption + Format('#%d'#9'C %d'#9'P %d', [i, TMapComponentMap(cmp).IOConnection(i).intCmp, TMapComponentMap(cmp).IOConnection(i).intPin]);
     end;
   end;
 end;
@@ -331,13 +377,13 @@ begin
   end;
 end;
 
-
-
 (* EVENTS *)
 
 procedure TfMainForm.imgMainMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 var sl: TStringList;
+    s,ss: string;
+    mcg: TMCGate;
 begin
   cmp := map.Subcomponent(map.SubcomponentByField(map.CursorPos));
 
@@ -361,24 +407,7 @@ begin
     Exit;
   end;
 
-  if act = maAddStd then
-  begin
-    if not Assigned(ListView1.Selected) then
-    begin
-      Exit;
-    end;
-    case ListView1.Selected.Index of
-      0: map.AddWire(map.CursorPos);
-      1: map.AddInput(map.CursorPos);
-      2: map.AddOutput(map.CursorPos);
-      3: map.AddGate(mcgNone, map.CursorPos);
-    end;
-    map.RedrawField := map.CursorPos;
-    DrawMap(mdmsRedraw);
-    Exit;
-  end;
-
-  if act = maAddCust then
+  if act = maAdd then
   begin
     if (not Assigned(ListView2.Selected)) or (ListView2.Selected.SubItems.Count = 0) or (not FileExists(ListView2.Selected.SubItems[0])) then
     begin
@@ -388,7 +417,68 @@ begin
     sl := TStringList.Create;
     try
       sl.LoadFromFile(ListView2.Selected.SubItems[0]);
-      map.AddMap(MCSize(0,0), map.CursorPos, sl.Text);
+      if (Length(sl.Text) >= 6) then
+      begin
+        s := copy(sl.Text, 1, 6);
+        if s = 'STD/WR' then
+        begin
+          map.AddWire(map.CursorPos);
+        end
+        else if s = 'STD/IN' then
+        begin
+          map.AddInput(map.CursorPos);
+        end
+        else if s = 'STD/OU' then
+        begin
+          map.AddOutput(map.CursorPos);
+        end
+        else if s = 'STD/GT' then
+        begin
+          mcg := mcgNone;
+          ss := '';
+          if Length(sl.Text) >= 9 then
+          begin
+            ss := copy(sl.Text, 7, 3);
+            if ss = '/BF' then
+            begin
+              mcg := mcgBuf;
+            end
+            else if ss = '/IN' then
+            begin
+              mcg := mcgInv;
+            end
+            else if ss = '/AD' then
+            begin
+              mcg := mcgAnd;
+            end
+            else if ss = '/ND' then
+            begin
+              mcg := mcgNand;
+            end
+            else if ss = '/OR' then
+            begin
+              mcg := mcgOr;
+            end
+            else if ss = '/NR' then
+            begin
+              mcg := mcgNor;
+            end
+            else if ss = '/XR' then
+            begin
+              mcg := mcgXor;
+            end
+            else if ss = '/XN' then
+            begin
+              mcg := mcgXnor;
+            end
+          end;
+          map.AddGate(mcg, map.CursorPos);
+        end
+        else
+        begin
+          map.AddMap(MCSize(0,0), map.CursorPos, sl.Text);
+        end;
+      end;
     finally
       sl.Free;
     end;
@@ -409,6 +499,38 @@ begin
   imgMain.Picture.Bitmap.SetSize(imgMain.Width,imgMain.Height);
   DrawMap(mdmsComplete);
   Timer1.Enabled := false;
+end;
+
+procedure TfMainForm.Timer2Timer(Sender: TObject);
+var intIL: integer;
+    strCmd: string;
+begin
+  intIL := map.InputLength();
+  strCmd := '';
+  if Length(Edit1.Text) > intIL then
+  begin
+    strCmd := copy(Edit1.Text, Length(Edit1.Text)-intIL+1, intIL);
+    Edit1.Text := copy(Edit1.Text, 1, Length(Edit1.Text)-intIL);
+  end
+  else
+  begin
+    strCmd := Edit1.Text;
+    Edit1.Text := '';
+    Timer2.Enabled := false;
+  end;
+
+  if not map.InputString(strCmd) then
+  begin
+    Timer2.Enabled := false;
+    showmessage('InputString failed');
+    Exit;
+  end;
+  BitBtn1.Click;
+  if Edit2.Text <> '' then
+  begin
+    Edit2.Text := Edit2.Text + ';';
+  end;
+  Edit2.Text := Edit2.Text + map.OutputString();
 end;
 
 procedure TfMainForm.FormCreate(Sender: TObject);
@@ -442,13 +564,11 @@ end;
 
 procedure TfMainForm.BitBtn10Click(Sender: TObject);
 begin
-  if not map.InputString(Edit1.Text) then
+  if not Timer2.Enabled then
   begin
-    showmessage('InputString failed');
-    Exit;
+    Edit2.Text := '';
   end;
-  BitBtn1.Click;
-  Edit2.Text := map.OutputString();
+  Timer2.Enabled := not Timer2.Enabled;
 end;
 
 procedure TfMainForm.BitBtn12Click(Sender: TObject);
@@ -461,9 +581,9 @@ end;
 
 procedure TfMainForm.BitBtn13Click(Sender: TObject);
 begin
-  act := maAddCust;
+  act := maAdd;
   Label1.Font.Color := clGreen;
-  Label1.Caption := 'ADD CUSTOM';
+  Label1.Caption := 'ADD';
   imgMain.Cursor := crDrag;
 end;
 
@@ -499,12 +619,36 @@ begin
   DrawMap(mdmsComplete);
 end;
 
-procedure TfMainForm.BitBtn3Click(Sender: TObject);
+procedure TfMainForm.BitBtn17Click(Sender: TObject);
+var strName: string;
 begin
-  act := maAddStd;
-  Label1.Font.Color := clGreen;
-  Label1.Caption := 'ADD STANDARD';
-  imgMain.Cursor := crDrag;
+  if not Assigned(cmp) then
+  begin
+    Exit;
+  end;
+
+  strName := cmp.Name;
+  if InputQuery('Component name', 'New name', strName) then
+  begin
+    cmp.Name := strName;
+  end;
+end;
+
+procedure TfMainForm.BitBtn18Click(Sender: TObject);
+var sl: TStringList;
+begin
+  if dlgOpen.Execute then
+  begin
+    BitBtn16.Click;
+    sl := TStringList.Create;
+    try
+      sl.LoadFromFile(dlgOpen.FileName);
+      map.SetMCDef(0, sl.Text);
+      DrawMap(mdmsComplete);
+    finally
+      sl.Free;
+    end;
+  end;
 end;
 
 procedure TfMainForm.BitBtn4Click(Sender: TObject);
@@ -568,7 +712,7 @@ end;
 
 procedure TfMainForm.BitBtn9Click(Sender: TObject);
 begin
-  fMCDef.SynEdit1.Lines.Text := map.GetMCDef(0,true);
+  fMCDef.SynEdit1.Lines.Text := map.GetMCDef(0);
   fMCDef.Show;
 end;
 

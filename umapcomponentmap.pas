@@ -22,8 +22,8 @@ type
     private
 
       var FSubcomponents: array of TMapComponentBase;
-      var FMap: array of array of integer;
-      var FIOConnections: array of TMCIOConnection;
+//      var FMap: array of array of integer;
+//      var FIOConnections: array of TMCIOConnection;
       var FCursorPos: TMCPos; //current position (updated on mouseover)
       var FCursorPosLast: TMCPos; //position since last selection (updated on click)
       var FCursorSize: TMCSize; //
@@ -57,10 +57,10 @@ type
       destructor Destroy(); override;
       procedure Clear(ABuildMap: boolean);
       procedure Zero();
-      procedure Draw(ACanvas: TCanvas; ARect: TRect; AStyle: TMCDrawMapStyle); reintroduce;
+      procedure Draw(ACanvas: TCanvas; ARect: TRect; AStyle: TMCDrawMapStyle; AFieldStyle: TMCDrawStyle); reintroduce;
       procedure Tick();
       procedure RequestTick(AFrom,ATo: TMCPos); override;
-      function GetMCDef(ALevel: byte; AIgnorePos: boolean = false): string; override;
+      function GetMCDef(ALevel: byte{; AIgnorePos: boolean = false}): string; override;
       procedure SetMCDef(ALevel: byte; const AValue: string); override;
 
       function AddWire(APos: TMCPos): integer;
@@ -76,10 +76,13 @@ type
       function SubcomponentCount(): integer;
 
       function InputString(const AString: string): boolean;
+      function InputLength(): integer;
       function OutputString(): string;
 
-      procedure AddIOConnection(APin,ACmp: integer);
+{      procedure AddIOConnection(APin,ACmp: integer);
       procedure RemoveIOConnection(APin,ACmp: integer);
+      function IOConnectionCount(): integer;
+      function IOConnection(AIndex: integer): TMCIOConnection;}
 
   end;
 
@@ -225,204 +228,267 @@ end;
 
 function TMapComponentMap.ReservePlace(APos: TMCPos; ASize: TMCSize; AExistingCmp: integer = -1; AMapEdit: boolean = true): boolean;
 const METHOD: string = 'TMapComponentMap.ReservePlace';
-var x,y: integer;
+var x,y,i: integer;
 begin
-  FLogger._s(METHOD);
+  FLogger._ss(METHOD);
+  try
+    FLogger._pe('APos', TypeInfo(APos), @APos);
+    FLogger._pe('ASize', TypeInfo(ASize), @ASize);
+    FLogger._pe('AExistingCmp', TypeInfo(AExistingCmp), @AExistingCmp);
+    FLogger._pe('AMapEdit', TypeInfo(AMapEdit), @AMapEdit);
+    FLogger._se();
 
-  result := false;
+    result := false;
 
-  for x := APos.x to APos.x+ASize.w-1 do
-  begin
-    if (x < Low(FMap)) or (x > High(FMap)) then
+    for i := Low(FSubcomponents) to High(FSubcomponents) do
     begin
-      FLogger._e(result);
-      Exit;
-    end;
-    for y := APos.y to APos.y+ASize.h-1 do
-    begin
-      if (y < Low(FMap[x])) or (y > High(FMap[x])) then
+      if (not Assigned(FSubcomponents[i])) or (i = AExistingCmp) then
       begin
-        FLogger._e(result);
-        Exit;
+        continue;
       end;
-      if (FMap[x][y] <> -1) and (FMap[x][y] <> AExistingCmp) then
+      if FSubcomponents[i].Contains(APos, ASize) then
       begin
-        FLogger._e(result);
         Exit;
       end;
     end;
-  end;
-
-  if AMapEdit then
-  begin
-    for x := APos.x to APos.x+ASize.w-1 do
+{    for x := APos.x to APos.x+ASize.w-1 do
     begin
+      if (x < Low(FMap)) or (x > High(FMap)) then
+      begin
+        FLogger._(ltInfo, 'Variable x=%d got out of bounds <%d;%d>', [x, Low(FMap), High(FMap)]);
+        Exit;
+      end;
       for y := APos.y to APos.y+ASize.h-1 do
       begin
-        FMap[x][y] := AExistingCmp;
+        if (y < Low(FMap[x])) or (y > High(FMap[x])) then
+        begin
+          FLogger._(ltInfo, 'Variable y=%d got out of bounds <%d;%d>', [y, Low(FMap[x]), High(FMap[x])]);
+          Exit;
+        end;
+        if (FMap[x][y] <> -1) and (FMap[x][y] <> AExistingCmp) then
+        begin
+          FLogger._(ltInfo, 'Field [%d;%d] is already reserved by component #%d.', [x,y,FMap[x][y]]);
+          Exit;
+        end;
+      end;
+    end;}
+
+{    if AMapEdit then
+    begin
+      for x := APos.x to APos.x+ASize.w-1 do
+      begin
+        for y := APos.y to APos.y+ASize.h-1 do
+        begin
+          FMap[x][y] := AExistingCmp;
+        end;
       end;
     end;
-  end;
+    end;}
 
-  result := true;
-  FLogger._e(result);
+    result := true;
+
+  finally
+    FLogger._e(TypeInfo(result), @result);
+  end;
 end;
 
 function TMapComponentMap.AddSubcomponent1(const APrefix: string): string;
 const METHOD: string = 'TMapComponentMap.AddSubcomponent1';
 var intName: integer;
 begin
-  FLogger._s(METHOD);
+  FLogger._ss(METHOD);
+  try
+    FLogger._pe('APrefix', TypeInfo(APrefix), @APrefix);
+    FLogger._se();
 
-  result := '';
-  SetLength(FSubcomponents, Length(FSubcomponents)+1);
-  intName := 0;
-  repeat
-    result := Format('%s%d', [APrefix, intName]);
-    Inc(intName);
-  until
-    SubcomponentByName(result) = -1;
+    result := '';
+    SetLength(FSubcomponents, Length(FSubcomponents)+1);
+    intName := 0;
+    repeat
+      result := Format('%s%d', [APrefix, intName]);
+      Inc(intName);
+    until
+      SubcomponentByName(result) = -1;
 
-  FLogger._e(result);
+  finally
+    FLogger._e(TypeInfo(result), @result);
+  end;
 end;
 
 function TMapComponentMap.AddSubcomponent2(APos: TMCPos): integer;
 const METHOD: string = 'TMapComponentMap.AddSubcomponent2';
 begin
-  FLogger._s(METHOD);
+  FLogger._ss(METHOD);
+  try
+    FLogger._pe('APos', TypeInfo(APos), @APos);
+    FLogger._se();
 
-  result := -1;
-  if ReservePlace(APos, FSubcomponents[High(FSubcomponents)].Size, High(FSubcomponents)) then
-  begin
-    result := High(FSubcomponents);
-  end
-  else
-  begin
-    FreeAndNil(FSubcomponents[High(FSubcomponents)]);
+    result := -1;
+    if ReservePlace(APos, FSubcomponents[High(FSubcomponents)].Size, High(FSubcomponents)) then
+    begin
+      result := High(FSubcomponents);
+    end
+    else
+    begin
+      FreeAndNil(FSubcomponents[High(FSubcomponents)]);
+    end;
+
+  finally
+    FLogger._e(TypeInfo(result), @result);
   end;
-
-  FLogger._e(result);
 end;
 
 function TMapComponentMap.GetCursorPos(): TMCPos;
 const METHOD: string = 'TMapComponentMap.GetCursorPos';
 begin
   FLogger._s(METHOD);
+  try
 
-  result := FCursorPos;
+    result := FCursorPos;
 
-  FLogger._e();
+  finally
+    FLogger._e(TypeInfo(result), @result);
+  end;
 end;
 
 procedure TMapComponentMap.SetCursorPos(AValue: TMCPos);
 const METHOD: string = 'TMapComponentMap.SetCursorPos';
 begin
-  FLogger._s(METHOD);
+  FLogger._ss(METHOD);
+  try
+    FLogger._pe('AValue', TypeInfo(AValue), @AValue);
+    FLogger._se();
 
-  FCursorPos := AValue;
+    FCursorPos := AValue;
 
-  FLogger._e();
+  finally
+    FLogger._e();
+  end;
 end;
 
 function TMapComponentMap.GetCursorSize(): TMCSize;
 const METHOD: string = 'TMapComponentMap.GetCursorSize';
 begin
   FLogger._s(METHOD);
+  try
 
-  result := FCursorSize;
+    result := FCursorSize;
 
-  FLogger._e();
+  finally
+    FLogger._e(TypeInfo(result), @result);
+  end;
 end;
 
 procedure TMapComponentMap.SetCursorSize(AValue: TMCSize);
 const METHOD: string = 'TMapComponentMap.SetCursorSize';
 begin
-  FLogger._s(METHOD);
+  FLogger._ss(METHOD);
+  try
+    FLogger._pe('AValue', TypeInfo(AValue), @AValue);
+    FLogger._se();
 
-  FCursorSize := AValue;
+    FCursorSize := AValue;
 
-  FLogger._e();
+  finally
+    FLogger._e();
+  end;
 end;
 
 function TMapComponentMap.GetCursorPosLast(): TMCPos;
 const METHOD: string = 'TMapComponentMap.GetCursorPosLast';
 begin
   FLogger._s(METHOD);
+  try
 
-  result := FCursorPosLast;
+    result := FCursorPosLast;
 
-  FLogger._e();
+  finally
+    FLogger._e(TypeInfo(result), @result);
+  end;
 end;
 
 function TMapComponentMap.GetCursorSizeLast(): TMCSize;
 const METHOD: string = 'TMapComponentMap.GetCursorSizeLast';
 begin
   FLogger._s(METHOD);
+  try
 
-  result := FCursorSizeLast;
+    result := FCursorSizeLast;
 
-  FLogger._e();
+  finally
+    FLogger._e(TypeInfo(result), @result);
+  end;
 end;
 
 procedure TMapComponentMap.SetRedrawField(AValue: TMCPos);
 const METHOD: string = '';
 begin
-  FLogger._s(METHOD);
+  FLogger._ss(METHOD);
+  try
+    FLogger._pe('AValue', TypeInfo(AValue), @AValue);
+    FLogger._se();
 
-  FRedrawField := AValue;
+    FRedrawField := AValue;
 
-  FLogger._e();
+  finally
+    FLogger._e();
+  end;
 end;
 
 (* PROTECTED *)
 
-function TMapComponentMap.GetMCDef(ALevel: byte; AIgnorePos: boolean = false): string;
+function TMapComponentMap.GetMCDef(ALevel: byte{; AIgnorePos: boolean = false}): string;
 const METHOD: string = 'TMapComponentMap.GetMCDef';
 var x,y: integer;
     s: string;
 begin
-  FLogger._s(METHOD);
+  FLogger._ss(METHOD);
+  try
+    FLogger._pe('ALevel', TypeInfo(ALevel), @ALevel);
+//    FLogger._pe('AIgnorePos', TypeInfo(AIgnorePos), @AIgnorePos);
+    FLogger._se();
 
-  result := inherited GetMCDef(ALevel, AIgnorePos);
+    result := inherited GetMCDef(ALevel{, AIgnorePos});
 
-//  result := result + Format(#13#10'maps="%d,%d"', [Size.w, Size.h]);
-  for x := Low(FMap) to High(FMap) do
-  begin
-    for y := Low(FMap[x]) to High(FMap[x]) do
+  //  result := result + Format(#13#10'maps="%d,%d"', [Size.w, Size.h]);
+{    for x := Low(FMap) to High(FMap) do
     begin
-      if FMap[x][y] = -1 then
+      for y := Low(FMap[x]) to High(FMap[x]) do
+      begin
+        if FMap[x][y] = -1 then
+        begin
+          continue;
+        end;
+        result := result + Format(#13#10'%smap="%d,%d,%d"', [LevelStr(ALevel),x,y,FMap[x][y]]);
+      end;
+    end;}
+
+    result := result + Format(#13#10'%ssubs="%d"', [LevelStr(ALevel),Length(FSubcomponents)]);
+    for x := Low(FSubcomponents) to High(FSubcomponents) do
+    begin
+      if not Assigned(FSubcomponents[x]) then
       begin
         continue;
       end;
-      result := result + Format(#13#10'%smap="%d,%d,%d"', [LevelStr(ALevel),x,y,FMap[x][y]]);
+      s := #13#10+FSubcomponents[x].GetMCDef(ALevel+1);
+      result := result + Format(#13#10'%ssub="%d,%d,%d"', [LevelStr(ALevel),x,Length(s),MCTypeInt(FSubcomponents[x])]);
+      result := result + s;
     end;
-  end;
 
-  result := result + Format(#13#10'%ssubs="%d"', [LevelStr(ALevel),Length(FSubcomponents)]);
-  for x := Low(FSubcomponents) to High(FSubcomponents) do
-  begin
-    if not Assigned(FSubcomponents[x]) then
+//    result := result + Format(#13#10'%sioconns="%d"', [LevelStr(ALevel),Length(FIOConnections)]);
+{    for x := Low(FIOConnections) to High(FIOConnections) do
     begin
-      continue;
-    end;
-    s := #13#10+FSubcomponents[x].GetMCDef(ALevel+1);
-    result := result + Format(#13#10'%ssub="%d,%d,%d"', [LevelStr(ALevel),x,Length(s),MCTypeInt(FSubcomponents[x])]);
-    result := result + s;
+      if (FIOConnections[x].intCmp < Low(FSubcomponents)) or (FIOConnections[x].intCmp > High(FSubcomponents)) or
+         (FIOConnections[x].intPin < PinLow()) or (FIOConnections[x].intPin > PinHigh()) then
+      begin
+        continue;
+      end;
+      result := result + Format(#13#10'%sioconn="%d,%d,%d"', [LevelStr(ALevel),x,FIOConnections[x].intPin,FIOConnections[x].intCmp]);
+    end;}
+
+  finally
+    FLogger._e(TypeInfo(result), @result);
   end;
-
-  result := result + Format(#13#10'%sioconns="%d"', [LevelStr(ALevel),Length(FIOConnections)]);
-  for x := Low(FIOConnections) to High(FIOConnections) do
-  begin
-    if (FIOConnections[x].intCmp < Low(FSubcomponents)) or (FIOConnections[x].intCmp > High(FSubcomponents)) or
-       (FIOConnections[x].intPin < PinLow()) or (FIOConnections[x].intPin > PinHigh()) then
-    begin
-      continue;
-    end;
-    result := result + Format(#13#10'%sioconn="%d,%d,%d"', [LevelStr(ALevel),x,FIOConnections[x].intPin,FIOConnections[x].intCmp]);
-  end;
-
-
-  FLogger._e();
 end;
 
 procedure TMapComponentMap.SetMCDef(ALevel: byte; const AValue: string);
@@ -431,148 +497,137 @@ var strDef: string;
     re: TRegExpr;
     intIdx,intLen,intType,i,x,y,iW,iH: integer;
 begin
-  FLogger._s(METHOD);
-
-  iW := Size.w;
-  iH := Size.h;
-
-  inherited SetMCDef(ALevel, AValue);
-
-  if (iw <> Size.w) or (iH <> Size.h) then
-  begin
-    SetLength(FMap, Size.w);
-    for x := Low(FMap) to High(FMap) do
-    begin
-      SetLength(FMap[x], Size.h);
-      for y := Low(FMap[x]) to High(FMap[x]) do
-      begin
-        FMap[x][y] := -1;
-      end;
-    end;
-  end;
-
-  re := TRegExpr.Create;
-  re.ModifierM := true;
+  FLogger._ss(METHOD);
   try
-    re.Expression := LevelPrefix(ALevel)+'subs="([^"]+)"';
-    if re.Exec(AValue) then
+    FLogger._pe('ALevel', TypeInfo(ALevel), @ALevel);
+    FLogger._pe('AValue', TypeInfo(AValue), @AValue);
+    FLogger._se();
+
+    iW := Size.w;
+    iH := Size.h;
+
+    inherited SetMCDef(ALevel, AValue);
+
+{    if (iw <> Size.w) or (iH <> Size.h) then
     begin
-      intLen := StrToIntDef(re.Match[1], 0);
-      SetLength(FSubcomponents, intLen);
-      for i := Low(FSubcomponents) to High(FSubcomponents) do
+      SetLength(FIOConnections, 0);
+    end;}
+{    if (iw <> Size.w) or (iH <> Size.h) then
+    begin
+      SetLength(FMap, Size.w);
+      for x := Low(FMap) to High(FMap) do
       begin
-        FSubcomponents[i] := nil;
-      end;
-    end;
-
-    re.Expression := LevelPrefix(ALevel)+'sub="([^,]+),([^,]+),([^"]+)"';
-    if re.Exec(AValue) then
-    begin
-      repeat
-        intIdx := StrToIntDef(re.Match[1], -1);
-        intLen := StrToIntDef(re.Match[2], 0);
-        intType := StrToIntDef(re.Match[3], -1);
-
-        if (intIdx >= Low(FSubcomponents)) and (intIdx <= High(FSubcomponents)) and (not Assigned(FSubcomponents[intIdx])) and (intLen >= 1) and (intType >= 0) then
+        SetLength(FMap[x], Size.h);
+        for y := Low(FMap[x]) to High(FMap[x]) do
         begin
-          strDef := copy(AValue, re.MatchPos[0]+re.MatchLen[0], intLen);
-          case intType of
-            Integer(mctWire):
-            begin
-              FSubcomponents[intIdx] := TMapComponentWire.Create('', MCPos(), self);
-              TMapComponentWire(FSubcomponents[intIdx]).SetMCDef(ALevel+1,strDef);
-            end;
-            Integer(mctInput):
-            begin
-              FSubcomponents[intIdx] := TMapComponentInput.Create('', MCPos(), self);
-              TMapComponentInput(FSubcomponents[intIdx]).SetMCDef(ALevel+1,strDef);
-            end;
-            Integer(mctOutput):
-            begin
-              FSubcomponents[intIdx] := TMapComponentOutput.Create('', MCPos(), self);
-              TMapComponentOutput(FSubcomponents[intIdx]).SetMCDef(ALevel+1,strDef);
-            end;
-            Integer(mctGate):
-            begin
-              FSubcomponents[intIdx] := TMapComponentGate.Create(mcgNone, '', MCPos(), self);
-              TMapComponentGate(FSubcomponents[intIdx]).SetMCDef(ALevel+1,strDef);
-            end;
-            Integer(mctMap):
-            begin
-              FSubcomponents[intIdx] := TMapComponentMap.Create('', MCSize(), MCPos(), self);
-              TMapComponentMap(FSubcomponents[intIdx]).SetMCDef(ALevel+1,strDef);
-            end;
-            else
-            begin
-              FLogger._(ltWarning, 'Unsupported component type');
-            end;
-          end;
+          FMap[x][y] := -1;
         end;
-      until
-        not re.ExecNext;
-    end;
+      end;
+    end;}
 
-    re.Expression := LevelPrefix(ALevel)+'map="([^,]+),([^,]+),([^"]+)"';
-    if re.Exec(AValue) then
-    begin
-      repeat
-        x := StrToIntDef(re.Match[1], -1);
-        y := StrToIntDef(re.Match[2], -1);
-        i := StrToIntDef(re.Match[3], -1);
-
-        if (x >= Low(FMap)) and (x <= High(FMap)) then
+    re := TRegExpr.Create;
+    re.ModifierM := true;
+    try
+      re.Expression := LevelPrefix(ALevel)+'subs="([^"]+)"';
+      if re.Exec(AValue) then
+      begin
+        intLen := StrToIntDef(re.Match[1], 0);
+        SetLength(FSubcomponents, intLen);
+        for i := Low(FSubcomponents) to High(FSubcomponents) do
         begin
-          if (y >= Low(FMap[x])) and (y <= High(FMap[x])) then
+          FSubcomponents[i] := nil;
+        end;
+      end;
+
+      re.Expression := LevelPrefix(ALevel)+'sub="([^,]+),([^,]+),([^"]+)"';
+      if re.Exec(AValue) then
+      begin
+        repeat
+          intIdx := StrToIntDef(re.Match[1], -1);
+          intLen := StrToIntDef(re.Match[2], 0);
+          intType := StrToIntDef(re.Match[3], -1);
+
+          if (intIdx >= Low(FSubcomponents)) and (intIdx <= High(FSubcomponents)) and (not Assigned(FSubcomponents[intIdx])) and (intLen >= 1) and (intType >= 0) then
           begin
-            if (i >= Low(FSubcomponents)) and (i <= High(FSubcomponents)) then
-            begin
-              FMap[x][y] := i;
+            strDef := copy(AValue, re.MatchPos[0]+re.MatchLen[0], intLen);
+            case intType of
+              Integer(mctWire):
+              begin
+                FSubcomponents[intIdx] := TMapComponentWire.Create('', MCPos(), self);
+                TMapComponentWire(FSubcomponents[intIdx]).SetMCDef(ALevel+1,strDef);
+              end;
+              Integer(mctInput):
+              begin
+                FSubcomponents[intIdx] := TMapComponentInput.Create('', MCPos(), self);
+                TMapComponentInput(FSubcomponents[intIdx]).SetMCDef(ALevel+1,strDef);
+              end;
+              Integer(mctOutput):
+              begin
+                FSubcomponents[intIdx] := TMapComponentOutput.Create('', MCPos(), self);
+                TMapComponentOutput(FSubcomponents[intIdx]).SetMCDef(ALevel+1,strDef);
+              end;
+              Integer(mctGate):
+              begin
+                FSubcomponents[intIdx] := TMapComponentGate.Create(mcgNone, '', MCPos(), self);
+                TMapComponentGate(FSubcomponents[intIdx]).SetMCDef(ALevel+1,strDef);
+              end;
+              Integer(mctMap):
+              begin
+                FSubcomponents[intIdx] := TMapComponentMap.Create('', MCSize(), MCPos(), self);
+                TMapComponentMap(FSubcomponents[intIdx]).SetMCDef(ALevel+1,strDef);
+              end;
+              else
+              begin
+                FLogger._(ltWarning, 'Unsupported component type');
+              end;
             end;
           end;
-        end;
-      until
-        not re.ExecNext;
-    end;
-
-    re.Expression := LevelPrefix(ALevel)+'ioconns="([^"]+)"';
-    if re.Exec(AValue) then
-    begin
-      i := StrToIntDef(re.Match[1], -1);
-      if i >= 0 then
-      begin
-        SetLength(FIOConnections, i);
-        for x := Low(FIOConnections) to High(FIOConnections) do
-        begin
-          FIOConnections[x].intPin := -1;
-          FIOConnections[x].intCmp := -1;
-        end;
+        until
+          not re.ExecNext;
       end;
-    end;
 
-    re.Expression := LevelPrefix(ALevel)+'ioconn="([^,]+),([^,]+),([^"]+)"';
-    if re.Exec(AValue) then
-    begin
-      repeat
-        i := StrToIntDef(re.Match[1], -1);
-        x := StrToIntDef(re.Match[2], -1);
-        y := StrToIntDef(re.Match[3], -1);
+{      re.Expression := LevelPrefix(ALevel)+'map="([^,]+),([^,]+),([^"]+)"';
+      if re.Exec(AValue) then
+      begin
+        repeat
+          x := StrToIntDef(re.Match[1], -1);
+          y := StrToIntDef(re.Match[2], -1);
+          i := StrToIntDef(re.Match[3], -1);
 
-        if (i >= Low(FIOConnections)) and (i <= High(FIOConnections)) and
-           (x >= PinLow()) and (x <= PinHigh()) and
-           (y >= Low(FSubcomponents)) and (y <= High(FSubcomponents))then
-        begin
-          FIOConnections[i].intPin := x;
-          FIOConnections[i].intCmp := y;
-        end;
-      until
-        not re.ExecNext;
+          if (x >= Low(FMap)) and (x <= High(FMap)) then
+          begin
+            if (y >= Low(FMap[x])) and (y <= High(FMap[x])) then
+            begin
+              if (i >= Low(FSubcomponents)) and (i <= High(FSubcomponents)) then
+              begin
+                FMap[x][y] := i;
+              end;
+            end;
+          end;
+        until
+          not re.ExecNext;
+      end;}
+
+      re.Expression := LevelPrefix(ALevel)+'ioconn="([^,]+),([^,]+),([^"]+)"';
+      if re.Exec(AValue) then
+      begin
+        repeat
+          i := StrToIntDef(re.Match[1], -1);
+          x := StrToIntDef(re.Match[2], -1);
+          y := StrToIntDef(re.Match[3], -1);
+          AddIOConnection(x,y);
+
+        until
+          not re.ExecNext;
+      end;
+
+    finally
+      re.Free;
     end;
 
   finally
-    re.Free;
+    FLogger._e();
   end;
-
-  FLogger._e();
 end;
 
 (* PUBLIC *)
@@ -593,44 +648,56 @@ procedure TMapComponentMap.Clear(ABuildMap: boolean);
 const METHOD: string = 'TMapComponentMap.Clear';
 var i,x,y: integer;
 begin
-  FLogger._s(METHOD);
+  FLogger._ss(METHOD);
+  try
+    FLogger._pe('ABuildMap', TypeInfo(ABuildMap), @ABuildMap);
+    FLogger._se();
 
-  if Length(FMap) > 0 then
-  begin
-    for i := Low(FMap) to High(FMap) do
+{    if Length(FMap) > 0 then
     begin
-      SetLength(FMap[i], 0);
-    end;
-  end;
-  SetLength(FMap, 0);
-
-  if ABuildMap then
-  begin
-    SetLength(FMap, Size.w);
-    for x := Low(FMap) to High(FMap) do
-    begin
-      SetLength(FMap[x], Size.h);
-      for y := Low(FMap[x]) to High(FMap[x]) do
+      for i := Low(FMap) to High(FMap) do
       begin
-        FMap[x][y] := -1;
+        SetLength(FMap[i], 0);
       end;
     end;
-  end;
+    SetLength(FMap, 0);
 
-  if Length(FSubcomponents) > 0 then
-  begin
-    for i := Low(FSubcomponents) to High(FSubcomponents) do
+    if ABuildMap then
     begin
-      if not Assigned(FSubcomponents) then
+      SetLength(FMap, Size.w);
+      for x := Low(FMap) to High(FMap) do
       begin
-        continue;
+        SetLength(FMap[x], Size.h);
+        for y := Low(FMap[x]) to High(FMap[x]) do
+        begin
+          FMap[x][y] := -1;
+        end;
       end;
-      FreeAndNil(FSubcomponents[i]);
-    end;
-  end;
-  SetLength(FSubcomponents, 0);
+    end;}
 
-  FLogger._e();
+    if Length(FSubcomponents) > 0 then
+    begin
+      for i := Low(FSubcomponents) to High(FSubcomponents) do
+      begin
+        if not Assigned(FSubcomponents[i]) then
+        begin
+          continue;
+        end;
+        FreeAndNil(FSubcomponents[i]);
+      end;
+    end;
+    SetLength(FSubcomponents, 0);
+
+//    SetLength(FIOConnections, 0);
+    FCursorPos := MCPos();
+    FCursorPosLast := MCPos();
+    FCursorSize := MCSize();
+    FCursorSizeLast := MCSize();
+    FRedrawField := MCPos();
+
+  finally
+    FLogger._e();
+  end;
 end;
 
 procedure TMapComponentMap.Zero();
@@ -638,32 +705,35 @@ const METHOD: string = 'TMapComponentMap.Zero';
 var i: integer;
 begin
   FLogger._s(METHOD);
+  try
 
-  Null();
-  for i := Low(FSubcomponents) to High(FSubcomponents) do
-  begin
-    if not Assigned(FSubcomponents[i]) then
+    Null();
+    for i := Low(FSubcomponents) to High(FSubcomponents) do
     begin
-      continue;
+      if not Assigned(FSubcomponents[i]) then
+      begin
+        continue;
+      end;
+      if FSubcomponents[i] is TMapComponentMap then
+      begin
+        TMapComponentMap(FSubcomponents[i]).Zero;
+      end
+      else if FSubcomponents[i] is TMapComponentPinned then
+      begin
+        TMapComponentPinned(FSubcomponents[i]).Null;
+      end
+      else if FSubcomponents[i] is TMapComponentIO then
+      begin
+        TMapComponentIO(FSubcomponents[i]).Value := false;
+      end;
     end;
-    if FSubcomponents[i] is TMapComponentMap then
-    begin
-      TMapComponentMap(FSubcomponents[i]).Zero;
-    end
-    else if FSubcomponents[i] is TMapComponentPinned then
-    begin
-      TMapComponentPinned(FSubcomponents[i]).Null;
-    end
-    else if FSubcomponents[i] is TMapComponentIO then
-    begin
-      TMapComponentIO(FSubcomponents[i]).Value := false;
-    end;
+
+  finally
+    FLogger._e();
   end;
-
-  FLogger._e();
 end;
 
-procedure TMapComponentMap.Draw(ACanvas: TCanvas; ARect: TRect; AStyle: TMCDrawMapStyle);
+procedure TMapComponentMap.Draw(ACanvas: TCanvas; ARect: TRect; AStyle: TMCDrawMapStyle; AFieldStyle: TMCDrawStyle);
 const METHOD: string = 'TMapComponentMap.Draw';
 var sglFldW,sglFldH: single;
 
@@ -674,6 +744,11 @@ var sglFldW,sglFldH: single;
 
   function ComponentBounds(ACmp: TMapComponentBase): TRect;
   begin
+    result := TRect.Empty;
+    if not Assigned(ACmp) then
+    begin
+      Exit;
+    end;
     result := FieldBounds(ACmp.Pos, ACmp.Size);
   end;
 
@@ -681,12 +756,13 @@ var sglFldW,sglFldH: single;
   begin
     if not Assigned(ACmp) then
     begin
+      FLogger._(ltInfo, 'Cannot draw undefined component.');
       Exit;
     end;
 
     if ACmp is TMapComponentMap then
     begin
-      TMapComponentMap(ACmp).Draw(ACanvas, ComponentBounds(ACmp), mdmsComplete);
+      TMapComponentMap(ACmp).Draw(ACanvas, ComponentBounds(ACmp), mdmsComplete, ADCStyle);
       Exit;
     end;
     if ACmp is TMapComponentInput then
@@ -724,72 +800,94 @@ var sglFldW,sglFldH: single;
       ACmp.Draw(ACanvas, ComponentBounds(ACmp), ADCStyle);
       Exit;
     end;
+    FLogger._(ltWarning, 'Unknown TMapComponent* class '+ACmp.ClassName);
   end;
 
 var x,y,i: integer;
     c: TMapComponentBase;
     rctPin,rctCmp: TRect;
 begin
-  FLogger._s(METHOD);
+  FLogger._ss(METHOD);
+  try
+    FLogger._pe('ACanvas', TypeInfo(ACanvas), @ACanvas);
+    FLogger._pe('ARect', TypeInfo(ARect), @ARect);
+    FLogger._pe('AStyle', TypeInfo(AStyle), @AStyle);
+    FLogger._pe('AFieldStyle', TypeInfo(AFieldStyle), @AFieldStyle);
+    FLogger._se();
 
-  sglFldW := ARect.Width/Size.w;
-  sglFldH := ARect.Height/Size.h;
+    sglFldW := ARect.Width/Size.w;
+    sglFldH := ARect.Height/Size.h;
 
-  if AStyle = mdmsComplete then
-  begin
-    //Repaint all fields as empty fields
-    for x := Low(FMap) to High(FMap) do
+    if AStyle = mdmsComplete then
     begin
-      for y := Low(FMap[x]) to High(FMap[x]) do
+      //Repaint all fields as empty fields
+//      for x := Low(FMap) to High(FMap) do
+      for x := 0 to Size.w-1 do
       begin
-        if FieldWithin(MCPos(x,y), FCursorPos, FCursorSize) or FieldWithin(MCPos(x,y), FCursorPosLast, FCursorSizeLast) then
+//        for y := Low(FMap[x]) to High(FMap[x]) do
+        for y := 0 to Size.h-1 do
         begin
-          TMapComponentBase.DrawEmpty(ACanvas, FieldBounds(MCPos(x,y), MCSize(1,1)), mdsSelected);
-        end
-        else
-        begin
-          TMapComponentBase.DrawEmpty(ACanvas, FieldBounds(MCPos(x,y), MCSize(1,1)), mdsNormal);
+          if Assigned(Parent) then
+          begin
+            TMapComponentBase.DrawEmpty(ACanvas, FieldBounds(MCPos(x,y), MCSize(1,1)), AFieldStyle);
+          end
+          else if FieldWithin(MCPos(x,y), FCursorPos, FCursorSize) or FieldWithin(MCPos(x,y), FCursorPosLast, FCursorSizeLast) then
+          begin
+            TMapComponentBase.DrawEmpty(ACanvas, FieldBounds(MCPos(x,y), MCSize(1,1)), mdsSelected);
+          end
+          else
+          begin
+            TMapComponentBase.DrawEmpty(ACanvas, FieldBounds(MCPos(x,y), MCSize(1,1)), mdsNormal);
+          end;
         end;
       end;
-    end;
-    //Paint subcomponents
-    for x := Low(FSubcomponents) To High(FSubcomponents) do
-    begin
-      if Assigned(FSubcomponents[x]) then
+      //Paint subcomponents
+      for x := Low(FSubcomponents) To High(FSubcomponents) do
       begin
-        if FSubcomponents[x].Contains(FCursorPos, FCursorSize) or FSubcomponents[x].Contains(FCursorPosLast, FCursorSizeLast) then
+        if Assigned(FSubcomponents[x]) then
         begin
-          DrawComponent(FSubcomponents[x], mdsSelected);
-        end
-        else
-        begin
-          DrawComponent(FSubcomponents[x], mdsNormal);
+          if Assigned(Parent) then
+          begin
+            DrawComponent(FSubcomponents[x], AFieldStyle);
+          end
+          else if FSubcomponents[x].Contains(FCursorPos, FCursorSize) or FSubcomponents[x].Contains(FCursorPosLast, FCursorSizeLast) then
+          begin
+            DrawComponent(FSubcomponents[x], mdsSelected);
+          end
+          else
+          begin
+            DrawComponent(FSubcomponents[x], mdsNormal);
+          end;
         end;
       end;
-    end;
 
-    DrawPinsOnly(ACanvas, ARect);
+      DrawPinsOnly(ACanvas, ARect);
 
-    //Paint IO connections
-    SetPen(ACanvas, clRed, 2);
-    for x := Low(FIOConnections) to High(FIOConnections) do
-    begin
-      if (FIOConnections[x].intPin < PinLow()) or (FIOConnections[x].intPin > PinHigh()) or
-         (FIOConnections[x].intCmp < Low(FSubcomponents)) or (FIOConnections[x].intCmp > High(FSubcomponents)) then
+      //Paint IO connections
+{      SetPen(ACanvas, clRed, 2);
+      for x := Low(FIOConnections) to High(FIOConnections) do
       begin
-        continue;
-      end;
-      rctPin := GetPinRect(FIOConnections[x].intPin, ARect);
-      rctCmp := ComponentBounds(FSubcomponents[FIOConnections[x].intCmp]);
-      ACanvas.MoveTo(rctPin.Left+(rctPin.Width div 2), rctPin.Top+(rctPin.Height div 2));
-      ACanvas.LineTo(rctCmp.Left+(rctCmp.Width div 2), rctCmp.Top+(rctCmp.Height div 2));
-    end;
-    FLogger._e();
-    Exit;
-  end;
+        if (FIOConnections[x].intPin < PinLow()) or (FIOConnections[x].intPin > PinHigh()) or
+           (FIOConnections[x].intCmp < Low(FSubcomponents)) or (FIOConnections[x].intCmp > High(FSubcomponents)) then
+        begin
+          continue;
+        end;
+        rctPin := GetPinRect(FIOConnections[x].intPin, ARect);
+        rctCmp := ComponentBounds(FSubcomponents[FIOConnections[x].intCmp]);
+        ACanvas.MoveTo(rctPin.Left+(rctPin.Width div 2), rctPin.Top+(rctPin.Height div 2));
+        ACanvas.LineTo(rctCmp.Left+(rctCmp.Width div 2), rctCmp.Top+(rctCmp.Height div 2));
+      end; }
 
-  if (AStyle = mdmsSelected) and ((FCursorPosLast <> FCursorPos) or (FCursorSizeLast <> FCursorSize)) then
+      Exit;
+    end;
+
+  if AStyle = mdmsSelected then
   begin
+    if (FCursorPosLast = FCursorPos) and (FCursorSizeLast = FCursorSize) then
+    begin
+      Exit;
+    end;
+
     //Repaint last mouseover position
     if (FCursorPosLast <> MCPos()) and (FCursorSizeLast <> MCSize()) then
     begin
@@ -836,7 +934,6 @@ begin
       end;
     end;
 
-    FLogger._e();
     Exit;
   end;
 
@@ -853,11 +950,14 @@ begin
       TMapComponentBase.DrawEmpty(ACanvas, FieldBounds(FRedrawField, MCSize(1,1)), mdsNormal);
     end;
 
-    FLogger._e();
     Exit;
   end;
 
-  FLogger._e();
+  FLogger._(ltWarning, 'Unknown map draw style');
+
+  finally
+    FLogger._e();
+  end;
 end;
 
 procedure TMapComponentMap.Tick();
@@ -865,286 +965,402 @@ const METHOD: string = 'TMapComponentMap.Tick';
 var i: integer;
 begin
   FLogger._s(METHOD);
+  try
 
-  if Assigned(Parent) then
-  begin
-    for i := Low(FIOConnections) to High(FIOConnections) do
+{    if Assigned(Parent) then
     begin
-      if (FIOConnections[i].intPin < PinLow()) or (FIOConnections[i].intPin > PinHigh()) or
-         (FIOConnections[i].intCmp < Low(FSubcomponents)) or (FIOConnections[i].intCmp > High(FSubcomponents)) or
-         (not (FSubcomponents[FIOConnections[i].intCmp] is TMapComponentInput)) then
+      for i := Low(FIOConnections) to High(FIOConnections) do
+      begin
+        if (FIOConnections[i].intPin < PinLow()) or (FIOConnections[i].intPin > PinHigh()) or
+           (FIOConnections[i].intCmp < Low(FSubcomponents)) or (FIOConnections[i].intCmp > High(FSubcomponents)) or
+           (not (FSubcomponents[FIOConnections[i].intCmp] is TMapComponentInput)) then
+        begin
+          continue;
+        end;
+        TMapComponentInput(FSubcomponents[FIOConnections[i].intCmp]).Value := PinValue[FIOConnections[i].intPin];
+      end;
+    end;}
+
+    for i := Low(FSubcomponents) to High(FSubcomponents) do
+    begin
+      if (not Assigned(FSubcomponents[i])) or (not (FSubcomponents[i] is TMapComponentInput)) then
       begin
         continue;
       end;
-      TMapComponentInput(FSubcomponents[FIOConnections[i].intCmp]).Value := PinValue[FIOConnections[i].intPin];
+      TMapComponentInput(FSubcomponents[i]).Tick();
     end;
-  end;
 
-  for i := Low(FSubcomponents) to High(FSubcomponents) do
-  begin
-    if (not Assigned(FSubcomponents[i])) or (not (FSubcomponents[i] is TMapComponentInput)) then
+{    if Assigned(Parent) then
     begin
-      continue;
-    end;
-    TMapComponentInput(FSubcomponents[i]).Tick();
-  end;
-
-  if Assigned(Parent) then
-  begin
-    for i := Low(FIOConnections) to High(FIOConnections) do
-    begin
-      if (FIOConnections[i].intPin < PinLow()) or (FIOConnections[i].intPin > PinHigh()) or
-         (FIOConnections[i].intCmp < Low(FSubcomponents)) or (FIOConnections[i].intCmp > High(FSubcomponents)) or
-         (not (FSubcomponents[FIOConnections[i].intCmp] is TMapComponentOutput)) then
+      for i := Low(FIOConnections) to High(FIOConnections) do
       begin
-        continue;
+        if (FIOConnections[i].intPin < PinLow()) or (FIOConnections[i].intPin > PinHigh()) or
+           (FIOConnections[i].intCmp < Low(FSubcomponents)) or (FIOConnections[i].intCmp > High(FSubcomponents)) or
+           (not (FSubcomponents[FIOConnections[i].intCmp] is TMapComponentOutput)) then
+        begin
+          continue;
+        end;
+        PinValue[FIOConnections[i].intPin] := TMapComponentOutput(FSubcomponents[FIOConnections[i].intCmp]).Value;
+        Parent.RequestTick(GetPinField(FIOConnections[i].intPin), GetPinNeighbourField(FIOConnections[i].intPin));
       end;
-      PinValue[FIOConnections[i].intPin] := TMapComponentOutput(FSubcomponents[FIOConnections[i].intCmp]).Value;
-      Parent.RequestTick(GetPinField(FIOConnections[i].intPin), GetPinNeighbourField(FIOConnections[i].intPin));
-    end;
-  end;
+    end;}
 
-  FLogger._e();
+  finally
+    FLogger._e();
+  end;
 end;
 
 procedure TMapComponentMap.RequestTick(AFrom,ATo: TMCPos);
 const METHOD: string = 'TMapComponentMap.RequestTick';
 var cmpFrom,cmpTo: TMapComponentBase;
-    intFrom,intTo: integer;
+    intFrom,intTo,intTmp: integer;
 begin
-  FLogger._s(METHOD);
+  FLogger._ss(METHOD);
+  try
+    FLogger._pe('AFrom', TypeInfo(AFrom), @AFrom);
+    FLogger._pe('ATo', TypeInfo(ATo), @ATo);
+    FLogger._se();
 
-  cmpFrom := Subcomponent(SubcomponentByField(AFrom));
-  cmpTo := Subcomponent(SubcomponentByField(ATo));
-  if (not Assigned(cmpFrom)) or (not Assigned(cmpTo)) or (not (cmpFrom is TMapComponentPinned)) or (not (cmpTo is TMapComponentPinned)) then
-  begin
+    cmpFrom := Subcomponent(SubcomponentByField(AFrom));
+    cmpTo := Subcomponent(SubcomponentByField(ATo));
+    if (not Assigned(cmpFrom)) or (not Assigned(cmpTo)) then
+    begin
+      FLogger._(ltInfo, 'Source/target component not assigned');
+      Exit;
+    end;
+
+    if (not (cmpFrom is TMapComponentPinned)) or (not (cmpTo is TMapComponentPinned)) then
+    begin
+      FLogger._(ltInfo, 'Source/target component not a descendant of TMapComponentPinned');
+      Exit;
+    end;
+
+    intFrom := TMapComponentPinned(cmpFrom).GetPinIndexFromNeighbourField(ATo);
+    intTo := TMapComponentPinned(cmpTo).GetPinIndexFromNeighbourField(AFrom);
+    TMapComponentPinned(cmpTo).PinValue[intTo] := TMapComponentPinned(cmpFrom).PinValue[intFrom];
+    if cmpTo is TMapComponentWire then
+    begin
+      TMapComponentWire(cmpTo).Tick(intTo);
+    end
+    else if cmpTo is TMapComponentInput then
+    begin
+      TMapComponentInput(cmpTo).Tick();
+    end
+    else if cmpTo is TMapComponentOutput then
+    begin
+      TMapComponentOutput(cmpTo).Tick();
+    end
+    else if cmpTo is TMapComponentGate then
+    begin
+      TMapComponentGate(cmpTo).Tick();
+    end
+    else if cmpTo is TMapComponentMap then
+    begin
+      TMapComponentMap(cmpTo).Tick();
+    end;
+
+  finally
     FLogger._e();
-    Exit;
   end;
-  intFrom := TMapComponentPinned(cmpFrom).GetPinIndexFromNeighbourField(ATo);
-  intTo := TMapComponentPinned(cmpTo).GetPinIndexFromNeighbourField(AFrom);
-  TMapComponentPinned(cmpTo).PinValue[intTo] := TMapComponentPinned(cmpFrom).PinValue[intFrom];
-  if cmpTo is TMapComponentWire then
-  begin
-    TMapComponentWire(cmpTo).Tick(AFrom);
-  end
-  else if cmpTo is TMapComponentInput then
-  begin
-    TMapComponentInput(cmpTo).Tick();
-  end
-  else if cmpTo is TMapComponentOutput then
-  begin
-    TMapComponentOutput(cmpTo).Tick();
-  end
-  else if cmpTo is TMapComponentGate then
-  begin
-    TMapComponentGate(cmpTo).Tick();
-  end
-  else if cmpTo is TMapComponentMap then
-  begin
-    TMapComponentMap(cmpTo).Tick();
-  end;
-
-  FLogger._e();
 end;
 
 function TMapComponentMap.AddWire(APos: TMCPos): integer;
 const METHOD: string = 'TMapComponentMap.AddWire';
 var strName: string;
 begin
-  FLogger._s(METHOD);
+  FLogger._ss(METHOD);
+  try
+    FLogger._pe('APos', TypeInfo(APos), @APos);
+    FLogger._se();
 
-  result := -1;
+    result := -1;
 
-  strName := AddSubcomponent1('w');
-  FSubcomponents[High(FSubcomponents)] := TMapComponentWire.Create(strName, APos, self);
-  result := AddSubcomponent2(APos);
+    strName := AddSubcomponent1('w');
+    FSubcomponents[High(FSubcomponents)] := TMapComponentWire.Create(strName, APos, self);
+    result := AddSubcomponent2(APos);
 
-  FLogger._e(result);
+  finally
+    FLogger._e(TypeInfo(result), @result);
+  end;
 end;
 
 function TMapComponentMap.AddGate(AGate: TMCGate; APos: TMCPos): integer;
 const METHOD: string = 'TMapComponentMap.AddGate';
 var strName: string;
 begin
-  FLogger._s(METHOD);
-  result := -1;
+  FLogger._ss(METHOD);
+  try
+    FLogger._pe('AGate', TypeInfo(AGate), @AGate);
+    FLogger._pe('APos', TypeInfo(APos), @APos);
+    FLogger._se();
 
-  strName := AddSubcomponent1('g');
-  FSubcomponents[High(FSubcomponents)] := TMapComponentGate.Create(AGate, strName, APos, self);
-  result := AddSubcomponent2(APos);
+    result := -1;
 
-  FLogger._e(result);
+    strName := AddSubcomponent1('g');
+    FSubcomponents[High(FSubcomponents)] := TMapComponentGate.Create(AGate, strName, APos, self);
+    result := AddSubcomponent2(APos);
+
+  finally
+    FLogger._e(TypeInfo(result), @result);
+  end;
 end;
 
 function TMapComponentMap.AddInput(APos: TMCPos): integer;
 const METHOD: string = 'TMapComponentMap.AddInput';
 var strName: string;
 begin
-  FLogger._s(METHOD);
-  result := -1;
+  FLogger._ss(METHOD);
+  try
+    FLogger._pe('APos', TypeInfo(APos), @APos);
+    FLogger._se();
 
-  strName := AddSubcomponent1('i');
-  FSubcomponents[High(FSubcomponents)] := TMapComponentInput.Create(strName, APos, self);
-  result := AddSubcomponent2(APos);
+    result := -1;
 
-  FLogger._e(result);
+    strName := AddSubcomponent1('i');
+    FSubcomponents[High(FSubcomponents)] := TMapComponentInput.Create(strName, APos, self);
+    result := AddSubcomponent2(APos);
+
+  finally
+    FLogger._e(TypeInfo(result), @result);
+  end;
 end;
 
 function TMapComponentMap.AddOutput(APos: TMCPos): integer;
 const METHOD: string = 'TMapComponentMap.AddOutput';
 var strName: string;
 begin
-  FLogger._s(METHOD);
-  result := -1;
+  FLogger._ss(METHOD);
+  try
+    FLogger._pe('APos', TypeInfo(APos), @APos);
+    FLogger._se();
 
-  strName := AddSubcomponent1('o');
-  FSubcomponents[High(FSubcomponents)] := TMapComponentOutput.Create(strName, APos, self);
-  result := AddSubcomponent2(APos);
+    result := -1;
 
-  FLogger._e(result);
+    strName := AddSubcomponent1('o');
+    FSubcomponents[High(FSubcomponents)] := TMapComponentOutput.Create(strName, APos, self);
+    result := AddSubcomponent2(APos);
+
+  finally
+    FLogger._e(TypeInfo(result), @result);
+  end;
 end;
 
 function TMapComponentMap.AddMap(ASize: TMCSize; APos: TMCPos; const AMCDef: string): integer;
 const METHOD: string = 'TMapComponentMap.AddMap';
 var strName: string;
 begin
-  FLogger._s(METHOD);
-  result := -1;
+  FLogger._ss(METHOD);
+  try
+    FLogger._pe('ASize', TypeInfo(ASize), @ASize);
+    FLogger._pe('APos', TypeInfo(APos), @APos);
+    FLogger._pe('AMCDef', TypeInfo(AMCDef), @AMCDef);
+    FLogger._se();
 
-  strName := AddSubcomponent1('m');
-  FSubcomponents[High(FSubcomponents)] := TMapComponentMap.Create(strName, ASize, APos, self);
-  TMapComponentMap(FSubcomponents[High(FSubcomponents)]).SetMCDef(0,AMCDef);
-  TMapComponentMap(FSubcomponents[High(FSubcomponents)]).Pos := APos;
-  result := AddSubcomponent2(APos);
+    result := -1;
 
-  FLogger._e(result);
+{    strName := AddSubcomponent1('m');
+    FSubcomponents[High(FSubcomponents)] := TMapComponentMap.Create(strName, ASize, APos, self);
+    TMapComponentMap(FSubcomponents[High(FSubcomponents)]).SetMCDef(0,AMCDef);
+    TMapComponentMap(FSubcomponents[High(FSubcomponents)]).Pos := APos;
+    result := AddSubcomponent2(APos);}
+
+  finally
+    FLogger._e(TypeInfo(result), @result);
+  end;
 end;
 
 procedure TMapComponentMap.RemoveSubcomponent(AIndex: integer);
 const METHOD: string = 'TMapComponentMap.RemoveSubcomponent';
 var x,y: integer;
 begin
-  FLogger._s(METHOD);
+  FLogger._ss(METHOD);
+  try
+    FLogger._pe('AIndex', TypeInfo(AIndex), @AIndex);
+    FLogger._se();
 
-  if (AIndex >= Low(FSubcomponents)) and (AIndex <= High(FSubcomponents)) and Assigned(FSubcomponents[AIndex]) then
-  begin
-    FreeAndNil(FSubcomponents[AIndex]);
-  end;
-  for x := Low(FMap) to High(FMap) do
-  begin
-    for y := Low(FMap[x]) to High(FMap[x]) do
+    if (AIndex >= Low(FSubcomponents)) and (AIndex <= High(FSubcomponents)) and Assigned(FSubcomponents[AIndex]) then
     begin
-      if FMap[x][y] = AIndex then
-      begin
-        FMap[x][y] := -1;
-      end;
+      FreeAndNil(FSubcomponents[AIndex]);
     end;
-  end;
+{    for x := Low(FMap) to High(FMap) do
+    begin
+      for y := Low(FMap[x]) to High(FMap[x]) do
+      begin
+        if FMap[x][y] = AIndex then
+        begin
+          FMap[x][y] := -1;
+        end;
+      end;
+    end;}
 
-  FLogger._e();
+  finally
+    FLogger._e();
+  end;
 end;
 
 function TMapComponentMap.SubcomponentByName(const AName: string): integer;
 const METHOD: string = 'TMapComponentMap.SubcomponentByName';
 var i: integer;
 begin
-  FLogger._s(METHOD);
+  FLogger._ss(METHOD);
+  try
+    FLogger._pe('AName', TypeInfo(AName), @AName);
+    FLogger._se();
 
-  result := -1;
-  for i := Low(FSubcomponents) to High(FSubcomponents) do
-  begin
-    if Assigned(FSubcomponents[i]) and (FSubcomponents[i].Name = AName) then
+    result := -1;
+    for i := Low(FSubcomponents) to High(FSubcomponents) do
     begin
-      result := i;
-      break;
+      if Assigned(FSubcomponents[i]) and (FSubcomponents[i].Name = AName) then
+      begin
+        result := i;
+        break;
+      end;
     end;
+
+  finally
+    FLogger._e(TypeInfo(result), @result);
   end;
-  FLogger._e(result);
 end;
 
 function TMapComponentMap.SubcomponentByField(APos: TMCPos): integer;
 const METHOD: string = 'TMapComponentMap.SubcomponentByField';
+var i: integer;
 begin
-  FLogger._s(METHOD);
+  FLogger._ss(METHOD);
+  try
+    FLogger._pe('APos', TypeInfo(APos), @APos);
+    FLogger._se();
 
-  result := -1;
-  if (APos.x >= Low(FMap)) and (APos.x <= High(FMap)) and (APos.y >= Low(FMap[APos.x])) and (APos.y <= High(FMap[APos.x])) then
-  begin
-    result := FMap[APos.x][APos.y];
+    result := -1;
+    for i := Low(FSubcomponents) to High(FSubcomponents) do
+    begin
+      if not Assigned(FSubcomponents[i]) then
+      begin
+        continue;
+      end;
+      if FSubcomponents[i].Contains(APos, MCSize(1,1)) then
+      begin
+        result := i;
+        break;
+      end;
+    end;
+{    if (APos.x >= Low(FMap)) and (APos.x <= High(FMap)) and (APos.y >= Low(FMap[APos.x])) and (APos.y <= High(FMap[APos.x])) then
+    begin
+      result := FMap[APos.x][APos.y];
+    end;}
+
+  finally
+    FLogger._e(TypeInfo(result), @result);
   end;
-
-  FLogger._e(result);
 end;
 
 function TMapComponentMap.Subcomponent(AIndex: integer): TMapComponentBase;
 const METHOD: string = 'TMapComponentMap.Subcomponent';
 begin
-  FLogger._s(METHOD);
+  FLogger._ss(METHOD);
+  try
+    FLogger._pe('AIndex', TypeInfo(AIndex), @AIndex);
+    FLogger._se();
 
-  result := nil;
-  if (AIndex >= Low(FSubcomponents)) and (AIndex <= High(FSubcomponents)) then
-  begin
-    result := FSubcomponents[AIndex];
+    result := nil;
+    if (AIndex >= Low(FSubcomponents)) and (AIndex <= High(FSubcomponents)) then
+    begin
+      result := FSubcomponents[AIndex];
+    end;
+
+  finally
+    FLogger._e(TypeInfo(result), @result);
   end;
-
-  FLogger._e();
 end;
 
 function TMapComponentMap.SubcomponentCount(): integer;
 const METHOD: string = 'TMapComponentMap.InputString';
 begin
   FLogger._s(METHOD);
+  try
 
-  result := Length(FSubcomponents);
+    result := Length(FSubcomponents);
 
-  FLogger._e(result);
+  finally
+    FLogger._e(TypeInfo(result), @result);
+  end;
 end;
 
 function TMapComponentMap.InputString(const AString: string): boolean;
 const METHOD: string = 'TMapComponentMap.InputString';
 var i: integer;
-    w: word;
     b: boolean;
     c: TMapComponentBase;
 begin
+  FLogger._ss(METHOD);
+  try
+    FLogger._pe('AString', TypeInfo(AString), @AString);
+    FLogger._se();
+
+    result := false;
+
+    if Length(AString) <> InputLength() then
+    begin
+      FLogger._(ltInfo, 'Parameter must be %d chars long, is %d chars long', [InputLength(), Length(AString)]);
+      Exit;
+    end;
+
+    b := true;
+    for i := 0 to Length(AString)-1 do
+    begin
+      c := Subcomponent(SubcomponentByName(Format('i%d', [i])));
+      if (not Assigned(c)) or (not (c is TMapComponentInput)) then
+      begin
+        b := false;
+        break;
+      end;
+    end;
+
+    if not b then
+    begin
+      FLogger._(ltInfo, 'Expecting input components i0..i%d, but some are missing or have a wrong type.', [InputLength()-1]);
+      Exit;
+    end;
+
+    result := true;
+    for i := Length(AString) downto 1 do
+    begin
+      c := Subcomponent(SubcomponentByName(Format('i%d', [Length(AString)-i])));
+      if (not Assigned(c)) or (not (c is TMapComponentInput)) then
+      begin
+        result := false;
+        break;
+      end;
+      if Assigned(FSubcomponents[i]) and (FSubcomponents[i] is TMapComponentInput) then
+      begin
+        TMapComponentInput(c).Value := (AString[i] = '1');
+      end;
+    end;
+
+  finally
+    FLogger._e(TypeInfo(result), @result);
+  end;
+end;
+
+function TMapComponentMap.InputLength(): integer;
+const METHOD: string = 'TMapComponentMap.InputLength';
+var i: integer;
+begin
   FLogger._s(METHOD);
+  try
 
-  result := false;
-
-  b := true;
-  for i := 0 to Length(AString)-1 do
-  begin
-    c := Subcomponent(SubcomponentByName(Format('i%d', [i])));
-    if (not Assigned(c)) or (not (c is TMapComponentInput)) then
+    result := 0;
+    for i := Low(FSubcomponents) to High(FSubcomponents) do
     begin
-      b := false;
-      break;
+      if Assigned(FSubcomponents[i]) and (FSubcomponents[i] is TMapComponentInput) then
+      begin
+        Inc(result);
+      end;
     end;
-  end;
 
-  if not b then
-  begin
-    FLogger._e(result);
-    Exit;
+  finally
+    FLogger._e(TypeInfo(result), @result);
   end;
-
-  result := true;
-  for i := Length(AString) downto 1 do
-  begin
-    c := Subcomponent(SubcomponentByName(Format('i%d', [Length(AString)-i])));
-    if (not Assigned(c)) or (not (c is TMapComponentInput)) then
-    begin
-      result := false;
-      break;
-    end;
-    if Assigned(FSubcomponents[i]) and (FSubcomponents[i] is TMapComponentInput) then
-    begin
-      TMapComponentInput(c).Value := (AString[i] = '1');
-    end;
-  end;
-
-  FLogger._e(result);
 end;
 
 function TMapComponentMap.OutputString(): string;
@@ -1152,54 +1368,61 @@ const METHOD: string = 'TMapComponentMap.OutputString';
 var i: integer;
 begin
   FLogger._s(METHOD);
+  try
 
-  result := '';
-  for i := Low(FSubcomponents) to High(FSubcomponents) do
-  begin
-    if Assigned(FSubcomponents[i]) and (FSubcomponents[i] is TMapComponentOutput) then
+    result := '';
+    for i := Low(FSubcomponents) to High(FSubcomponents) do
     begin
-      result := result + BoolToStr(TMapComponentOutput(FSubcomponents[i]).Value, '1', '0');
+      if Assigned(FSubcomponents[i]) and (FSubcomponents[i] is TMapComponentOutput) then
+      begin
+        result := result + BoolToStr(TMapComponentOutput(FSubcomponents[i]).Value, '1', '0');
+      end;
     end;
-  end;
 
-  FLogger._e(result);
+  finally
+    FLogger._e(TypeInfo(result), @result);
+  end;
 end;
 
-procedure TMapComponentMap.AddIOConnection(APin,ACmp: integer);
+{procedure TMapComponentMap.AddIOConnection(APin,ACmp: integer);
 const METHOD: string = 'TMapComponentMap.AddIOConnection';
 var i: integer;
 begin
-  FLogger._s(METHOD);
+  FLogger._ss(METHOD);
+  try
+    FLogger._pe('APin', TypeInfo(APin), @APin);
+    FLogger._pe('ACmp', TypeInfo(ACmp), @ACmp);
+    FLogger._se();
 
-  if (APin < PinLow()) or (APin > PinHigh()) or (ACmp < Low(FSubcomponents)) or (ACmp > High(FSubcomponents)) then
-  begin
-    FLogger._(ltWarning, 'Pin or component ID out of bounds.');
-    FLogger._e();
-    Exit;
-  end;
-
-  if (not (FSubcomponents[ACmp] is TMapComponentIO)) then
-  begin
-    FLogger._(ltWarning, 'Component is not an IO.');
-    FLogger._e();
-    Exit;
-  end;
-
-  for i := Low(FIOConnections) to High(FIOConnections) do
-  begin
-    if (FIOConnections[i].intPin = APin) or (FIOConnections[i].intCmp = ACmp) then
+    if (APin < PinLow()) or (APin > PinHigh()) or (ACmp < Low(FSubcomponents)) or (ACmp > High(FSubcomponents)) then
     begin
-      FLogger._(ltWarning, 'Pin or component already has an IO connection.');
-      FLogger._e();
+      FLogger._(ltInfo, 'Pin or component ID out of bounds.');
       Exit;
     end;
-  end;
 
-  SetLength(FIOConnections, Length(FIOConnections)+1);
-  FIOConnections[High(FIOConnections)].intCmp := ACmp;
-  FIOConnections[High(FIOConnections)].intPin := APin;
-  PinActive[APin] := true;
-  FLogger._e();
+    if (not (FSubcomponents[ACmp] is TMapComponentIO)) then
+    begin
+      FLogger._(ltInfo, 'Component is not an IO.');
+      Exit;
+    end;
+
+    for i := Low(FIOConnections) to High(FIOConnections) do
+    begin
+      if (FIOConnections[i].intPin = APin) or (FIOConnections[i].intCmp = ACmp) then
+      begin
+        FLogger._(ltInfo, 'Pin or component already has an IO connection.');
+        Exit;
+      end;
+    end;
+
+    SetLength(FIOConnections, Length(FIOConnections)+1);
+    FIOConnections[High(FIOConnections)].intCmp := ACmp;
+    FIOConnections[High(FIOConnections)].intPin := APin;
+    PinActive[APin] := true;
+
+  finally
+    FLogger._e();
+  end;
 end;
 
 procedure TMapComponentMap.RemoveIOConnection(APin,ACmp: integer);
@@ -1207,34 +1430,75 @@ const METHOD: string = 'TMapComponentMap.RemoveIOConnection';
 var i: integer;
     b: boolean;
 begin
-  FLogger._s(METHOD);
+  FLogger._ss(METHOD);
+  try
+    FLogger._pe('APin', TypeInfo(APin), @APin);
+    FLogger._pe('ACmp', TypeInfo(ACmp), @ACmp);
+    FLogger._se();
 
-  for i := Low(FIOConnections) to High(FIOConnections) do
-  begin
-    if (FIOConnections[i].intPin = APin) and (FIOConnections[i].intCmp = ACmp) then
+    for i := Low(FIOConnections) to High(FIOConnections) do
     begin
-      FIOConnections[i].intPin := -1;
-      FIOConnections[i].intCmp := -1;
+      if (FIOConnections[i].intPin = APin) and (FIOConnections[i].intCmp = ACmp) then
+      begin
+        FIOConnections[i].intPin := -1;
+        FIOConnections[i].intCmp := -1;
+      end;
     end;
-  end;
 
-  b := false;
-  for i := Low(FIOConnections) to High(FIOConnections) do
-  begin
-    if (FIOConnections[i].intPin = APin) then
+    b := false;
+    for i := Low(FIOConnections) to High(FIOConnections) do
     begin
-      b := true;
-      break;
+      if (FIOConnections[i].intPin = APin) then
+      begin
+        b := true;
+        break;
+      end;
     end;
-  end;
 
-  if not b then
-  begin
-    PinActive[APin] := false;
-  end;
+    if not b then
+    begin
+      PinActive[APin] := false;
+    end;
 
-  FLogger._e();
+  finally
+    FLogger._e();
+  end;
 end;
+
+function TMapComponentMap.IOConnectionCount(): integer;
+const METHOD: string = 'TMapComponentMap.IOConnectionCount';
+begin
+  FLogger._s(METHOD);
+  try
+
+    result := Length(FIOConnections);
+
+  finally
+    FLogger._e(TypeInfo(result), @result);
+  end;
+end;
+
+function TMapComponentMap.IOConnection(AIndex: integer): TMCIOConnection;
+const METHOD: string = 'TMapComponentMap.IOConnection';
+begin
+  FLogger._ss(METHOD);
+  try
+    FLogger._pe('AIndex', TypeInfo(AIndex), @AIndex);
+    FLogger._se();
+
+    result.intCmp := -1;
+    result.intPin := -1;
+    if (AIndex < Low(FIOConnections)) or (AIndex > High(FIOConnections)) then
+    begin
+      FLogger._(ltInfo, 'IOConnection index %d out of bound <%d;%d>', [AIndex, Low(FIOConnections), High(FIOConnections)]);
+      Exit;
+    end;
+    result := FIOConnections[AIndex];
+
+  finally
+    FLogger._e(TypeInfo(result), @result);
+  end;
+end;    }
 
 end.
 

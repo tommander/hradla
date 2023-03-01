@@ -5,7 +5,7 @@ unit umapcomponentgate;
 interface
 
 uses
-  Classes, SysUtils, Graphics, RegExpr, umapcomponentpinned, umapcomponentbase;
+  Classes, SysUtils, Graphics, RegExpr, ulogger, umapcomponentpinned, umapcomponentbase;
 
 type
   TMCGate = (mcgNone, mcgBuf, mcgInv, mcgAnd, mcgNand, mcgOr, mcgNor, mcgXor, mcgXnor);
@@ -44,7 +44,7 @@ type
       procedure Clear();
       procedure Draw(ACanvas: TCanvas; ARect: TRect; AStyle: TMCDrawStyle); override;
       procedure Tick();
-      function GetMCDef(ALevel: byte; AIgnorePos: boolean = false): string; override;
+      function GetMCDef(ALevel: byte{; AIgnorePos: boolean = false}): string; override;
       procedure SetMCDef(ALevel: byte; const AValue: string); override;
 //      procedure SetPinTypes(APinI1,APinI2,APinO1: integer);
 
@@ -77,83 +77,115 @@ function TMapComponentGate.GetGate(): TMCGate;
 const METHOD: string = 'TMapComponentGate.GetGate';
 begin
   FLogger._s(METHOD);
+  try
 
-  result := FGate;
+    result := FGate;
 
-  FLogger._e();
+  finally
+    FLogger._e(TypeInfo(result), @result);
+  end;
 end;
 
 procedure TMapComponentGate.SetGate(AValue: TMCGate);
 const METHOD: string = 'TMapComponentGate.SetGate';
 begin
-  FLogger._s(METHOD);
+  FLogger._ss(METHOD);
+  try
+    FLogger._pe('AValue', TypeInfo(AValue), @AValue);
+    FLogger._se();
 
-  FGate := AValue;
+    FGate := AValue;
 
-  FLogger._e();
+  finally
+    FLogger._e();
+  end;
 end;
 
 function TMapComponentGate.GetPinI1(): integer;
 const METHOD: string = 'TMapComponentGate.GetPinI1';
 begin
   FLogger._s(METHOD);
+  try
 
-  result := FPinI1;
+    result := FPinI1;
 
-  FLogger._e();
+  finally
+    FLogger._e(TypeInfo(result), @result);
+  end;
 end;
 
 procedure TMapComponentGate.SetPinI1(AValue: integer);
 const METHOD: string = 'TMapComponentGate.SetPinI1';
 begin
-  FLogger._s(METHOD);
+  FLogger._ss(METHOD);
+  try
+    FLogger._pe('AValue', TypeInfo(AValue), @AValue);
+    FLogger._se();
 
-  FPinI1 := AValue;
-  UpdatePinActive();
+    FPinI1 := AValue;
+    UpdatePinActive();
 
-  FLogger._e();
+  finally
+    FLogger._e();
+  end;
 end;
 
 function TMapComponentGate.GetPinI2(): integer;
 const METHOD: string = 'TMapComponentGate.GetPinI2';
 begin
   FLogger._s(METHOD);
+  try
 
-  result := FPinI2;
+    result := FPinI2;
 
-  FLogger._e();
+  finally
+    FLogger._e(TypeInfo(result), @result);
+  end;
 end;
 
 procedure TMapComponentGate.SetPinI2(AValue: integer);
 const METHOD: string = 'TMapComponentGate.SetPinI2';
 begin
-  FLogger._s(METHOD);
+  FLogger._ss(METHOD);
+  try
+    FLogger._pe('AValue', TypeInfo(AValue), @AValue);
+    FLogger._se();
 
-  FPinI2 := AValue;
-  UpdatePinActive();
+    FPinI2 := AValue;
+    UpdatePinActive();
 
-  FLogger._e();
+  finally
+    FLogger._e();
+  end;
 end;
 
 function TMapComponentGate.GetPinO1(): integer;
 const METHOD: string = 'TMapComponentGate.GetPinO1';
 begin
   FLogger._s(METHOD);
+  try
 
-  result := FPinO1;
+    result := FPinO1;
 
-  FLogger._e();
+  finally
+    FLogger._e(TypeInfo(result), @result);
+  end;
 end;
 
 procedure TMapComponentGate.SetPinO1(AValue: integer);
 const METHOD: string = 'TMapComponentGate.SetPinO1';
 begin
-  FLogger._s(METHOD);
+  FLogger._ss(METHOD);
+  try
+    FLogger._pe('AValue', TypeInfo(AValue), @AValue);
+    FLogger._se();
 
-  FPinO1 := AValue;
-  UpdatePinActive();
+    FPinO1 := AValue;
+    UpdatePinActive();
 
-  FLogger._e();
+  finally
+    FLogger._e();
+  end;
 end;
 
 procedure TMapComponentGate.UpdatePinActive();
@@ -161,30 +193,39 @@ const METHOD: string = 'TMapComponentGate.Clear';
 var i: integer;
 begin
   FLogger._s(METHOD);
+  try
 
-  for i := PinLow() to PinHigh() do
-  begin
-    PinActive[i] := false;
+    for i := PinLow() to PinHigh() do
+    begin
+      PinActive[i] := false;
+    end;
+    PinActive[FPinI1] := true;
+    PinActive[FPinI2] := true;
+    PinActive[FPinO1] := true;
+
+  finally
+    FLogger._e();
   end;
-  PinActive[FPinI1] := true;
-  PinActive[FPinI2] := true;
-  PinActive[FPinO1] := true;
-
-  FLogger._e();
 end;
 
 (* PROTECTED *)
 
-function TMapComponentGate.GetMCDef(ALevel: byte; AIgnorePos: boolean = false): string;
+function TMapComponentGate.GetMCDef(ALevel: byte{; AIgnorePos: boolean = false}): string;
 const METHOD: string = 'TMapComponentGate.GetMCDef';
 var i: integer;
 begin
-  FLogger._s(METHOD);
+  FLogger._ss(METHOD);
+  try
+    FLogger._pe('ALevel', TypeInfo(ALevel), @ALevel);
+//    FLogger._pe('AIgnorePos', TypeInfo(AIgnorePos), @AIgnorePos);
+    FLogger._se();
 
-  result := inherited GetMCDef(ALevel, AIgnorePos);
-  result := result + Format(#13#10'%0:sgate="%1:d"'#13#10'%0:spini1="%2:d"'#13#10'%0:spini2="%3:d"'#13#10'%0:spino1="%4:d"', [LevelStr(ALevel),Integer(FGate), FPinI1, FPinI2, FPinO1]);
+    result := inherited GetMCDef(ALevel{, AIgnorePos});
+    result := result + Format(#13#10'%0:sgate="%1:d"'#13#10'%0:spini1="%2:d"'#13#10'%0:spini2="%3:d"'#13#10'%0:spino1="%4:d"', [LevelStr(ALevel),Integer(FGate), FPinI1, FPinI2, FPinO1]);
 
-  FLogger._e();
+  finally
+    FLogger._e(TypeInfo(result), @result);
+  end;
 end;
 
 procedure TMapComponentGate.SetMCDef(ALevel: byte; const AValue: string);
@@ -192,57 +233,63 @@ const METHOD: string = 'TMapComponentGate.SetMCDef';
 var re: TRegExpr;
     i: integer;
 begin
-  FLogger._s(METHOD);
-
-  inherited SetMCDef(ALevel, AValue);
-
-  re := TRegExpr.Create();
-  re.ModifierM := true;
+  FLogger._ss(METHOD);
   try
-    re.Expression := LevelPrefix(ALevel)+'gate="([^"]+)"';
-    if re.Exec(AValue) then
-    begin
-      i := StrToIntDef(re.Match[1], -1);
-      if (i >= Integer(Low(TMCGate))) and (i <= Integer(High(TMCGate))) then
+    FLogger._pe('ALevel', TypeInfo(ALevel), @ALevel);
+    FLogger._pe('AValue', TypeInfo(AValue), @AValue);
+    FLogger._se();
+
+    inherited SetMCDef(ALevel, AValue);
+
+    re := TRegExpr.Create();
+    re.ModifierM := true;
+    try
+      re.Expression := LevelPrefix(ALevel)+'gate="([^"]+)"';
+      if re.Exec(AValue) then
       begin
-        FGate := TMCGate(i);
+        i := StrToIntDef(re.Match[1], -1);
+        if (i >= Integer(Low(TMCGate))) and (i <= Integer(High(TMCGate))) then
+        begin
+          FGate := TMCGate(i);
+        end;
       end;
+
+      re.Expression := LevelPrefix(ALevel)+'pini1="([^"]+)"';
+      if re.Exec(AValue) then
+      begin
+        i := StrToIntDef(re.Match[1], -1);
+        if (i >= PinLow()) and (i <= PinHigh()) then
+        begin
+          FPinI1 := i;
+        end;
+      end;
+
+      re.Expression := LevelPrefix(ALevel)+'pini2="([^"]+)"';
+      if re.Exec(AValue) then
+      begin
+        i := StrToIntDef(re.Match[1], -1);
+        if (i >= PinLow()) and (i <= PinHigh()) then
+        begin
+          FPinI2 := i;
+        end;
+      end;
+
+      re.Expression := LevelPrefix(ALevel)+'pino1="([^"]+)"';
+      if re.Exec(AValue) then
+      begin
+        i := StrToIntDef(re.Match[1], -1);
+        if (i >= PinLow()) and (i <= PinHigh()) then
+        begin
+          FPinO1 := i;
+        end;
+      end;
+    finally
+      re.Free;
     end;
 
-    re.Expression := LevelPrefix(ALevel)+'pini1="([^"]+)"';
-    if re.Exec(AValue) then
-    begin
-      i := StrToIntDef(re.Match[1], -1);
-      if (i >= PinLow()) and (i <= PinHigh()) then
-      begin
-        FPinI1 := i;
-      end;
-    end;
-
-    re.Expression := LevelPrefix(ALevel)+'pini2="([^"]+)"';
-    if re.Exec(AValue) then
-    begin
-      i := StrToIntDef(re.Match[1], -1);
-      if (i >= PinLow()) and (i <= PinHigh()) then
-      begin
-        FPinI2 := i;
-      end;
-    end;
-
-    re.Expression := LevelPrefix(ALevel)+'pino1="([^"]+)"';
-    if re.Exec(AValue) then
-    begin
-      i := StrToIntDef(re.Match[1], -1);
-      if (i >= PinLow()) and (i <= PinHigh()) then
-      begin
-        FPinO1 := i;
-      end;
-    end;
   finally
-    re.Free;
+    FLogger._e();
   end;
-
-  FLogger._e();
 end;
 
 (* PUBLIC *)
@@ -264,13 +311,16 @@ procedure TMapComponentGate.Clear();
 const METHOD: string = 'TMapComponentGate.Clear';
 begin
   FLogger._s(METHOD);
+  try
 
-  FGate := mcgNone;
-  FPinI1 := 0;
-  FPinI2 := 1;
-  FPinO1 := 2;
+    FGate := mcgNone;
+    FPinI1 := 0;
+    FPinI2 := 1;
+    FPinO1 := 2;
 
-  FLogger._e();
+  finally
+    FLogger._e();
+  end;
 end;
 
 procedure TMapComponentGate.Draw(ACanvas: TCanvas; ARect: TRect; AStyle: TMCDrawStyle);
@@ -288,10 +338,15 @@ procedure TMapComponentGate.Draw(ACanvas: TCanvas; ARect: TRect; AStyle: TMCDraw
 
 const METHOD: string = 'TMapComponentGate.Draw';
 begin
-  FLogger._s(METHOD);
+  FLogger._ss(METHOD);
+  try
+    FLogger._pe('ACanvas', TypeInfo(ACanvas), @ACanvas);
+    FLogger._pe('ARect', TypeInfo(ARect), @ARect);
+    FLogger._pe('AStyle', TypeInfo(AStyle), @AStyle);
+    FLogger._se();
 
-  inherited Draw(ACanvas, ARect, AStyle);
-  CenterText(MCGateToStr(FGate));
+    inherited Draw(ACanvas, ARect, AStyle);
+    CenterText(MCGateToStr(FGate));
 {  case FGate of
     mcgNone:
     begin
@@ -322,7 +377,9 @@ begin
     end;
   end;}
 
-  FLogger._e();
+  finally
+    FLogger._e();
+  end;
 end;
 
 procedure TMapComponentGate.Tick();
@@ -330,50 +387,53 @@ const METHOD: string = 'TMapComponentGate.Tick';
 var i: integer;
 begin
   FLogger._s(METHOD);
+  try
 
-  if FGate = mcgNone then
-  begin
+    if FGate = mcgNone then
+    begin
+      FLogger._(ltInfo, 'Tick skipped, gate type is not defined');
+      Exit;
+    end;
+
+    case FGate of
+      mcgBuf:
+      begin
+        PinValue[FPinO1] := PinValue[FPinI1];
+      end;
+      mcgInv:
+      begin
+        PinValue[FPinO1] := not PinValue[FPinI1];
+      end;
+      mcgAnd:
+      begin
+        PinValue[FPinO1] := PinValue[FPinI1] and PinValue[FPinI2];
+      end;
+      mcgNand:
+      begin
+        PinValue[FPinO1] := not (PinValue[FPinI1] and PinValue[FPinI2]);
+      end;
+      mcgOr:
+      begin
+        PinValue[FPinO1] := PinValue[FPinI1] or PinValue[FPinI2];
+      end;
+      mcgNor:
+      begin
+        PinValue[FPinO1] := not (PinValue[FPinI1] or PinValue[FPinI2]);
+      end;
+      mcgXor:
+      begin
+        PinValue[FPinO1] := PinValue[FPinI1] xor PinValue[FPinI2];
+      end;
+      mcgXnor:
+      begin
+        PinValue[FPinO1] := not (PinValue[FPinI1] xor PinValue[FPinI2]);
+      end;
+    end;
+    Parent.RequestTick(GetPinField(FPinO1),GetPinNeighbourField(FPinO1));
+
+  finally
     FLogger._e();
-    Exit;
   end;
-
-  case FGate of
-    mcgBuf:
-    begin
-      PinValue[FPinO1] := PinValue[FPinI1];
-    end;
-    mcgInv:
-    begin
-      PinValue[FPinO1] := not PinValue[FPinI1];
-    end;
-    mcgAnd:
-    begin
-      PinValue[FPinO1] := PinValue[FPinI1] and PinValue[FPinI2];
-    end;
-    mcgNand:
-    begin
-      PinValue[FPinO1] := not (PinValue[FPinI1] and PinValue[FPinI2]);
-    end;
-    mcgOr:
-    begin
-      PinValue[FPinO1] := PinValue[FPinI1] or PinValue[FPinI2];
-    end;
-    mcgNor:
-    begin
-      PinValue[FPinO1] := not (PinValue[FPinI1] or PinValue[FPinI2]);
-    end;
-    mcgXor:
-    begin
-      PinValue[FPinO1] := PinValue[FPinI1] xor PinValue[FPinI2];
-    end;
-    mcgXnor:
-    begin
-      PinValue[FPinO1] := not (PinValue[FPinI1] xor PinValue[FPinI2]);
-    end;
-  end;
-  Parent.RequestTick(GetPinField(FPinO1),GetPinNeighbourField(FPinO1));
-
-  FLogger._e();
 end;
 
 {procedure TMapComponentGate.SetPinTypes(APinI1,APinI2,APinO1: integer);
