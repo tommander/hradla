@@ -61,7 +61,7 @@ type
       procedure Tick();
       procedure RequestTick(AFrom,ATo: TMCPos); override;
       function GetMCDef(ALevel: byte{; AIgnorePos: boolean = false}): string; override;
-      procedure SetMCDef(ALevel: byte; const AValue: string); override;
+      procedure SetMCDef(ALevel: byte; const AValue: string; AAddToPos: TMCPos); override;
 
       function AddWire(APos: TMCPos): integer;
       function AddGate(AGate: TMCGate; APos: TMCPos): integer;
@@ -463,7 +463,7 @@ begin
       end;
     end;}
 
-    result := result + Format(#13#10'%ssubs="%d"', [LevelStr(ALevel),Length(FSubcomponents)]);
+//    result := result + Format(#13#10'%ssubs="%d"', [LevelStr(ALevel),Length(FSubcomponents)]);
     for x := Low(FSubcomponents) to High(FSubcomponents) do
     begin
       if not Assigned(FSubcomponents[x]) then
@@ -471,7 +471,8 @@ begin
         continue;
       end;
       s := #13#10+FSubcomponents[x].GetMCDef(ALevel+1);
-      result := result + Format(#13#10'%ssub="%d,%d,%d"', [LevelStr(ALevel),x,Length(s),MCTypeInt(FSubcomponents[x])]);
+//      result := result + Format(#13#10'%ssub="%d,%d,%d"', [LevelStr(ALevel),x,Length(s),MCTypeInt(FSubcomponents[x])]);
+      result := result + Format(#13#10'%ssub="%d,%d"', [LevelStr(ALevel),Length(s),MCTypeInt(FSubcomponents[x])]);
       result := result + s;
     end;
 
@@ -491,22 +492,26 @@ begin
   end;
 end;
 
-procedure TMapComponentMap.SetMCDef(ALevel: byte; const AValue: string);
+procedure TMapComponentMap.SetMCDef(ALevel: byte; const AValue: string; AAddToPos: TMCPos);
 const METHOD: string = 'TMapComponentMap.SetMCDef';
 var strDef: string;
     re: TRegExpr;
-    intIdx,intLen,intType,i,x,y,iW,iH: integer;
+    intIdx,intLen,intType,i,x,y,iW,iH,intSubOffset: integer;
 begin
   FLogger._ss(METHOD);
   try
     FLogger._pe('ALevel', TypeInfo(ALevel), @ALevel);
     FLogger._pe('AValue', TypeInfo(AValue), @AValue);
+    FLogger._pe('AAddToPos', TypeInfo(AAddToPos), @AAddToPos);
     FLogger._se();
 
     iW := Size.w;
     iH := Size.h;
 
-    inherited SetMCDef(ALevel, AValue);
+    if AAddToPos = MCPos() then
+    begin
+      inherited SetMCDef(ALevel, AValue, AAddToPos);
+    end;
 
 {    if (iw <> Size.w) or (iH <> Size.h) then
     begin
@@ -528,54 +533,77 @@ begin
     re := TRegExpr.Create;
     re.ModifierM := true;
     try
-      re.Expression := LevelPrefix(ALevel)+'subs="([^"]+)"';
+{      re.Expression := LevelPrefix(ALevel)+'subs="([^"]+)"';
       if re.Exec(AValue) then
       begin
         intLen := StrToIntDef(re.Match[1], 0);
-        SetLength(FSubcomponents, intLen);
-        for i := Low(FSubcomponents) to High(FSubcomponents) do
+        if AAddToPos <> MCPos() then
         begin
-          FSubcomponents[i] := nil;
+          intSubOffset := Length(FSubcomponents);
+          SetLength(FSubcomponents, intSubOffset+intLen);
+          for i := intSubOffset to High(FSubcomponents) do
+          begin
+            FSubcomponents[i] := nil;
+          end;
+        end
+        else
+        begin
+          intSubOffset := 0;
+          SetLength(FSubcomponents, intLen);
+          for i := Low(FSubcomponents) to High(FSubcomponents) do
+          begin
+            FSubcomponents[i] := nil;
+          end;
         end;
+      end;}
+
+      if AAddToPos = MCPos() then
+      begin
+        SetLength(FSubcomponents, 0);
       end;
 
-      re.Expression := LevelPrefix(ALevel)+'sub="([^,]+),([^,]+),([^"]+)"';
+//      re.Expression := LevelPrefix(ALevel)+'sub="([^,]+),([^,]+),([^"]+)"';
+      re.Expression := LevelPrefix(ALevel)+'sub="([^,]+),([^"]+)"';
       if re.Exec(AValue) then
       begin
         repeat
-          intIdx := StrToIntDef(re.Match[1], -1);
-          intLen := StrToIntDef(re.Match[2], 0);
-          intType := StrToIntDef(re.Match[3], -1);
+//          intIdx := StrToIntDef(re.Match[1], -1)+intSubOffset;
+          intLen := StrToIntDef(re.Match[1], 0);
+          intType := StrToIntDef(re.Match[2], -1);
 
-          if (intIdx >= Low(FSubcomponents)) and (intIdx <= High(FSubcomponents)) and (not Assigned(FSubcomponents[intIdx])) and (intLen >= 1) and (intType >= 0) then
+          if {(intIdx >= Low(FSubcomponents)) and (intIdx <= High(FSubcomponents)) and (not Assigned(FSubcomponents[intIdx])) and }(intLen >= 1) and (intType >= 0) then
           begin
             strDef := copy(AValue, re.MatchPos[0]+re.MatchLen[0], intLen);
             case intType of
               Integer(mctWire):
               begin
-                FSubcomponents[intIdx] := TMapComponentWire.Create('', MCPos(), self);
-                TMapComponentWire(FSubcomponents[intIdx]).SetMCDef(ALevel+1,strDef);
+                SetLength(FSubcomponents, Length(FSubcomponents)+1);
+                FSubcomponents[High(FSubcomponents)] := TMapComponentWire.Create('', MCPos(), self);
+                TMapComponentWire(FSubcomponents[High(FSubcomponents)]).SetMCDef(ALevel+1,strDef,AAddToPos);
               end;
               Integer(mctInput):
               begin
-                FSubcomponents[intIdx] := TMapComponentInput.Create('', MCPos(), self);
-                TMapComponentInput(FSubcomponents[intIdx]).SetMCDef(ALevel+1,strDef);
+                SetLength(FSubcomponents, Length(FSubcomponents)+1);
+                FSubcomponents[High(FSubcomponents)] := TMapComponentInput.Create('', MCPos(), self);
+                TMapComponentInput(FSubcomponents[High(FSubcomponents)]).SetMCDef(ALevel+1,strDef,AAddToPos);
               end;
               Integer(mctOutput):
               begin
-                FSubcomponents[intIdx] := TMapComponentOutput.Create('', MCPos(), self);
-                TMapComponentOutput(FSubcomponents[intIdx]).SetMCDef(ALevel+1,strDef);
+                SetLength(FSubcomponents, Length(FSubcomponents)+1);
+                FSubcomponents[High(FSubcomponents)] := TMapComponentOutput.Create('', MCPos(), self);
+                TMapComponentOutput(FSubcomponents[High(FSubcomponents)]).SetMCDef(ALevel+1,strDef,AAddToPos);
               end;
               Integer(mctGate):
               begin
-                FSubcomponents[intIdx] := TMapComponentGate.Create(mcgNone, '', MCPos(), self);
-                TMapComponentGate(FSubcomponents[intIdx]).SetMCDef(ALevel+1,strDef);
+                SetLength(FSubcomponents, Length(FSubcomponents)+1);
+                FSubcomponents[High(FSubcomponents)] := TMapComponentGate.Create(mcgNone, '', MCPos(), self);
+                TMapComponentGate(FSubcomponents[High(FSubcomponents)]).SetMCDef(ALevel+1,strDef,AAddToPos);
               end;
-              Integer(mctMap):
+{              Integer(mctMap):
               begin
                 FSubcomponents[intIdx] := TMapComponentMap.Create('', MCSize(), MCPos(), self);
                 TMapComponentMap(FSubcomponents[intIdx]).SetMCDef(ALevel+1,strDef);
-              end;
+              end;}
               else
               begin
                 FLogger._(ltWarning, 'Unsupported component type');
@@ -608,7 +636,7 @@ begin
           not re.ExecNext;
       end;}
 
-      re.Expression := LevelPrefix(ALevel)+'ioconn="([^,]+),([^,]+),([^"]+)"';
+{      re.Expression := LevelPrefix(ALevel)+'ioconn="([^,]+),([^,]+),([^"]+)"';
       if re.Exec(AValue) then
       begin
         repeat
@@ -619,7 +647,7 @@ begin
 
         until
           not re.ExecNext;
-      end;
+      end;}
 
     finally
       re.Free;
@@ -1331,10 +1359,10 @@ begin
         result := false;
         break;
       end;
-      if Assigned(FSubcomponents[i]) and (FSubcomponents[i] is TMapComponentInput) then
-      begin
+//      if Assigned(FSubcomponents[i-1]) and (FSubcomponents[i-1] is TMapComponentInput) then
+//      begin
         TMapComponentInput(c).Value := (AString[i] = '1');
-      end;
+//      end;
     end;
 
   finally

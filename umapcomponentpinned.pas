@@ -43,7 +43,7 @@ type
       procedure Tick();
       procedure Rotate(AClockwise: boolean); override;
       function GetMCDef(ALevel: byte{; AIgnorePos: boolean = false}): string; override;
-      procedure SetMCDef(ALevel: byte; const AValue: string); override;
+      procedure SetMCDef(ALevel: byte; const AValue: string; AAddToPos: TMCPos); override;
       function PinLow(): integer;
       function PinHigh(): integer;
       function PinCount(): integer;
@@ -238,7 +238,7 @@ begin
   end;
 end;
 
-procedure TMapComponentPinned.SetMCDef(ALevel: byte; const AValue: string);
+procedure TMapComponentPinned.SetMCDef(ALevel: byte; const AValue: string; AAddToPos: TMCPos);
 const METHOD: string = 'TMapComponentPinned.SetMCDef';
 var re: TRegExpr;
     i,ii: integer;
@@ -253,7 +253,7 @@ begin
     iW := Size.w;
     iH := Size.h;
 
-    inherited SetMCDef(ALevel, AValue);
+    inherited SetMCDef(ALevel, AValue, AAddToPos);
 
     if (iW <> Size.w) or (iH <> Size.h) then
     begin

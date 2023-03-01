@@ -55,7 +55,8 @@ function FLogger(): TLogger;
 begin
   if not Assigned(TheLogger) then
   begin
-    TheLogger := TLogger.Create('/home/tommander/Programming.Pascal/hradla/log.txt', ltInfo);
+//    TheLogger := TLogger.Create('/home/tommander/Programming.Pascal/hradla/log.txt', ltInfo);
+    TheLogger := TLogger.Create('E:\Programming\hradla\log.txt', ltInfo);
     TheLogger._(ltInfo, 'Start of log');
   end;
   result := TheLogger;

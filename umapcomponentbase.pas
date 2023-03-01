@@ -61,7 +61,7 @@ type
       procedure Rotate(AClockwise: boolean); virtual;
       function Contains(APos: TMCPos; ASize: TMCSize): boolean;
       function GetMCDef(ALevel: byte{; AIgnorePos: boolean = false}): string; virtual;
-      procedure SetMCDef(ALevel: byte; const AValue: string); virtual;
+      procedure SetMCDef(ALevel: byte; const AValue: string; AAddToPos: TMCPos); virtual;
 
 
       class procedure DrawEmpty(ACanvas: TCanvas; ARect: TRect; AStyle: TMCDrawStyle);
@@ -337,7 +337,7 @@ begin
   end;
 end;
 
-procedure TMapComponentBase.SetMCDef(ALevel: byte; const AValue: string);
+procedure TMapComponentBase.SetMCDef(ALevel: byte; const AValue: string; AAddToPos: TMCPos);
 const METHOD: string = 'TMapComponentBase.SetMCDef';
 var re: TRegExpr;
 begin
@@ -377,7 +377,14 @@ begin
         if re.Exec(AValue) then
         begin
           FLogger._(ltInfo, 'Old pos is [%d;%d]' ,[FPos.x,FPos.y]);
-          FPos := MCPos(StrToIntDef(re.Match[1], -1), StrToIntDef(re.Match[2], -1));
+          if AAddToPos <> MCPos() then
+          begin
+            FPos := MCPos(StrToIntDef(re.Match[1], -1)+AAddToPos.x, StrToIntDef(re.Match[2], -1)+AAddToPos.y);
+          end
+          else
+          begin
+            FPos := MCPos(StrToIntDef(re.Match[1], -1), StrToIntDef(re.Match[2], -1));
+          end;
           FLogger._(ltInfo, 'New pos is [%d;%d]' ,[FPos.x,FPos.y]);
         end;
       end;

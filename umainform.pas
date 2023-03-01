@@ -24,8 +24,6 @@ type
     BitBtn11: TBitBtn;
     BitBtn12: TBitBtn;
     BitBtn13: TBitBtn;
-    BitBtn14: TBitBtn;
-    BitBtn15: TBitBtn;
     BitBtn16: TBitBtn;
     BitBtn17: TBitBtn;
     BitBtn18: TBitBtn;
@@ -42,8 +40,6 @@ type
     ComboBox4: TComboBox;
     ComboBox5: TComboBox;
     ComboBox6: TComboBox;
-    ComboBox7: TComboBox;
-    ComboBox8: TComboBox;
     Edit1: TEdit;
     Edit2: TEdit;
     Image1: TImage;
@@ -70,10 +66,7 @@ type
     Label25: TLabel;
     Label26: TLabel;
     Label27: TLabel;
-    Label28: TLabel;
-    Label29: TLabel;
     Label3: TLabel;
-    Label30: TLabel;
     Label31: TLabel;
     Label32: TLabel;
     Label33: TLabel;
@@ -95,7 +88,6 @@ type
     dlgOpen: TOpenDialog;
     PageControl1: TPageControl;
     Panel1: TPanel;
-    Panel10: TPanel;
     Panel11: TPanel;
     Panel12: TPanel;
     Panel13: TPanel;
@@ -310,14 +302,14 @@ begin
     PageControl1.ActivePageIndex := tsMap.PageIndex;
     Label21.Caption := IntToStr(TMapComponentMap(cmp).SubcomponentCount());
     Label22.Caption := '';
-    Label29.Caption := IntToStr(TMapComponentMap(cmp).IOConnectionCount());
-    Label30.Caption := '';
-    ComboBox7.Items.Clear;
-    for i := TMapComponentMap(cmp).PinLow() to TMapComponentMap(cmp).PinHigh() do
-    begin
-      ComboBox7.Items.Add('Pin %d', [i]);
-    end;
-    ComboBox8.Items.Clear;
+//    Label29.Caption := IntToStr(TMapComponentMap(cmp).IOConnectionCount());
+//    Label30.Caption := '';
+//    ComboBox7.Items.Clear;
+    //for i := TMapComponentMap(cmp).PinLow() to TMapComponentMap(cmp).PinHigh() do
+    //begin
+    //  ComboBox7.Items.Add('Pin %d', [i]);
+    //end;
+    //ComboBox8.Items.Clear;
     for i := 0 to TMapComponentMap(cmp).SubcomponentCount()-1 do
     begin
       if Label22.Caption <> '' then
@@ -327,22 +319,22 @@ begin
       if not Assigned(TMapComponentMap(cmp).Subcomponent(i)) then
       begin
         Label22.Caption := Label22.Caption + Format('#%d'#9'nil', [i]);
-        ComboBox8.Items.Add('nil', []);
+//        ComboBox8.Items.Add('nil', []);
       end
       else
       begin
         Label22.Caption := Label22.Caption + Format('#%d'#9'%s'#9'%s'#9'[%d;%d][%d;%d]', [i, TMapComponentMap(cmp).Subcomponent(i).Name, MCTypeIntToStr(MCTypeInt(TMapComponentMap(cmp).Subcomponent(i))), TMapComponentMap(cmp).Subcomponent(i).Pos.x, TMapComponentMap(cmp).Subcomponent(i).Pos.y, TMapComponentMap(cmp).Subcomponent(i).Size.w, TMapComponentMap(cmp).Subcomponent(i).Size.h]);
-        ComboBox8.Items.Add('%s (%s)', [TMapComponentMap(cmp).Subcomponent(i).Name, MCTypeIntToStr(MCTypeInt(TMapComponentMap(cmp).Subcomponent(i)))]);
+//        ComboBox8.Items.Add('%s (%s)', [TMapComponentMap(cmp).Subcomponent(i).Name, MCTypeIntToStr(MCTypeInt(TMapComponentMap(cmp).Subcomponent(i)))]);
       end;
     end;
-    for i := 0 to TMapComponentMap(cmp).IOConnectionCount()-1 do
-    begin
-      if Label30.Caption <> '' then
-      begin
-        Label30.Caption := Label30.Caption + #13#10;
-      end;
-      Label30.Caption := Label30.Caption + Format('#%d'#9'C %d'#9'P %d', [i, TMapComponentMap(cmp).IOConnection(i).intCmp, TMapComponentMap(cmp).IOConnection(i).intPin]);
-    end;
+    //for i := 0 to TMapComponentMap(cmp).IOConnectionCount()-1 do
+    //begin
+    //  if Label30.Caption <> '' then
+    //  begin
+    //    Label30.Caption := Label30.Caption + #13#10;
+    //  end;
+    //  Label30.Caption := Label30.Caption + Format('#%d'#9'C %d'#9'P %d', [i, TMapComponentMap(cmp).IOConnection(i).intCmp, TMapComponentMap(cmp).IOConnection(i).intPin]);
+    //end;
   end;
 end;
 
@@ -476,7 +468,8 @@ begin
         end
         else
         begin
-          map.AddMap(MCSize(0,0), map.CursorPos, sl.Text);
+          map.SetMCDef(0, sl.Text, map.CursorPos);
+//          map.AddMap(MCSize(0,0), map.CursorPos, sl.Text);
         end;
       end;
     finally
@@ -558,7 +551,7 @@ end;
 
 procedure TfMainForm.BitBtn11Click(Sender: TObject);
 begin
-  map.SetMCDef(0,Format('size="%d,%d"', [SpinEdit1.Value, SpinEdit2.Value]));
+  map.SetMCDef(0,Format('size="%d,%d"', [SpinEdit1.Value, SpinEdit2.Value]),MCPos());
   DrawMap(mdmsComplete);
 end;
 
@@ -589,28 +582,10 @@ end;
 
 procedure TfMainForm.BitBtn14Click(Sender: TObject);
 begin
-  if (not Assigned(cmp)) or (not (cmp is TMapComponentMap)) then
-  begin
-    Exit;
-  end;
-
-  TMapComponentMap(cmp).AddIOConnection(ComboBox7.ItemIndex, ComboBox8.ItemIndex);
-  UpdateSelection();
-  map.RedrawField := cmp.Pos;
-  DrawMap(mdmsRedraw);
 end;
 
 procedure TfMainForm.BitBtn15Click(Sender: TObject);
 begin
-  if (not Assigned(cmp)) or (not (cmp is TMapComponentMap)) then
-  begin
-    Exit;
-  end;
-
-  TMapComponentMap(cmp).RemoveIOConnection(ComboBox7.ItemIndex, ComboBox8.ItemIndex);
-  UpdateSelection();
-  map.RedrawField := cmp.Pos;
-  DrawMap(mdmsRedraw);
 end;
 
 procedure TfMainForm.BitBtn16Click(Sender: TObject);
@@ -643,7 +618,7 @@ begin
     sl := TStringList.Create;
     try
       sl.LoadFromFile(dlgOpen.FileName);
-      map.SetMCDef(0, sl.Text);
+      map.SetMCDef(0, sl.Text,MCPos());
       DrawMap(mdmsComplete);
     finally
       sl.Free;

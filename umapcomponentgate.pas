@@ -45,7 +45,7 @@ type
       procedure Draw(ACanvas: TCanvas; ARect: TRect; AStyle: TMCDrawStyle); override;
       procedure Tick();
       function GetMCDef(ALevel: byte{; AIgnorePos: boolean = false}): string; override;
-      procedure SetMCDef(ALevel: byte; const AValue: string); override;
+      procedure SetMCDef(ALevel: byte; const AValue: string; AAddToPos: TMCPos); override;
 //      procedure SetPinTypes(APinI1,APinI2,APinO1: integer);
 
   end;
@@ -228,7 +228,7 @@ begin
   end;
 end;
 
-procedure TMapComponentGate.SetMCDef(ALevel: byte; const AValue: string);
+procedure TMapComponentGate.SetMCDef(ALevel: byte; const AValue: string; AAddToPos: TMCPos);
 const METHOD: string = 'TMapComponentGate.SetMCDef';
 var re: TRegExpr;
     i: integer;
@@ -239,7 +239,7 @@ begin
     FLogger._pe('AValue', TypeInfo(AValue), @AValue);
     FLogger._se();
 
-    inherited SetMCDef(ALevel, AValue);
+    inherited SetMCDef(ALevel, AValue, AAddToPos);
 
     re := TRegExpr.Create();
     re.ModifierM := true;

@@ -28,7 +28,7 @@ type
       destructor Destroy(); override;
       procedure Clear();
       function GetMCDef(ALevel: byte{; AIgnorePos: boolean = false}): string; override;
-      procedure SetMCDef(ALevel: byte; const AValue: string); override;
+      procedure SetMCDef(ALevel: byte; const AValue: string; AAddToPos: TMCPos); override;
   end;
 
 implementation
@@ -82,7 +82,7 @@ begin
   end;
 end;
 
-procedure TMapComponentIO.SetMCDef(ALevel: byte; const AValue: string);
+procedure TMapComponentIO.SetMCDef(ALevel: byte; const AValue: string; AAddToPos: TMCPos);
 const METHOD: string = 'TMapComponentIO.SetMCDef';
 var re: TRegExpr;
 begin
@@ -92,7 +92,7 @@ begin
     FLogger._pe('AValue', TypeInfo(AValue), @AValue);
     FLogger._se();
 
-    inherited SetMCDef(ALevel, AValue);
+    inherited SetMCDef(ALevel, AValue, AAddToPos);
 
     re := TRegExpr.Create;
     re.ModifierM := true;
