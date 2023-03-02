@@ -22,8 +22,6 @@ type
     private
 
       var FSubcomponents: array of TMapComponentBase;
-//      var FMap: array of array of integer;
-//      var FIOConnections: array of TMCIOConnection;
       var FCursorPos: TMCPos; //current position (updated on mouseover)
       var FCursorPosLast: TMCPos; //position since last selection (updated on click)
       var FCursorSize: TMCSize; //
@@ -42,9 +40,6 @@ type
       function GetCursorSizeLast(): TMCSize;
       procedure SetRedrawField(AValue: TMCPos);
 
-    protected
-
-
     public
 
       property CursorPos: TMCPos read GetCursorPos write SetCursorPos;
@@ -60,7 +55,7 @@ type
       procedure Draw(ACanvas: TCanvas; ARect: TRect; AStyle: TMCDrawMapStyle; AFieldStyle: TMCDrawStyle); reintroduce;
       procedure Tick();
       procedure RequestTick(AFrom,ATo: TMCPos); override;
-      function GetMCDef(ALevel: byte{; AIgnorePos: boolean = false}): string; override;
+      function GetMCDef(ALevel: byte): string; override;
       procedure SetMCDef(ALevel: byte; const AValue: string; AAddToPos: TMCPos); override;
 
       function AddWire(APos: TMCPos): integer;
@@ -78,11 +73,6 @@ type
       function InputString(const AString: string): boolean;
       function InputLength(): integer;
       function OutputString(): string;
-
-{      procedure AddIOConnection(APin,ACmp: integer);
-      procedure RemoveIOConnection(APin,ACmp: integer);
-      function IOConnectionCount(): integer;
-      function IOConnection(AIndex: integer): TMCIOConnection;}
 
   end;
 
@@ -251,39 +241,6 @@ begin
         Exit;
       end;
     end;
-{    for x := APos.x to APos.x+ASize.w-1 do
-    begin
-      if (x < Low(FMap)) or (x > High(FMap)) then
-      begin
-        FLogger._(ltInfo, 'Variable x=%d got out of bounds <%d;%d>', [x, Low(FMap), High(FMap)]);
-        Exit;
-      end;
-      for y := APos.y to APos.y+ASize.h-1 do
-      begin
-        if (y < Low(FMap[x])) or (y > High(FMap[x])) then
-        begin
-          FLogger._(ltInfo, 'Variable y=%d got out of bounds <%d;%d>', [y, Low(FMap[x]), High(FMap[x])]);
-          Exit;
-        end;
-        if (FMap[x][y] <> -1) and (FMap[x][y] <> AExistingCmp) then
-        begin
-          FLogger._(ltInfo, 'Field [%d;%d] is already reserved by component #%d.', [x,y,FMap[x][y]]);
-          Exit;
-        end;
-      end;
-    end;}
-
-{    if AMapEdit then
-    begin
-      for x := APos.x to APos.x+ASize.w-1 do
-      begin
-        for y := APos.y to APos.y+ASize.h-1 do
-        begin
-          FMap[x][y] := AExistingCmp;
-        end;
-      end;
-    end;
-    end;}
 
     result := true;
 
@@ -445,25 +402,10 @@ begin
   FLogger._ss(METHOD);
   try
     FLogger._pe('ALevel', TypeInfo(ALevel), @ALevel);
-//    FLogger._pe('AIgnorePos', TypeInfo(AIgnorePos), @AIgnorePos);
     FLogger._se();
 
     result := inherited GetMCDef(ALevel{, AIgnorePos});
 
-  //  result := result + Format(#13#10'maps="%d,%d"', [Size.w, Size.h]);
-{    for x := Low(FMap) to High(FMap) do
-    begin
-      for y := Low(FMap[x]) to High(FMap[x]) do
-      begin
-        if FMap[x][y] = -1 then
-        begin
-          continue;
-        end;
-        result := result + Format(#13#10'%smap="%d,%d,%d"', [LevelStr(ALevel),x,y,FMap[x][y]]);
-      end;
-    end;}
-
-//    result := result + Format(#13#10'%ssubs="%d"', [LevelStr(ALevel),Length(FSubcomponents)]);
     for x := Low(FSubcomponents) to High(FSubcomponents) do
     begin
       if not Assigned(FSubcomponents[x]) then
@@ -471,21 +413,9 @@ begin
         continue;
       end;
       s := #13#10+FSubcomponents[x].GetMCDef(ALevel+1);
-//      result := result + Format(#13#10'%ssub="%d,%d,%d"', [LevelStr(ALevel),x,Length(s),MCTypeInt(FSubcomponents[x])]);
       result := result + Format(#13#10'%ssub="%d,%d"', [LevelStr(ALevel),Length(s),MCTypeInt(FSubcomponents[x])]);
       result := result + s;
     end;
-
-//    result := result + Format(#13#10'%sioconns="%d"', [LevelStr(ALevel),Length(FIOConnections)]);
-{    for x := Low(FIOConnections) to High(FIOConnections) do
-    begin
-      if (FIOConnections[x].intCmp < Low(FSubcomponents)) or (FIOConnections[x].intCmp > High(FSubcomponents)) or
-         (FIOConnections[x].intPin < PinLow()) or (FIOConnections[x].intPin > PinHigh()) then
-      begin
-        continue;
-      end;
-      result := result + Format(#13#10'%sioconn="%d,%d,%d"', [LevelStr(ALevel),x,FIOConnections[x].intPin,FIOConnections[x].intCmp]);
-    end;}
 
   finally
     FLogger._e(TypeInfo(result), @result);
@@ -513,65 +443,22 @@ begin
       inherited SetMCDef(ALevel, AValue, AAddToPos);
     end;
 
-{    if (iw <> Size.w) or (iH <> Size.h) then
-    begin
-      SetLength(FIOConnections, 0);
-    end;}
-{    if (iw <> Size.w) or (iH <> Size.h) then
-    begin
-      SetLength(FMap, Size.w);
-      for x := Low(FMap) to High(FMap) do
-      begin
-        SetLength(FMap[x], Size.h);
-        for y := Low(FMap[x]) to High(FMap[x]) do
-        begin
-          FMap[x][y] := -1;
-        end;
-      end;
-    end;}
-
     re := TRegExpr.Create;
     re.ModifierM := true;
     try
-{      re.Expression := LevelPrefix(ALevel)+'subs="([^"]+)"';
-      if re.Exec(AValue) then
-      begin
-        intLen := StrToIntDef(re.Match[1], 0);
-        if AAddToPos <> MCPos() then
-        begin
-          intSubOffset := Length(FSubcomponents);
-          SetLength(FSubcomponents, intSubOffset+intLen);
-          for i := intSubOffset to High(FSubcomponents) do
-          begin
-            FSubcomponents[i] := nil;
-          end;
-        end
-        else
-        begin
-          intSubOffset := 0;
-          SetLength(FSubcomponents, intLen);
-          for i := Low(FSubcomponents) to High(FSubcomponents) do
-          begin
-            FSubcomponents[i] := nil;
-          end;
-        end;
-      end;}
-
       if AAddToPos = MCPos() then
       begin
         SetLength(FSubcomponents, 0);
       end;
 
-//      re.Expression := LevelPrefix(ALevel)+'sub="([^,]+),([^,]+),([^"]+)"';
       re.Expression := LevelPrefix(ALevel)+'sub="([^,]+),([^"]+)"';
       if re.Exec(AValue) then
       begin
         repeat
-//          intIdx := StrToIntDef(re.Match[1], -1)+intSubOffset;
           intLen := StrToIntDef(re.Match[1], 0);
           intType := StrToIntDef(re.Match[2], -1);
 
-          if {(intIdx >= Low(FSubcomponents)) and (intIdx <= High(FSubcomponents)) and (not Assigned(FSubcomponents[intIdx])) and }(intLen >= 1) and (intType >= 0) then
+          if (intLen >= 1) and (intType >= 0) then
           begin
             strDef := copy(AValue, re.MatchPos[0]+re.MatchLen[0], intLen);
             case intType of
@@ -599,11 +486,6 @@ begin
                 FSubcomponents[High(FSubcomponents)] := TMapComponentGate.Create(mcgNone, '', MCPos(), self);
                 TMapComponentGate(FSubcomponents[High(FSubcomponents)]).SetMCDef(ALevel+1,strDef,AAddToPos);
               end;
-{              Integer(mctMap):
-              begin
-                FSubcomponents[intIdx] := TMapComponentMap.Create('', MCSize(), MCPos(), self);
-                TMapComponentMap(FSubcomponents[intIdx]).SetMCDef(ALevel+1,strDef);
-              end;}
               else
               begin
                 FLogger._(ltWarning, 'Unsupported component type');
@@ -613,41 +495,6 @@ begin
         until
           not re.ExecNext;
       end;
-
-{      re.Expression := LevelPrefix(ALevel)+'map="([^,]+),([^,]+),([^"]+)"';
-      if re.Exec(AValue) then
-      begin
-        repeat
-          x := StrToIntDef(re.Match[1], -1);
-          y := StrToIntDef(re.Match[2], -1);
-          i := StrToIntDef(re.Match[3], -1);
-
-          if (x >= Low(FMap)) and (x <= High(FMap)) then
-          begin
-            if (y >= Low(FMap[x])) and (y <= High(FMap[x])) then
-            begin
-              if (i >= Low(FSubcomponents)) and (i <= High(FSubcomponents)) then
-              begin
-                FMap[x][y] := i;
-              end;
-            end;
-          end;
-        until
-          not re.ExecNext;
-      end;}
-
-{      re.Expression := LevelPrefix(ALevel)+'ioconn="([^,]+),([^,]+),([^"]+)"';
-      if re.Exec(AValue) then
-      begin
-        repeat
-          i := StrToIntDef(re.Match[1], -1);
-          x := StrToIntDef(re.Match[2], -1);
-          y := StrToIntDef(re.Match[3], -1);
-          AddIOConnection(x,y);
-
-        until
-          not re.ExecNext;
-      end;}
 
     finally
       re.Free;
@@ -681,28 +528,6 @@ begin
     FLogger._pe('ABuildMap', TypeInfo(ABuildMap), @ABuildMap);
     FLogger._se();
 
-{    if Length(FMap) > 0 then
-    begin
-      for i := Low(FMap) to High(FMap) do
-      begin
-        SetLength(FMap[i], 0);
-      end;
-    end;
-    SetLength(FMap, 0);
-
-    if ABuildMap then
-    begin
-      SetLength(FMap, Size.w);
-      for x := Low(FMap) to High(FMap) do
-      begin
-        SetLength(FMap[x], Size.h);
-        for y := Low(FMap[x]) to High(FMap[x]) do
-        begin
-          FMap[x][y] := -1;
-        end;
-      end;
-    end;}
-
     if Length(FSubcomponents) > 0 then
     begin
       for i := Low(FSubcomponents) to High(FSubcomponents) do
@@ -715,8 +540,6 @@ begin
       end;
     end;
     SetLength(FSubcomponents, 0);
-
-//    SetLength(FIOConnections, 0);
     FCursorPos := MCPos();
     FCursorPosLast := MCPos();
     FCursorSize := MCSize();
@@ -849,10 +672,8 @@ begin
     if AStyle = mdmsComplete then
     begin
       //Repaint all fields as empty fields
-//      for x := Low(FMap) to High(FMap) do
       for x := 0 to Size.w-1 do
       begin
-//        for y := Low(FMap[x]) to High(FMap[x]) do
         for y := 0 to Size.h-1 do
         begin
           if Assigned(Parent) then
@@ -890,21 +711,6 @@ begin
       end;
 
       DrawPinsOnly(ACanvas, ARect);
-
-      //Paint IO connections
-{      SetPen(ACanvas, clRed, 2);
-      for x := Low(FIOConnections) to High(FIOConnections) do
-      begin
-        if (FIOConnections[x].intPin < PinLow()) or (FIOConnections[x].intPin > PinHigh()) or
-           (FIOConnections[x].intCmp < Low(FSubcomponents)) or (FIOConnections[x].intCmp > High(FSubcomponents)) then
-        begin
-          continue;
-        end;
-        rctPin := GetPinRect(FIOConnections[x].intPin, ARect);
-        rctCmp := ComponentBounds(FSubcomponents[FIOConnections[x].intCmp]);
-        ACanvas.MoveTo(rctPin.Left+(rctPin.Width div 2), rctPin.Top+(rctPin.Height div 2));
-        ACanvas.LineTo(rctCmp.Left+(rctCmp.Width div 2), rctCmp.Top+(rctCmp.Height div 2));
-      end; }
 
       Exit;
     end;
@@ -995,20 +801,6 @@ begin
   FLogger._s(METHOD);
   try
 
-{    if Assigned(Parent) then
-    begin
-      for i := Low(FIOConnections) to High(FIOConnections) do
-      begin
-        if (FIOConnections[i].intPin < PinLow()) or (FIOConnections[i].intPin > PinHigh()) or
-           (FIOConnections[i].intCmp < Low(FSubcomponents)) or (FIOConnections[i].intCmp > High(FSubcomponents)) or
-           (not (FSubcomponents[FIOConnections[i].intCmp] is TMapComponentInput)) then
-        begin
-          continue;
-        end;
-        TMapComponentInput(FSubcomponents[FIOConnections[i].intCmp]).Value := PinValue[FIOConnections[i].intPin];
-      end;
-    end;}
-
     for i := Low(FSubcomponents) to High(FSubcomponents) do
     begin
       if (not Assigned(FSubcomponents[i])) or (not (FSubcomponents[i] is TMapComponentInput)) then
@@ -1017,21 +809,6 @@ begin
       end;
       TMapComponentInput(FSubcomponents[i]).Tick();
     end;
-
-{    if Assigned(Parent) then
-    begin
-      for i := Low(FIOConnections) to High(FIOConnections) do
-      begin
-        if (FIOConnections[i].intPin < PinLow()) or (FIOConnections[i].intPin > PinHigh()) or
-           (FIOConnections[i].intCmp < Low(FSubcomponents)) or (FIOConnections[i].intCmp > High(FSubcomponents)) or
-           (not (FSubcomponents[FIOConnections[i].intCmp] is TMapComponentOutput)) then
-        begin
-          continue;
-        end;
-        PinValue[FIOConnections[i].intPin] := TMapComponentOutput(FSubcomponents[FIOConnections[i].intCmp]).Value;
-        Parent.RequestTick(GetPinField(FIOConnections[i].intPin), GetPinNeighbourField(FIOConnections[i].intPin));
-      end;
-    end;}
 
   finally
     FLogger._e();
@@ -1186,12 +963,6 @@ begin
 
     result := -1;
 
-{    strName := AddSubcomponent1('m');
-    FSubcomponents[High(FSubcomponents)] := TMapComponentMap.Create(strName, ASize, APos, self);
-    TMapComponentMap(FSubcomponents[High(FSubcomponents)]).SetMCDef(0,AMCDef);
-    TMapComponentMap(FSubcomponents[High(FSubcomponents)]).Pos := APos;
-    result := AddSubcomponent2(APos);}
-
   finally
     FLogger._e(TypeInfo(result), @result);
   end;
@@ -1210,16 +981,6 @@ begin
     begin
       FreeAndNil(FSubcomponents[AIndex]);
     end;
-{    for x := Low(FMap) to High(FMap) do
-    begin
-      for y := Low(FMap[x]) to High(FMap[x]) do
-      begin
-        if FMap[x][y] = AIndex then
-        begin
-          FMap[x][y] := -1;
-        end;
-      end;
-    end;}
 
   finally
     FLogger._e();
@@ -1272,10 +1033,6 @@ begin
         break;
       end;
     end;
-{    if (APos.x >= Low(FMap)) and (APos.x <= High(FMap)) and (APos.y >= Low(FMap[APos.x])) and (APos.y <= High(FMap[APos.x])) then
-    begin
-      result := FMap[APos.x][APos.y];
-    end;}
 
   finally
     FLogger._e(TypeInfo(result), @result);
@@ -1359,10 +1116,7 @@ begin
         result := false;
         break;
       end;
-//      if Assigned(FSubcomponents[i-1]) and (FSubcomponents[i-1] is TMapComponentInput) then
-//      begin
-        TMapComponentInput(c).Value := (AString[i] = '1');
-//      end;
+      TMapComponentInput(c).Value := (AString[i] = '1');
     end;
 
   finally
@@ -1403,7 +1157,7 @@ begin
     begin
       if Assigned(FSubcomponents[i]) and (FSubcomponents[i] is TMapComponentOutput) then
       begin
-        result := result + BoolToStr(TMapComponentOutput(FSubcomponents[i]).Value, '1', '0');
+        result := BoolToStr(TMapComponentOutput(FSubcomponents[i]).Value, '1', '0') + result;
       end;
     end;
 
@@ -1411,122 +1165,6 @@ begin
     FLogger._e(TypeInfo(result), @result);
   end;
 end;
-
-{procedure TMapComponentMap.AddIOConnection(APin,ACmp: integer);
-const METHOD: string = 'TMapComponentMap.AddIOConnection';
-var i: integer;
-begin
-  FLogger._ss(METHOD);
-  try
-    FLogger._pe('APin', TypeInfo(APin), @APin);
-    FLogger._pe('ACmp', TypeInfo(ACmp), @ACmp);
-    FLogger._se();
-
-    if (APin < PinLow()) or (APin > PinHigh()) or (ACmp < Low(FSubcomponents)) or (ACmp > High(FSubcomponents)) then
-    begin
-      FLogger._(ltInfo, 'Pin or component ID out of bounds.');
-      Exit;
-    end;
-
-    if (not (FSubcomponents[ACmp] is TMapComponentIO)) then
-    begin
-      FLogger._(ltInfo, 'Component is not an IO.');
-      Exit;
-    end;
-
-    for i := Low(FIOConnections) to High(FIOConnections) do
-    begin
-      if (FIOConnections[i].intPin = APin) or (FIOConnections[i].intCmp = ACmp) then
-      begin
-        FLogger._(ltInfo, 'Pin or component already has an IO connection.');
-        Exit;
-      end;
-    end;
-
-    SetLength(FIOConnections, Length(FIOConnections)+1);
-    FIOConnections[High(FIOConnections)].intCmp := ACmp;
-    FIOConnections[High(FIOConnections)].intPin := APin;
-    PinActive[APin] := true;
-
-  finally
-    FLogger._e();
-  end;
-end;
-
-procedure TMapComponentMap.RemoveIOConnection(APin,ACmp: integer);
-const METHOD: string = 'TMapComponentMap.RemoveIOConnection';
-var i: integer;
-    b: boolean;
-begin
-  FLogger._ss(METHOD);
-  try
-    FLogger._pe('APin', TypeInfo(APin), @APin);
-    FLogger._pe('ACmp', TypeInfo(ACmp), @ACmp);
-    FLogger._se();
-
-    for i := Low(FIOConnections) to High(FIOConnections) do
-    begin
-      if (FIOConnections[i].intPin = APin) and (FIOConnections[i].intCmp = ACmp) then
-      begin
-        FIOConnections[i].intPin := -1;
-        FIOConnections[i].intCmp := -1;
-      end;
-    end;
-
-    b := false;
-    for i := Low(FIOConnections) to High(FIOConnections) do
-    begin
-      if (FIOConnections[i].intPin = APin) then
-      begin
-        b := true;
-        break;
-      end;
-    end;
-
-    if not b then
-    begin
-      PinActive[APin] := false;
-    end;
-
-  finally
-    FLogger._e();
-  end;
-end;
-
-function TMapComponentMap.IOConnectionCount(): integer;
-const METHOD: string = 'TMapComponentMap.IOConnectionCount';
-begin
-  FLogger._s(METHOD);
-  try
-
-    result := Length(FIOConnections);
-
-  finally
-    FLogger._e(TypeInfo(result), @result);
-  end;
-end;
-
-function TMapComponentMap.IOConnection(AIndex: integer): TMCIOConnection;
-const METHOD: string = 'TMapComponentMap.IOConnection';
-begin
-  FLogger._ss(METHOD);
-  try
-    FLogger._pe('AIndex', TypeInfo(AIndex), @AIndex);
-    FLogger._se();
-
-    result.intCmp := -1;
-    result.intPin := -1;
-    if (AIndex < Low(FIOConnections)) or (AIndex > High(FIOConnections)) then
-    begin
-      FLogger._(ltInfo, 'IOConnection index %d out of bound <%d;%d>', [AIndex, Low(FIOConnections), High(FIOConnections)]);
-      Exit;
-    end;
-    result := FIOConnections[AIndex];
-
-  finally
-    FLogger._e(TypeInfo(result), @result);
-  end;
-end;    }
 
 end.
 

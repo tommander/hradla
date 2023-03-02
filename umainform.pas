@@ -7,7 +7,8 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls,
   ComCtrls, Buttons, Spin, Math, umcdef, umapcomponentmap, umapcomponentbase,
-  umapcomponentwire, umapcomponentinput, umapcomponentoutput, umapcomponentgate;
+  umapcomponentwire, umapcomponentinput, umapcomponentoutput, umapcomponentgate,
+  umapcomponentio;
 
 const
   intMapWidth: word = 20;
@@ -24,27 +25,53 @@ type
     BitBtn11: TBitBtn;
     BitBtn12: TBitBtn;
     BitBtn13: TBitBtn;
+    btnInP0: TBitBtn;
+    btnWireRT: TBitBtn;
     BitBtn16: TBitBtn;
     BitBtn17: TBitBtn;
     BitBtn18: TBitBtn;
+    btnWireLB: TBitBtn;
     BitBtn2: TBitBtn;
-    BitBtn4: TBitBtn;
-    BitBtn5: TBitBtn;
-    BitBtn6: TBitBtn;
-    BitBtn7: TBitBtn;
+    btnInP3: TBitBtn;
+    btnWireRB: TBitBtn;
+    btnInP2: TBitBtn;
+    btnWireH: TBitBtn;
+    btnWireV: TBitBtn;
+    btnInP1: TBitBtn;
+    btnOutP0: TBitBtn;
+    btnOutP3: TBitBtn;
+    btnOutP2: TBitBtn;
+    btnOutP1: TBitBtn;
+    btnWireLT: TBitBtn;
+    btnGateP10: TBitBtn;
+    btnGateP13: TBitBtn;
+    btnGateP12: TBitBtn;
+    btnGateP11: TBitBtn;
+    btnGateP20: TBitBtn;
+    btnGateP23: TBitBtn;
+    btnGateP22: TBitBtn;
+    btnGateP21: TBitBtn;
+    btnGateP30: TBitBtn;
+    btnGateP33: TBitBtn;
+    btnGateP32: TBitBtn;
+    btnGateP31: TBitBtn;
+    BitBtn42: TBitBtn;
+    BitBtn43: TBitBtn;
+    BitBtn44: TBitBtn;
+    BitBtn45: TBitBtn;
+    BitBtn46: TBitBtn;
+    BitBtn47: TBitBtn;
+    BitBtn48: TBitBtn;
+    BitBtn49: TBitBtn;
+    BitBtn50: TBitBtn;
     BitBtn8: TBitBtn;
     BitBtn9: TBitBtn;
-    ComboBox1: TComboBox;
-    ComboBox2: TComboBox;
-    ComboBox3: TComboBox;
-    ComboBox4: TComboBox;
-    ComboBox5: TComboBox;
-    ComboBox6: TComboBox;
     Edit1: TEdit;
     Edit2: TEdit;
     Image1: TImage;
-    ImageList1: TImageList;
-    ImageList2: TImageList;
+    il32: TImageList;
+    il16: TImageList;
+    il24: TImageList;
     imgMain: TImage;
     Label1: TLabel;
     Label10: TLabel;
@@ -61,8 +88,6 @@ type
     Label20: TLabel;
     Label21: TLabel;
     Label22: TLabel;
-    Label23: TLabel;
-    Label24: TLabel;
     Label25: TLabel;
     Label26: TLabel;
     Label27: TLabel;
@@ -81,22 +106,28 @@ type
     Label41: TLabel;
     Label5: TLabel;
     Label6: TLabel;
-    Label7: TLabel;
-    Label8: TLabel;
     Label9: TLabel;
     ListView2: TListView;
     dlgOpen: TOpenDialog;
     PageControl1: TPageControl;
     Panel1: TPanel;
+    Panel10: TPanel;
     Panel11: TPanel;
     Panel12: TPanel;
     Panel13: TPanel;
     Panel14: TPanel;
     Panel15: TPanel;
+    Panel16: TPanel;
+    Panel17: TPanel;
+    Panel18: TPanel;
+    Panel19: TPanel;
     Panel2: TPanel;
+    Panel20: TPanel;
+    Panel21: TPanel;
+    Panel22: TPanel;
+    Panel23: TPanel;
     Panel3: TPanel;
     Panel4: TPanel;
-    Panel5: TPanel;
     Panel6: TPanel;
     Panel7: TPanel;
     Panel8: TPanel;
@@ -128,13 +159,41 @@ type
     procedure BitBtn11Click(Sender: TObject);
     procedure BitBtn12Click(Sender: TObject);
     procedure BitBtn13Click(Sender: TObject);
-    procedure BitBtn14Click(Sender: TObject);
-    procedure BitBtn15Click(Sender: TObject);
+    procedure btnInP0Click(Sender: TObject);
+    procedure btnWireRTClick(Sender: TObject);
     procedure BitBtn16Click(Sender: TObject);
     procedure BitBtn17Click(Sender: TObject);
     procedure BitBtn18Click(Sender: TObject);
+    procedure btnWireLBClick(Sender: TObject);
     procedure BitBtn1Click(Sender: TObject);
+    procedure btnInP3Click(Sender: TObject);
+    procedure btnWireRBClick(Sender: TObject);
+    procedure btnInP2Click(Sender: TObject);
+    procedure btnWireHClick(Sender: TObject);
+    procedure btnWireVClick(Sender: TObject);
+    procedure btnInP1Click(Sender: TObject);
     procedure BitBtn2Click(Sender: TObject);
+    procedure btnGateP10Click(Sender: TObject);
+    procedure btnGateP13Click(Sender: TObject);
+    procedure btnGateP12Click(Sender: TObject);
+    procedure btnGateP11Click(Sender: TObject);
+    procedure btnGateP20Click(Sender: TObject);
+    procedure btnGateP23Click(Sender: TObject);
+    procedure btnGateP22Click(Sender: TObject);
+    procedure btnGateP21Click(Sender: TObject);
+    procedure btnGateP30Click(Sender: TObject);
+    procedure btnGateP33Click(Sender: TObject);
+    procedure btnWireLTClick(Sender: TObject);
+    procedure btnGateP32Click(Sender: TObject);
+    procedure btnGateP31Click(Sender: TObject);
+    procedure BitBtn42Click(Sender: TObject);
+    procedure BitBtn43Click(Sender: TObject);
+    procedure BitBtn44Click(Sender: TObject);
+    procedure BitBtn45Click(Sender: TObject);
+    procedure BitBtn46Click(Sender: TObject);
+    procedure BitBtn47Click(Sender: TObject);
+    procedure BitBtn48Click(Sender: TObject);
+    procedure BitBtn49Click(Sender: TObject);
     procedure BitBtn4Click(Sender: TObject);
     procedure BitBtn5Click(Sender: TObject);
     procedure BitBtn6Click(Sender: TObject);
@@ -155,6 +214,10 @@ type
     procedure ToggleInput();
     procedure UpdateSelection();
     procedure ListCustmaps();
+    procedure ToggleWireConn(APinA,APinB: integer);
+    procedure SetIOPin(APin: integer);
+    procedure SetGatePin(APin: integer; AType: byte);
+    procedure SetGateType(AType: TMCGate);
   private
     var map: TMapComponentMap;
     var act: TMapAction;
@@ -198,7 +261,6 @@ begin
   Image1.Picture.Clear;
   Label2.Caption := '';
   Label6.Caption := '';
-  Label8.Caption := '';
   Label4.Caption := Format('%dx%d', [map.CursorPos.x, map.CursorPos.y]);
   Label10.Caption := Format('%dx%d', [map.CursorSize.w, map.CursorSize.h]);
   PageControl1.Hide;
@@ -209,23 +271,18 @@ begin
   end;
 
   Label6.Caption := cmp.Name;
-  Label8.Caption := cmp.FullName;
   Label4.Caption := Format('%dx%d', [cmp.Pos.x, cmp.Pos.y]);
   Label10.Caption := Format('%dx%d', [cmp.Size.w, cmp.Size.h]);
   PageControl1.Show;
 
   if cmp is TMapComponentWire then
   begin
-    ImageList1.GetBitmap(0, Image1.Picture.Bitmap);
+    il32.GetBitmap(0, Image1.Picture.Bitmap);
     Label2.Caption := 'Wire';
     PageControl1.ActivePageIndex := tsWire.PageIndex;
     Label11.Caption := '';
-    ComboBox1.Items.Clear;
-    ComboBox2.Items.Clear;
     for i := TMapComponentWire(cmp).PinLow() to TMapComponentWire(cmp).PinHigh() do
     begin
-      ComboBox1.Items.Add('Pin %d', [i]);
-      ComboBox2.Items.Add('Pin %d', [i]);
       if Label11.Caption <> '' then
       begin
         Label11.Caption := Label11.Caption + #13#10;
@@ -235,7 +292,7 @@ begin
   end
   else if cmp is TMapComponentInput then
   begin
-    ImageList1.GetBitmap(1, Image1.Picture.Bitmap);
+    il32.GetBitmap(1, Image1.Picture.Bitmap);
     Label2.Caption := 'Input';
     PageControl1.ActivePageIndex := tsInput.PageIndex;
     Label16.Caption := BoolToStr(TMapComponentInput(cmp).Value, 'true', 'false');
@@ -251,7 +308,7 @@ begin
   end
   else if cmp is TMapComponentOutput then
   begin
-    ImageList1.GetBitmap(2, Image1.Picture.Bitmap);
+    il32.GetBitmap(2, Image1.Picture.Bitmap);
     Label2.Caption := 'Output';
     PageControl1.ActivePageIndex := tsOutput.PageIndex;
     Label18.Caption := BoolToStr(TMapComponentOutput(cmp).Value, 'true', 'false');
@@ -267,49 +324,26 @@ begin
   end
   else if cmp is TMapComponentGate then
   begin
-    ImageList1.GetBitmap(3, Image1.Picture.Bitmap);
+    il32.GetBitmap(3, Image1.Picture.Bitmap);
     Label2.Caption := 'Gate';
     PageControl1.ActivePageIndex := tsGate.PageIndex;
-    ComboBox3.Items.Clear;
-    for mcg in TMCGate do
-    begin
-      ComboBox3.Items.Add(MCGateToStr(mcg));
-    end;
-    ComboBox3.ItemIndex := Integer(TMapComponentGate(cmp).Gate);
     Label14.Caption := '';
-    ComboBox4.Items.Clear;
-    ComboBox5.Items.Clear;
-    ComboBox6.Items.Clear;
     for i := TMapComponentGate(cmp).PinLow() to TMapComponentGate(cmp).PinHigh() do
     begin
-      ComboBox4.Items.Add('Pin %d', [i]);
-      ComboBox5.Items.Add('Pin %d', [i]);
-      ComboBox6.Items.Add('Pin %d', [i]);
       if Label14.Caption <> '' then
       begin
         Label14.Caption := Label14.Caption + #13#10;
       end;
       Label14.Caption := Label14.Caption + Format('#%d'#9'%s'#9'%s', [i, BoolToStr(TMapComponentGate(cmp).PinActive[i], 'active', 'inactive'), BoolToStr(TMapComponentGate(cmp).PinValue[i], 'true', 'false')]);
     end;
-    ComboBox4.ItemIndex := TMapComponentGate(cmp).PinI1;
-    ComboBox5.ItemIndex := TMapComponentGate(cmp).PinI2;
-    ComboBox6.ItemIndex := TMapComponentGate(cmp).PinO1;
   end
   else if cmp is TMapComponentMap then
   begin
-    ImageList1.GetBitmap(4, Image1.Picture.Bitmap);
+    il32.GetBitmap(4, Image1.Picture.Bitmap);
     Label2.Caption := 'Map';
     PageControl1.ActivePageIndex := tsMap.PageIndex;
     Label21.Caption := IntToStr(TMapComponentMap(cmp).SubcomponentCount());
     Label22.Caption := '';
-//    Label29.Caption := IntToStr(TMapComponentMap(cmp).IOConnectionCount());
-//    Label30.Caption := '';
-//    ComboBox7.Items.Clear;
-    //for i := TMapComponentMap(cmp).PinLow() to TMapComponentMap(cmp).PinHigh() do
-    //begin
-    //  ComboBox7.Items.Add('Pin %d', [i]);
-    //end;
-    //ComboBox8.Items.Clear;
     for i := 0 to TMapComponentMap(cmp).SubcomponentCount()-1 do
     begin
       if Label22.Caption <> '' then
@@ -319,22 +353,12 @@ begin
       if not Assigned(TMapComponentMap(cmp).Subcomponent(i)) then
       begin
         Label22.Caption := Label22.Caption + Format('#%d'#9'nil', [i]);
-//        ComboBox8.Items.Add('nil', []);
       end
       else
       begin
         Label22.Caption := Label22.Caption + Format('#%d'#9'%s'#9'%s'#9'[%d;%d][%d;%d]', [i, TMapComponentMap(cmp).Subcomponent(i).Name, MCTypeIntToStr(MCTypeInt(TMapComponentMap(cmp).Subcomponent(i))), TMapComponentMap(cmp).Subcomponent(i).Pos.x, TMapComponentMap(cmp).Subcomponent(i).Pos.y, TMapComponentMap(cmp).Subcomponent(i).Size.w, TMapComponentMap(cmp).Subcomponent(i).Size.h]);
-//        ComboBox8.Items.Add('%s (%s)', [TMapComponentMap(cmp).Subcomponent(i).Name, MCTypeIntToStr(MCTypeInt(TMapComponentMap(cmp).Subcomponent(i)))]);
       end;
     end;
-    //for i := 0 to TMapComponentMap(cmp).IOConnectionCount()-1 do
-    //begin
-    //  if Label30.Caption <> '' then
-    //  begin
-    //    Label30.Caption := Label30.Caption + #13#10;
-    //  end;
-    //  Label30.Caption := Label30.Caption + Format('#%d'#9'C %d'#9'P %d', [i, TMapComponentMap(cmp).IOConnection(i).intCmp, TMapComponentMap(cmp).IOConnection(i).intPin]);
-    //end;
   end;
 end;
 
@@ -369,13 +393,87 @@ begin
   end;
 end;
 
+procedure TfMainForm.ToggleWireConn(APinA,APinB: integer);
+begin
+  if (not Assigned(cmp)) or (not (cmp is TMapComponentWire)) then
+  begin
+    Exit;
+  end;
+
+  if TMapComponentWire(cmp).Connected(APinA, APinB) > -1 then
+  begin
+    TMapComponentWire(cmp).Disconnect(APinA, APinB);
+  end
+  else
+  begin
+    TMapComponentWire(cmp).Connect(APinA, APinB);
+  end;
+
+  UpdateSelection();
+  map.RedrawField := cmp.Pos;
+  DrawMap(mdmsRedraw);
+end;
+
+procedure TfMainForm.SetIOPin(APin: integer);
+var i: integer;
+begin
+  if (not Assigned(cmp)) or (not (cmp is TMapComponentIO)) or
+     (APin < TMapComponentIO(cmp).PinLow()) or (APin > TMapComponentIO(cmp).PinHigh()) then
+  begin
+    Exit;
+  end;
+
+  for i := TMapComponentIO(cmp).PinLow() to TMapComponentIO(cmp).PinHigh() do
+  begin
+    TMapComponentIO(cmp).PinActive[i] := false;
+  end;
+  TMapComponentIO(cmp).PinActive[APin] := true;
+
+  UpdateSelection();
+  map.RedrawField := cmp.Pos;
+  DrawMap(mdmsRedraw);
+end;
+
+procedure TfMainForm.SetGatePin(APin: integer; AType: byte);
+begin
+  if (not Assigned(cmp)) or (not (cmp is TMapComponentGate)) then
+  begin
+    Exit;
+  end;
+
+  case AType of
+    0: TMapComponentGate(cmp).PinI1 := APin;
+    1: TMapComponentGate(cmp).PinI2 := APin;
+    2: TMapComponentGate(cmp).PinO1 := APin;
+  end;
+
+  UpdateSelection();
+  map.RedrawField := cmp.Pos;
+  DrawMap(mdmsRedraw);
+end;
+
+procedure TfMainForm.SetGateType(AType: TMCGate);
+begin
+  if (not Assigned(cmp)) or (not (cmp is TMapComponentGate)) then
+  begin
+    Exit;
+  end;
+
+  TMapComponentGate(cmp).Gate := AType;
+  UpdateSelection();
+  map.RedrawField := cmp.Pos;
+  DrawMap(mdmsRedraw);
+end;
+
 (* EVENTS *)
 
 procedure TfMainForm.imgMainMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 var sl: TStringList;
-    s,ss: string;
-    mcg: TMCGate;
+    s{,ss}: string;
+//    mcg: TMCGate;
+//    intCmp: integer;
+//    theCmp: TMapComponentBase;
 begin
   cmp := map.Subcomponent(map.SubcomponentByField(map.CursorPos));
 
@@ -426,50 +524,11 @@ begin
         end
         else if s = 'STD/GT' then
         begin
-          mcg := mcgNone;
-          ss := '';
-          if Length(sl.Text) >= 9 then
-          begin
-            ss := copy(sl.Text, 7, 3);
-            if ss = '/BF' then
-            begin
-              mcg := mcgBuf;
-            end
-            else if ss = '/IN' then
-            begin
-              mcg := mcgInv;
-            end
-            else if ss = '/AD' then
-            begin
-              mcg := mcgAnd;
-            end
-            else if ss = '/ND' then
-            begin
-              mcg := mcgNand;
-            end
-            else if ss = '/OR' then
-            begin
-              mcg := mcgOr;
-            end
-            else if ss = '/NR' then
-            begin
-              mcg := mcgNor;
-            end
-            else if ss = '/XR' then
-            begin
-              mcg := mcgXor;
-            end
-            else if ss = '/XN' then
-            begin
-              mcg := mcgXnor;
-            end
-          end;
-          map.AddGate(mcg, map.CursorPos);
+          map.AddGate(mcgNone, map.CursorPos);
         end
         else
         begin
           map.SetMCDef(0, sl.Text, map.CursorPos);
-//          map.AddMap(MCSize(0,0), map.CursorPos, sl.Text);
         end;
       end;
     finally
@@ -530,9 +589,10 @@ procedure TfMainForm.FormCreate(Sender: TObject);
 begin
   map := TMapComponentMap.Create('map', MCSize(20,10), MCPos(0,0), nil);
   act := maSelect;
-  cmp := nil;
+  cmp := map;
   Timer1Timer(nil);
   ListCustmaps();
+  UpdateSelection();
 end;
 
 procedure TfMainForm.BitBtn2Click(Sender: TObject);
@@ -543,10 +603,145 @@ begin
   imgMain.Cursor := crHandPoint;
 end;
 
+procedure TfMainForm.btnGateP10Click(Sender: TObject);
+begin
+  SetGatePin(0, 0);
+end;
+
+procedure TfMainForm.btnGateP13Click(Sender: TObject);
+begin
+  SetGatePin(3, 0);
+end;
+
+procedure TfMainForm.btnGateP12Click(Sender: TObject);
+begin
+  SetGatePin(2, 0);
+end;
+
+procedure TfMainForm.btnGateP11Click(Sender: TObject);
+begin
+  SetGatePin(1, 0);
+end;
+
+procedure TfMainForm.btnGateP20Click(Sender: TObject);
+begin
+  SetGatePin(0, 1);
+end;
+
+procedure TfMainForm.btnGateP23Click(Sender: TObject);
+begin
+  SetGatePin(3, 1);
+end;
+
+procedure TfMainForm.btnGateP22Click(Sender: TObject);
+begin
+  SetGatePin(2, 1);
+end;
+
+procedure TfMainForm.btnGateP21Click(Sender: TObject);
+begin
+  SetGatePin(1, 1);
+end;
+
+procedure TfMainForm.btnGateP30Click(Sender: TObject);
+begin
+  SetGatePin(0, 2);
+end;
+
+procedure TfMainForm.btnGateP33Click(Sender: TObject);
+begin
+  SetGatePin(3, 2);
+end;
+
+procedure TfMainForm.btnWireLTClick(Sender: TObject);
+begin
+  ToggleWireConn(0,3);
+end;
+
+procedure TfMainForm.btnGateP32Click(Sender: TObject);
+begin
+  SetGatePin(2, 2);
+end;
+
+procedure TfMainForm.btnGateP31Click(Sender: TObject);
+begin
+  SetGatePin(1, 2);
+end;
+
+procedure TfMainForm.BitBtn42Click(Sender: TObject);
+begin
+  SetGateType(mcgBuf);
+end;
+
+procedure TfMainForm.BitBtn43Click(Sender: TObject);
+begin
+  SetGateType(mcgNand);
+end;
+
+procedure TfMainForm.BitBtn44Click(Sender: TObject);
+begin
+  SetGateType(mcgAnd);
+end;
+
+procedure TfMainForm.BitBtn45Click(Sender: TObject);
+begin
+  SetGateType(mcgInv);
+end;
+
+procedure TfMainForm.BitBtn46Click(Sender: TObject);
+begin
+  SetGateType(mcgOr);
+end;
+
+procedure TfMainForm.BitBtn47Click(Sender: TObject);
+begin
+  SetGateType(mcgXnor);
+end;
+
+procedure TfMainForm.BitBtn48Click(Sender: TObject);
+begin
+  SetGateType(mcgXor);
+end;
+
+procedure TfMainForm.BitBtn49Click(Sender: TObject);
+begin
+  SetGateType(mcgNor);
+end;
+
 procedure TfMainForm.BitBtn1Click(Sender: TObject);
 begin
   map.Tick();
   DrawMap(mdmsComplete);
+end;
+
+procedure TfMainForm.btnInP3Click(Sender: TObject);
+begin
+  SetIOPin(3);
+end;
+
+procedure TfMainForm.btnWireRBClick(Sender: TObject);
+begin
+  ToggleWireConn(1,2);
+end;
+
+procedure TfMainForm.btnInP2Click(Sender: TObject);
+begin
+  SetIOPin(2);
+end;
+
+procedure TfMainForm.btnWireHClick(Sender: TObject);
+begin
+  ToggleWireConn(0,2);
+end;
+
+procedure TfMainForm.btnWireVClick(Sender: TObject);
+begin
+  ToggleWireConn(1,3);
+end;
+
+procedure TfMainForm.btnInP1Click(Sender: TObject);
+begin
+  SetIOPin(1);
 end;
 
 procedure TfMainForm.BitBtn11Click(Sender: TObject);
@@ -580,12 +775,14 @@ begin
   imgMain.Cursor := crDrag;
 end;
 
-procedure TfMainForm.BitBtn14Click(Sender: TObject);
+procedure TfMainForm.btnInP0Click(Sender: TObject);
 begin
+  SetIOPin(0);
 end;
 
-procedure TfMainForm.BitBtn15Click(Sender: TObject);
+procedure TfMainForm.btnWireRTClick(Sender: TObject);
 begin
+  ToggleWireConn(2,3);
 end;
 
 procedure TfMainForm.BitBtn16Click(Sender: TObject);
@@ -626,57 +823,25 @@ begin
   end;
 end;
 
+procedure TfMainForm.btnWireLBClick(Sender: TObject);
+begin
+  ToggleWireConn(0,1);
+end;
+
 procedure TfMainForm.BitBtn4Click(Sender: TObject);
 begin
-  if (not Assigned(cmp)) or (not (cmp is TMapComponentWire)) then
-  begin
-    Exit;
-  end;
-
-  TMapComponentWire(cmp).Connect(ComboBox1.ItemIndex, ComboBox2.ItemIndex);
-  UpdateSelection();
-  map.RedrawField := cmp.Pos;
-  DrawMap(mdmsRedraw);
 end;
 
 procedure TfMainForm.BitBtn5Click(Sender: TObject);
 begin
-  if (not Assigned(cmp)) or (not (cmp is TMapComponentWire)) then
-  begin
-    Exit;
-  end;
-
-  TMapComponentWire(cmp).Disconnect(ComboBox1.ItemIndex, ComboBox2.ItemIndex);
-  map.RedrawField := cmp.Pos;
-  DrawMap(mdmsRedraw);
 end;
 
 procedure TfMainForm.BitBtn6Click(Sender: TObject);
 begin
-  if (not Assigned(cmp)) or (not (cmp is TMapComponentGate)) then
-  begin
-    Exit;
-  end;
-
-  TMapComponentGate(cmp).Gate := TMCGate(ComboBox3.ItemIndex);
-  UpdateSelection();
-  map.RedrawField := cmp.Pos;
-  DrawMap(mdmsRedraw);
 end;
 
 procedure TfMainForm.BitBtn7Click(Sender: TObject);
 begin
-  if (not Assigned(cmp)) or (not (cmp is TMapComponentGate)) then
-  begin
-    Exit;
-  end;
-
-  TMapComponentGate(cmp).PinI1 := ComboBox4.ItemIndex;
-  TMapComponentGate(cmp).PinI2 := ComboBox5.ItemIndex;
-  TMapComponentGate(cmp).PinO1 := ComboBox6.ItemIndex;
-  UpdateSelection();
-  map.RedrawField := cmp.Pos;
-  DrawMap(mdmsRedraw);
 end;
 
 procedure TfMainForm.BitBtn8Click(Sender: TObject);

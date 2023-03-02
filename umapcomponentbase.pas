@@ -31,7 +31,7 @@ type
 
       function GetName(): string;
       procedure SetName(AValue: string);
-      function GetFullName(): string;
+//      function GetFullName(): string;
       function GetSize(): TMCSize;
       procedure SetSize(AValue: TMCSize);
       function GetPos(): TMCPos;
@@ -46,7 +46,7 @@ type
     public
 
       property Name: string read GetName write SetName;
-      property FullName: string read GetFullName;
+//      property FullName: string read GetFullName;
       property Size: TMCSize read GetSize write SetSize;
       property Pos: TMCPos read GetPos write SetPos;
       property Parent: TMapComponentBase read GetParent write SetParent;
@@ -213,7 +213,7 @@ begin
   end;
 end;
 
-function TMapComponentBase.GetFullName(): string;
+{function TMapComponentBase.GetFullName(): string;
 const METHOD: string = 'TMapComponentBase.GetFullName';
 begin
   FLogger._s(METHOD);
@@ -228,7 +228,7 @@ begin
   finally
     FLogger._e(TypeInfo(result), @result);
   end;
-end;
+end;}
 
 function TMapComponentBase.GetSize(): TMCSize;
 const METHOD: string = 'TMapComponentBase.GetSize';

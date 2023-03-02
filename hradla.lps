@@ -19,8 +19,9 @@
         <ComponentName Value="fMainForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <TopLine Value="483"/>
-        <CursorPos Y="500"/>
+        <IsVisibleTab Value="True"/>
+        <TopLine Value="337"/>
+        <CursorPos X="16" Y="259"/>
         <UsageCount Value="201"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -31,24 +32,25 @@
         <EditorIndex Value="10"/>
         <TopLine Value="53"/>
         <CursorPos X="56" Y="59"/>
-        <UsageCount Value="181"/>
+        <UsageCount Value="185"/>
         <Loaded Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="umapcomponentinput.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="3"/>
+        <TopLine Value="25"/>
         <CursorPos X="41" Y="8"/>
-        <UsageCount Value="116"/>
+        <UsageCount Value="120"/>
         <Loaded Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="umapcomponentbase.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="9"/>
-        <TopLine Value="361"/>
-        <CursorPos X="109" Y="382"/>
-        <UsageCount Value="116"/>
+        <TopLine Value="36"/>
+        <CursorPos X="3" Y="34"/>
+        <UsageCount Value="120"/>
         <Loaded Value="True"/>
       </Unit>
       <Unit>
@@ -57,7 +59,7 @@
         <EditorIndex Value="8"/>
         <TopLine Value="240"/>
         <CursorPos X="3" Y="247"/>
-        <UsageCount Value="113"/>
+        <UsageCount Value="117"/>
         <Loaded Value="True"/>
       </Unit>
       <Unit>
@@ -65,7 +67,7 @@
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="4"/>
         <CursorPos X="30" Y="7"/>
-        <UsageCount Value="111"/>
+        <UsageCount Value="115"/>
         <Loaded Value="True"/>
       </Unit>
       <Unit>
@@ -74,7 +76,7 @@
         <EditorIndex Value="5"/>
         <TopLine Value="84"/>
         <CursorPos X="49" Y="95"/>
-        <UsageCount Value="111"/>
+        <UsageCount Value="115"/>
         <Loaded Value="True"/>
       </Unit>
       <Unit>
@@ -83,26 +85,25 @@
         <EditorIndex Value="6"/>
         <TopLine Value="230"/>
         <CursorPos X="49" Y="242"/>
-        <UsageCount Value="103"/>
+        <UsageCount Value="107"/>
         <Loaded Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="umapcomponentwire.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="7"/>
-        <TopLine Value="65"/>
-        <CursorPos X="49" Y="77"/>
-        <UsageCount Value="102"/>
+        <TopLine Value="268"/>
+        <CursorPos Y="173"/>
+        <UsageCount Value="106"/>
         <Loaded Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="umapcomponentmap.pas"/>
         <IsPartOfProject Value="True"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="2"/>
-        <TopLine Value="1348"/>
-        <CursorPos X="3" Y="1365"/>
-        <UsageCount Value="100"/>
+        <TopLine Value="1137"/>
+        <CursorPos X="48" Y="1148"/>
+        <UsageCount Value="104"/>
         <Loaded Value="True"/>
       </Unit>
       <Unit>
@@ -114,7 +115,7 @@
         <EditorIndex Value="1"/>
         <TopLine Value="77"/>
         <CursorPos X="40" Y="106"/>
-        <UsageCount Value="80"/>
+        <UsageCount Value="84"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit>
@@ -238,124 +239,124 @@
     </Units>
     <JumpHistory HistoryIndex="29">
       <Position>
-        <Filename Value="umapcomponentmap.pas"/>
-        <Caret Line="1330" TopLine="1311"/>
-      </Position>
-      <Position>
-        <Filename Value="umapcomponentmap.pas"/>
-        <Caret Line="1336" TopLine="1311"/>
-      </Position>
-      <Position>
-        <Filename Value="umapcomponentmap.pas"/>
-        <Caret Line="1337" TopLine="1325"/>
-      </Position>
-      <Position>
-        <Filename Value="umapcomponentmap.pas"/>
-        <Caret Line="1339" TopLine="1325"/>
-      </Position>
-      <Position>
-        <Filename Value="umapcomponentmap.pas"/>
-        <Caret Line="1340" TopLine="1325"/>
-      </Position>
-      <Position>
-        <Filename Value="umapcomponentmap.pas"/>
-        <Caret Line="1337" TopLine="1325"/>
-      </Position>
-      <Position>
-        <Filename Value="umapcomponentmap.pas"/>
-        <Caret Line="1339" TopLine="1325"/>
-      </Position>
-      <Position>
-        <Filename Value="umapcomponentmap.pas"/>
-        <Caret Line="1340" TopLine="1325"/>
-      </Position>
-      <Position>
-        <Filename Value="umapcomponentmap.pas"/>
-        <Caret Line="1337" TopLine="1325"/>
-      </Position>
-      <Position>
-        <Filename Value="umapcomponentmap.pas"/>
-        <Caret Line="1347" TopLine="1325"/>
-      </Position>
-      <Position>
-        <Filename Value="umapcomponentmap.pas"/>
-        <Caret Line="1353" TopLine="1348"/>
-      </Position>
-      <Position>
-        <Filename Value="umapcomponentmap.pas"/>
-        <Caret Line="1354" TopLine="1348"/>
-      </Position>
-      <Position>
-        <Filename Value="umapcomponentmap.pas"/>
-        <Caret Line="1356" TopLine="1348"/>
-      </Position>
-      <Position>
-        <Filename Value="umapcomponentmap.pas"/>
-        <Caret Line="1357" TopLine="1348"/>
-      </Position>
-      <Position>
-        <Filename Value="umapcomponentmap.pas"/>
-        <Caret Line="1362" TopLine="1348"/>
-      </Position>
-      <Position>
-        <Filename Value="umapcomponentmap.pas"/>
-        <Caret Line="1354" TopLine="1348"/>
-      </Position>
-      <Position>
-        <Filename Value="umapcomponentmap.pas"/>
-        <Caret Line="1356" TopLine="1348"/>
-      </Position>
-      <Position>
-        <Filename Value="umapcomponentmap.pas"/>
-        <Caret Line="1357" TopLine="1348"/>
-      </Position>
-      <Position>
-        <Filename Value="umapcomponentmap.pas"/>
-        <Caret Line="1362" TopLine="1348"/>
-      </Position>
-      <Position>
-        <Filename Value="umapcomponentmap.pas"/>
-        <Caret Line="1364" TopLine="1348"/>
-      </Position>
-      <Position>
-        <Filename Value="umapcomponentmap.pas"/>
-        <Caret Line="1354" TopLine="1348"/>
-      </Position>
-      <Position>
-        <Filename Value="umapcomponentmap.pas"/>
-        <Caret Line="1324" TopLine="1307"/>
-      </Position>
-      <Position>
-        <Filename Value="umapcomponentmap.pas"/>
-        <Caret Line="1369" TopLine="1354"/>
-      </Position>
-      <Position>
-        <Filename Value="umapcomponentmap.pas"/>
-        <Caret Line="1370" TopLine="1354"/>
-      </Position>
-      <Position>
-        <Filename Value="umapcomponentmap.pas"/>
-        <Caret Line="1322" TopLine="1305"/>
-      </Position>
-      <Position>
-        <Filename Value="umapcomponentmap.pas"/>
-        <Caret Line="1371" TopLine="1356"/>
+        <Filename Value="umainform.pas"/>
+        <Caret Line="865" TopLine="863"/>
       </Position>
       <Position>
         <Filename Value="umainform.pas"/>
-        <Caret Line="521" TopLine="500"/>
+        <Caret Line="864" TopLine="862"/>
       </Position>
       <Position>
         <Filename Value="umainform.pas"/>
-        <Caret Line="522" TopLine="500"/>
+        <Caret Line="863" TopLine="861"/>
       </Position>
       <Position>
         <Filename Value="umainform.pas"/>
-        <Caret Line="526" TopLine="500"/>
+        <Caret Line="869" TopLine="867"/>
       </Position>
       <Position>
         <Filename Value="umainform.pas"/>
-        <Caret Line="500" TopLine="483"/>
+        <Caret Line="738" TopLine="735"/>
+      </Position>
+      <Position>
+        <Filename Value="umainform.pas"/>
+        <Caret Line="748" Column="21" TopLine="736"/>
+      </Position>
+      <Position>
+        <Filename Value="umainform.pas"/>
+        <Caret Line="749" Column="21" TopLine="737"/>
+      </Position>
+      <Position>
+        <Filename Value="umainform.pas"/>
+        <Caret Line="745" Column="22" TopLine="738"/>
+      </Position>
+      <Position>
+        <Filename Value="umainform.pas"/>
+        <Caret Line="761" Column="20" TopLine="739"/>
+      </Position>
+      <Position>
+        <Filename Value="umainform.pas"/>
+        <Caret Line="772" Column="21" TopLine="740"/>
+      </Position>
+      <Position>
+        <Filename Value="umainform.pas"/>
+        <Caret Line="773" Column="21" TopLine="741"/>
+      </Position>
+      <Position>
+        <Filename Value="umainform.pas"/>
+        <Caret Line="597" Column="16" TopLine="544"/>
+      </Position>
+      <Position>
+        <Filename Value="umainform.pas"/>
+        <Caret Line="343" TopLine="344"/>
+      </Position>
+      <Position>
+        <Filename Value="umainform.pas"/>
+        <Caret Line="407" Column="35" TopLine="390"/>
+      </Position>
+      <Position>
+        <Filename Value="umapcomponentwire.pas"/>
+        <Caret Line="36" Column="16" TopLine="20"/>
+      </Position>
+      <Position>
+        <Filename Value="umapcomponentwire.pas"/>
+        <Caret Line="248" Column="38" TopLine="241"/>
+      </Position>
+      <Position>
+        <Filename Value="umapcomponentwire.pas"/>
+        <Caret Line="36" Column="16" TopLine="20"/>
+      </Position>
+      <Position>
+        <Filename Value="umapcomponentwire.pas"/>
+        <Caret Line="204" Column="8" TopLine="197"/>
+      </Position>
+      <Position>
+        <Filename Value="umapcomponentwire.pas"/>
+        <Caret Line="231" Column="12" TopLine="214"/>
+      </Position>
+      <Position>
+        <Filename Value="umapcomponentwire.pas"/>
+        <Caret Line="173" TopLine="268"/>
+      </Position>
+      <Position>
+        <Filename Value="umainform.pas"/>
+        <Caret Line="407" Column="57" TopLine="390"/>
+      </Position>
+      <Position>
+        <Filename Value="umapcomponentmap.pas"/>
+        <Caret Line="75" Column="22" TopLine="49"/>
+      </Position>
+      <Position>
+        <Filename Value="umainform.pas"/>
+        <Caret Line="478" Column="13" TopLine="472"/>
+      </Position>
+      <Position>
+        <Filename Value="umainform.pas"/>
+        <Caret Line="479" Column="13" TopLine="473"/>
+      </Position>
+      <Position>
+        <Filename Value="umainform.pas"/>
+        <Caret Line="478" Column="13" TopLine="472"/>
+      </Position>
+      <Position>
+        <Filename Value="umainform.pas"/>
+        <Caret Line="477" Column="13" TopLine="471"/>
+      </Position>
+      <Position>
+        <Filename Value="umainform.pas"/>
+        <Caret Line="476" Column="13" TopLine="470"/>
+      </Position>
+      <Position>
+        <Filename Value="umapcomponentbase.pas"/>
+        <Caret Line="34" Column="18" TopLine="25"/>
+      </Position>
+      <Position>
+        <Filename Value="umapcomponentbase.pas"/>
+        <Caret Line="231" Column="6" TopLine="215"/>
+      </Position>
+      <Position>
+        <Filename Value="umapcomponentbase.pas"/>
+        <Caret Line="34" Column="3" TopLine="36"/>
       </Position>
     </JumpHistory>
     <RunParams>
@@ -363,41 +364,4 @@
       <Modes ActiveMode=""/>
     </RunParams>
   </ProjectSession>
-  <Debugging>
-    <Watches>
-      <Item>
-        <Expression Value="ANeighbourField"/>
-      </Item>
-      <Item>
-        <Expression Value="FPinConnections[ii]"/>
-      </Item>
-      <Item>
-        <Expression Value="cmpFrom"/>
-      </Item>
-      <Item>
-        <Expression Value="cmpTo"/>
-      </Item>
-      <Item>
-        <Expression Value="i"/>
-      </Item>
-      <Item>
-        <Expression Value="FPos"/>
-      </Item>
-      <Item>
-        <Expression Value="FSize"/>
-      </Item>
-      <Item>
-        <Expression Value="APos"/>
-      </Item>
-      <Item>
-        <Expression Value="ASize"/>
-      </Item>
-      <Item>
-        <Expression Value="self"/>
-      </Item>
-      <Item>
-        <Expression Value="intTmp"/>
-      </Item>
-    </Watches>
-  </Debugging>
 </CONFIG>

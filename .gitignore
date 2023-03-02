@@ -59,7 +59,6 @@ hradla
 *.tvsconfig
 *.dsk
 log.txt
-custmaps/*.mcdef
 
 # Delphi history and backups
 __history/

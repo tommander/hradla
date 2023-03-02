@@ -29,7 +29,7 @@ type
       procedure Clear();
       procedure Draw(ACanvas: TCanvas; ARect: TRect; AStyle: TMCDrawStyle); override;
       procedure Tick(APin: integer);
-      function GetMCDef(ALevel: byte{; AIgnorePos: boolean = false}): string; override;
+      function GetMCDef(ALevel: byte): string; override;
       procedure SetMCDef(ALevel: byte; const AValue: string; AAddToPos: TMCPos); override;
       procedure Connect(APinA, APinB: integer);
       procedure Disconnect(APinA, APinB: integer);
@@ -42,17 +42,16 @@ implementation
 
 (* PROTECTED *)
 
-function TMapComponentWire.GetMCDef(ALevel: byte{; AIgnorePos: boolean = false}): string;
+function TMapComponentWire.GetMCDef(ALevel: byte): string;
 const METHOD: string = 'TMapComponentWire.GetMCDef';
 var i: integer;
 begin
   FLogger._ss(METHOD);
   try
     FLogger._pe('ALevel', TypeInfo(ALevel), @ALevel);
-//    FLogger._pe('AIgnorePos', TypeInfo(AIgnorePos), @AIgnorePos);
     FLogger._se();
 
-    result := inherited GetMCDef(ALevel{, AIgnorePos});
+    result := inherited GetMCDef(ALevel);
     for i := Low(FPinConnections) to High(FPinConnections) do
     begin
       result := result + Format(#13#10'%spinconn="%d,%d,%d"', [LevelStr(ALevel),i, FPinConnections[i].PinA, FPinConnections[i].PinB]);
@@ -168,11 +167,9 @@ var ii: integer;
 begin
   FLogger._ss(METHOD);
   try
-//    FLogger._pe('ANeighbourField', TypeInfo(ANeighbourField), @ANeighbourField);
     FLogger._pe('APin', TypeInfo(APin), @APin);
     FLogger._se();
 
-//    i := GetPinIndexFromNeighbourField(ANeighbourField);
     for ii := Low(FPinConnections) to High(FPinConnections) do
     begin
       if FPinConnections[ii].PinA = APin then

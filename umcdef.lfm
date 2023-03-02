@@ -1,16 +1,16 @@
 object fMCDef: TfMCDef
-  Left = 466
+  Left = 1945
   Height = 520
-  Top = 261
+  Top = 351
   Width = 653
   Caption = 'fMCDef'
   ClientHeight = 520
   ClientWidth = 653
-  LCLVersion = '2.2.4.0'
+  LCLVersion = '2.3.0.0'
   inline SynEdit1: TSynEdit
     Left = 0
-    Height = 479
-    Top = 41
+    Height = 469
+    Top = 51
     Width = 653
     Align = alClient
     Font.Height = 13
@@ -20,7 +20,7 @@ object fMCDef: TfMCDef
     ParentColor = False
     ParentFont = False
     TabOrder = 0
-    Gutter.Width = 62
+    Gutter.Width = 65
     Gutter.MouseActions = <>
     RightGutter.Width = 0
     RightGutter.MouseActions = <>
@@ -597,7 +597,7 @@ object fMCDef: TfMCDef
         MouseActions = <>
       end
       object SynGutterLineNumber1: TSynGutterLineNumber
-        Width = 22
+        Width = 25
         MouseActions = <>
         MarkupInfo.Background = clBtnFace
         MarkupInfo.Foreground = clNone
@@ -629,21 +629,21 @@ object fMCDef: TfMCDef
   end
   object Panel1: TPanel
     Left = 0
-    Height = 41
+    Height = 51
     Top = 0
     Width = 653
     Align = alTop
     AutoSize = True
     BevelInner = bvRaised
     BevelOuter = bvLowered
-    ClientHeight = 41
+    ClientHeight = 51
     ClientWidth = 653
     TabOrder = 1
     object BitBtn1: TBitBtn
       Left = 8
-      Height = 25
+      Height = 35
       Top = 8
-      Width = 53
+      Width = 51
       Align = alLeft
       AutoSize = True
       BorderSpacing.Left = 6
@@ -654,10 +654,10 @@ object fMCDef: TfMCDef
       TabOrder = 0
     end
     object BitBtn2: TBitBtn
-      Left = 61
-      Height = 25
+      Left = 59
+      Height = 35
       Top = 8
-      Width = 100
+      Width = 106
       Align = alLeft
       AutoSize = True
       BorderSpacing.Top = 6
@@ -667,10 +667,10 @@ object fMCDef: TfMCDef
       TabOrder = 1
     end
     object BitBtn3: TBitBtn
-      Left = 161
-      Height = 25
+      Left = 165
+      Height = 35
       Top = 8
-      Width = 83
+      Width = 87
       Align = alLeft
       AutoSize = True
       BorderSpacing.Top = 6
@@ -680,10 +680,10 @@ object fMCDef: TfMCDef
       TabOrder = 2
     end
     object BitBtn4: TBitBtn
-      Left = 590
-      Height = 25
+      Left = 593
+      Height = 35
       Top = 8
-      Width = 55
+      Width = 52
       Align = alRight
       AutoSize = True
       BorderSpacing.Top = 6
@@ -694,10 +694,10 @@ object fMCDef: TfMCDef
       TabOrder = 3
     end
     object BitBtn5: TBitBtn
-      Left = 244
-      Height = 25
+      Left = 252
+      Height = 35
       Top = 8
-      Width = 137
+      Width = 147
       Align = alLeft
       AutoSize = True
       BorderSpacing.Top = 6

@@ -1,17 +1,17 @@
 object fMainForm: TfMainForm
-  Left = 406
-  Height = 637
-  Top = 190
+  Left = 1863
+  Height = 726
+  Top = 183
   Width = 1258
   Caption = 'fMainForm'
-  ClientHeight = 637
+  ClientHeight = 726
   ClientWidth = 1258
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  LCLVersion = '2.2.4.0'
+  LCLVersion = '2.3.0.0'
   object imgMain: TImage
     Left = 175
-    Height = 527
+    Height = 616
     Top = 55
     Width = 747
     Align = alClient
@@ -23,94 +23,45 @@ object fMainForm: TfMainForm
   end
   object pnlR: TPanel
     Left = 927
-    Height = 527
+    Height = 616
     Top = 55
     Width = 331
     Align = alRight
     BevelInner = bvRaised
     BevelOuter = bvLowered
-    ClientHeight = 527
+    ClientHeight = 616
     ClientWidth = 331
     TabOrder = 0
     object PageControl1: TPageControl
       Left = 2
-      Height = 383
-      Top = 142
+      Height = 474
+      Top = 140
       Width = 327
-      ActivePage = tsMap
+      ActivePage = tsWire
       Align = alClient
-      ShowTabs = False
-      TabIndex = 4
+      TabIndex = 0
       TabOrder = 0
       TabPosition = tpLeft
       object tsWire: TTabSheet
         Caption = 'Wire'
-        ClientHeight = 375
-        ClientWidth = 319
+        ClientHeight = 470
+        ClientWidth = 256
         object ScrollBox1: TScrollBox
           Left = 0
-          Height = 375
+          Height = 470
           Top = 0
-          Width = 319
-          HorzScrollBar.Page = 120
-          VertScrollBar.Page = 226
+          Width = 256
+          HorzScrollBar.Page = 240
+          VertScrollBar.Page = 141
           Align = alClient
-          ClientHeight = 371
-          ClientWidth = 315
+          ClientHeight = 468
+          ClientWidth = 254
           TabOrder = 0
-          object ComboBox1: TComboBox
-            Left = 6
-            Height = 23
-            Top = 15
-            Width = 303
-            Align = alTop
-            BorderSpacing.Left = 6
-            BorderSpacing.Right = 6
-            ItemHeight = 15
-            Style = csDropDownList
-            TabOrder = 0
-          end
-          object ComboBox2: TComboBox
-            Left = 6
-            Height = 23
-            Top = 59
-            Width = 303
-            Align = alTop
-            BorderSpacing.Left = 6
-            BorderSpacing.Right = 6
-            ItemHeight = 15
-            Style = csDropDownList
-            TabOrder = 1
-          end
-          object BitBtn4: TBitBtn
-            Left = 6
-            Height = 30
-            Top = 82
-            Width = 303
-            Align = alTop
-            BorderSpacing.Left = 6
-            BorderSpacing.Right = 6
-            Caption = 'Connect'
-            OnClick = BitBtn4Click
-            TabOrder = 2
-          end
-          object BitBtn5: TBitBtn
-            Left = 6
-            Height = 30
-            Top = 112
-            Width = 303
-            Align = alTop
-            BorderSpacing.Left = 6
-            BorderSpacing.Right = 6
-            Caption = 'Disconnect'
-            OnClick = BitBtn5Click
-            TabOrder = 3
-          end
           object Label11: TLabel
             Left = 6
-            Height = 15
-            Top = 169
-            Width = 303
+            Height = 19
+            Top = 71
+            Width = 242
             Align = alTop
             BorderSpacing.Left = 6
             BorderSpacing.Top = 6
@@ -118,45 +69,22 @@ object fMainForm: TfMainForm
             Caption = 'Label11'
             ParentColor = False
           end
-          object Label23: TLabel
-            Left = 6
-            Height = 15
-            Top = 0
-            Width = 303
-            Align = alTop
-            BorderSpacing.Left = 6
-            BorderSpacing.Right = 6
-            Caption = 'First pin:'
-            ParentColor = False
-          end
-          object Label24: TLabel
-            Left = 6
-            Height = 15
-            Top = 44
-            Width = 303
-            Align = alTop
-            BorderSpacing.Left = 6
-            BorderSpacing.Top = 6
-            BorderSpacing.Right = 6
-            Caption = 'Second pin:'
-            ParentColor = False
-          end
           object Panel11: TPanel
             Left = 0
-            Height = 21
-            Top = 142
-            Width = 315
+            Height = 25
+            Top = 40
+            Width = 254
             Align = alTop
             AutoSize = True
             BevelOuter = bvNone
-            ClientHeight = 21
-            ClientWidth = 315
-            TabOrder = 4
+            ClientHeight = 25
+            ClientWidth = 254
+            TabOrder = 0
             object Label31: TLabel
               Left = 6
-              Height = 15
+              Height = 19
               Top = 6
-              Width = 25
+              Width = 33
               Align = alLeft
               BorderSpacing.Left = 6
               BorderSpacing.Top = 6
@@ -168,10 +96,10 @@ object fMainForm: TfMainForm
               ParentFont = False
             end
             object Label32: TLabel
-              Left = 37
-              Height = 15
+              Left = 45
+              Height = 19
               Top = 6
-              Width = 266
+              Width = 197
               Align = alClient
               BorderSpacing.Top = 6
               BorderSpacing.Right = 12
@@ -182,20 +110,20 @@ object fMainForm: TfMainForm
           end
           object Panel15: TPanel
             Left = 0
-            Height = 21
-            Top = 184
-            Width = 315
+            Height = 25
+            Top = 90
+            Width = 254
             Align = alTop
             AutoSize = True
             BevelOuter = bvNone
-            ClientHeight = 21
-            ClientWidth = 315
-            TabOrder = 5
+            ClientHeight = 25
+            ClientWidth = 254
+            TabOrder = 1
             object Label39: TLabel
               Left = 6
-              Height = 15
+              Height = 19
               Top = 6
-              Width = 90
+              Width = 113
               Align = alLeft
               BorderSpacing.Left = 6
               BorderSpacing.Top = 6
@@ -207,10 +135,10 @@ object fMainForm: TfMainForm
               ParentFont = False
             end
             object Label40: TLabel
-              Left = 102
-              Height = 15
+              Left = 125
+              Height = 19
               Top = 6
-              Width = 201
+              Width = 117
               Align = alClient
               BorderSpacing.Top = 6
               BorderSpacing.Right = 12
@@ -221,9 +149,9 @@ object fMainForm: TfMainForm
           end
           object Label41: TLabel
             Left = 6
-            Height = 15
-            Top = 211
-            Width = 303
+            Height = 19
+            Top = 121
+            Width = 242
             Align = alTop
             BorderSpacing.Left = 6
             BorderSpacing.Top = 6
@@ -231,28 +159,122 @@ object fMainForm: TfMainForm
             Caption = 'Label41'
             ParentColor = False
           end
+          object Panel10: TPanel
+            Left = 0
+            Height = 40
+            Top = 0
+            Width = 254
+            Align = alTop
+            AutoSize = True
+            BevelOuter = bvNone
+            ClientHeight = 40
+            ClientWidth = 254
+            TabOrder = 2
+            object btnWireLT: TBitBtn
+              Left = 0
+              Height = 40
+              Top = 0
+              Width = 40
+              Align = alLeft
+              AutoSize = True
+              Images = il24
+              ImageIndex = 0
+              OnClick = btnWireLTClick
+              TabOrder = 0
+            end
+            object btnWireRT: TBitBtn
+              Left = 120
+              Height = 40
+              Top = 0
+              Width = 40
+              Align = alLeft
+              AutoSize = True
+              Images = il24
+              ImageIndex = 1
+              OnClick = btnWireRTClick
+              TabOrder = 1
+            end
+            object btnWireLB: TBitBtn
+              Left = 80
+              Height = 40
+              Top = 0
+              Width = 40
+              Align = alLeft
+              AutoSize = True
+              Images = il24
+              ImageIndex = 2
+              OnClick = btnWireLBClick
+              TabOrder = 2
+            end
+            object btnWireRB: TBitBtn
+              Left = 40
+              Height = 40
+              Top = 0
+              Width = 40
+              Align = alLeft
+              AutoSize = True
+              Images = il24
+              ImageIndex = 3
+              OnClick = btnWireRBClick
+              TabOrder = 3
+            end
+            object btnWireH: TBitBtn
+              Left = 200
+              Height = 40
+              Top = 0
+              Width = 40
+              Align = alLeft
+              AutoSize = True
+              Images = il24
+              ImageIndex = 4
+              OnClick = btnWireHClick
+              TabOrder = 4
+            end
+            object btnWireV: TBitBtn
+              Left = 160
+              Height = 40
+              Top = 0
+              Width = 40
+              Align = alLeft
+              AutoSize = True
+              Images = il24
+              ImageIndex = 5
+              OnClick = btnWireVClick
+              TabOrder = 5
+            end
+          end
+          object Panel17: TPanel
+            Left = 0
+            Height = 1
+            Top = 140
+            Width = 254
+            Align = alTop
+            AutoSize = True
+            BevelOuter = bvNone
+            TabOrder = 3
+          end
         end
       end
       object tsInput: TTabSheet
         Caption = 'Input'
-        ClientHeight = 375
-        ClientWidth = 319
+        ClientHeight = 470
+        ClientWidth = 256
         object ScrollBox2: TScrollBox
           Left = 0
-          Height = 375
+          Height = 470
           Top = 0
-          Width = 319
-          HorzScrollBar.Page = 99
-          VertScrollBar.Page = 63
+          Width = 256
+          HorzScrollBar.Page = 160
+          VertScrollBar.Page = 115
           Align = alClient
-          ClientHeight = 371
-          ClientWidth = 315
+          ClientHeight = 468
+          ClientWidth = 254
           TabOrder = 0
           object Label12: TLabel
             Left = 6
-            Height = 15
-            Top = 48
-            Width = 303
+            Height = 19
+            Top = 96
+            Width = 242
             Align = alTop
             BorderSpacing.Left = 6
             BorderSpacing.Top = 6
@@ -262,20 +284,20 @@ object fMainForm: TfMainForm
           end
           object Panel7: TPanel
             Left = 0
-            Height = 21
-            Top = 0
-            Width = 315
+            Height = 25
+            Top = 40
+            Width = 254
             Align = alTop
             AutoSize = True
             BevelOuter = bvNone
-            ClientHeight = 21
-            ClientWidth = 315
+            ClientHeight = 25
+            ClientWidth = 254
             TabOrder = 0
             object Label15: TLabel
               Left = 6
-              Height = 15
+              Height = 19
               Top = 6
-              Width = 33
+              Width = 41
               Align = alLeft
               BorderSpacing.Left = 6
               BorderSpacing.Top = 6
@@ -287,10 +309,10 @@ object fMainForm: TfMainForm
               ParentFont = False
             end
             object Label16: TLabel
-              Left = 45
-              Height = 15
+              Left = 53
+              Height = 19
               Top = 6
-              Width = 258
+              Width = 189
               Align = alClient
               BorderSpacing.Top = 6
               BorderSpacing.Right = 12
@@ -301,20 +323,20 @@ object fMainForm: TfMainForm
           end
           object Panel12: TPanel
             Left = 0
-            Height = 21
-            Top = 21
-            Width = 315
+            Height = 25
+            Top = 65
+            Width = 254
             Align = alTop
             AutoSize = True
             BevelOuter = bvNone
-            ClientHeight = 21
-            ClientWidth = 315
+            ClientHeight = 25
+            ClientWidth = 254
             TabOrder = 1
             object Label33: TLabel
               Left = 6
-              Height = 15
+              Height = 19
               Top = 6
-              Width = 25
+              Width = 33
               Align = alLeft
               BorderSpacing.Left = 6
               BorderSpacing.Top = 6
@@ -326,10 +348,10 @@ object fMainForm: TfMainForm
               ParentFont = False
             end
             object Label34: TLabel
-              Left = 37
-              Height = 15
+              Left = 45
+              Height = 19
               Top = 6
-              Width = 266
+              Width = 197
               Align = alClient
               BorderSpacing.Top = 6
               BorderSpacing.Right = 12
@@ -338,28 +360,88 @@ object fMainForm: TfMainForm
               ParentColor = False
             end
           end
+          object Panel16: TPanel
+            Left = 0
+            Height = 40
+            Top = 0
+            Width = 254
+            Align = alTop
+            AutoSize = True
+            BevelOuter = bvNone
+            ClientHeight = 40
+            ClientWidth = 254
+            TabOrder = 2
+            object btnInP0: TBitBtn
+              Left = 0
+              Height = 40
+              Top = 0
+              Width = 40
+              Align = alLeft
+              AutoSize = True
+              Images = il24
+              ImageIndex = 6
+              OnClick = btnInP0Click
+              TabOrder = 0
+            end
+            object btnInP3: TBitBtn
+              Left = 120
+              Height = 40
+              Top = 0
+              Width = 40
+              Align = alLeft
+              AutoSize = True
+              Images = il24
+              ImageIndex = 9
+              OnClick = btnInP3Click
+              TabOrder = 1
+            end
+            object btnInP2: TBitBtn
+              Left = 80
+              Height = 40
+              Top = 0
+              Width = 40
+              Align = alLeft
+              AutoSize = True
+              Images = il24
+              ImageIndex = 8
+              OnClick = btnInP2Click
+              TabOrder = 2
+            end
+            object btnInP1: TBitBtn
+              Left = 40
+              Height = 40
+              Top = 0
+              Width = 40
+              Align = alLeft
+              AutoSize = True
+              Images = il24
+              ImageIndex = 7
+              OnClick = btnInP1Click
+              TabOrder = 3
+            end
+          end
         end
       end
       object tsOutput: TTabSheet
         Caption = 'Output'
-        ClientHeight = 375
-        ClientWidth = 319
+        ClientHeight = 470
+        ClientWidth = 256
         object ScrollBox3: TScrollBox
           Left = 0
-          Height = 375
+          Height = 470
           Top = 0
-          Width = 319
-          HorzScrollBar.Page = 99
-          VertScrollBar.Page = 63
+          Width = 256
+          HorzScrollBar.Page = 160
+          VertScrollBar.Page = 115
           Align = alClient
-          ClientHeight = 371
-          ClientWidth = 315
+          ClientHeight = 468
+          ClientWidth = 254
           TabOrder = 0
           object Label13: TLabel
             Left = 6
-            Height = 15
-            Top = 48
-            Width = 303
+            Height = 19
+            Top = 96
+            Width = 242
             Align = alTop
             BorderSpacing.Left = 6
             BorderSpacing.Top = 6
@@ -369,20 +451,20 @@ object fMainForm: TfMainForm
           end
           object Panel8: TPanel
             Left = 0
-            Height = 21
-            Top = 0
-            Width = 315
+            Height = 25
+            Top = 40
+            Width = 254
             Align = alTop
             AutoSize = True
             BevelOuter = bvNone
-            ClientHeight = 21
-            ClientWidth = 315
+            ClientHeight = 25
+            ClientWidth = 254
             TabOrder = 0
             object Label17: TLabel
               Left = 6
-              Height = 15
+              Height = 19
               Top = 6
-              Width = 33
+              Width = 41
               Align = alLeft
               BorderSpacing.Left = 6
               BorderSpacing.Top = 6
@@ -394,10 +476,10 @@ object fMainForm: TfMainForm
               ParentFont = False
             end
             object Label18: TLabel
-              Left = 45
-              Height = 15
+              Left = 53
+              Height = 19
               Top = 6
-              Width = 258
+              Width = 189
               Align = alClient
               BorderSpacing.Top = 6
               BorderSpacing.Right = 12
@@ -408,20 +490,20 @@ object fMainForm: TfMainForm
           end
           object Panel13: TPanel
             Left = 0
-            Height = 21
-            Top = 21
-            Width = 315
+            Height = 25
+            Top = 65
+            Width = 254
             Align = alTop
             AutoSize = True
             BevelOuter = bvNone
-            ClientHeight = 21
-            ClientWidth = 315
+            ClientHeight = 25
+            ClientWidth = 254
             TabOrder = 1
             object Label35: TLabel
               Left = 6
-              Height = 15
+              Height = 19
               Top = 6
-              Width = 25
+              Width = 33
               Align = alLeft
               BorderSpacing.Left = 6
               BorderSpacing.Top = 6
@@ -433,10 +515,10 @@ object fMainForm: TfMainForm
               ParentFont = False
             end
             object Label36: TLabel
-              Left = 37
-              Height = 15
+              Left = 45
+              Height = 19
               Top = 6
-              Width = 266
+              Width = 197
               Align = alClient
               BorderSpacing.Top = 6
               BorderSpacing.Right = 12
@@ -445,39 +527,99 @@ object fMainForm: TfMainForm
               ParentColor = False
             end
           end
+          object Panel18: TPanel
+            Left = 0
+            Height = 40
+            Top = 0
+            Width = 254
+            Align = alTop
+            AutoSize = True
+            BevelOuter = bvNone
+            ClientHeight = 40
+            ClientWidth = 254
+            TabOrder = 2
+            object btnOutP0: TBitBtn
+              Left = 0
+              Height = 40
+              Top = 0
+              Width = 40
+              Align = alLeft
+              AutoSize = True
+              Images = il24
+              ImageIndex = 6
+              OnClick = btnInP0Click
+              TabOrder = 0
+            end
+            object btnOutP3: TBitBtn
+              Left = 120
+              Height = 40
+              Top = 0
+              Width = 40
+              Align = alLeft
+              AutoSize = True
+              Images = il24
+              ImageIndex = 9
+              OnClick = btnInP3Click
+              TabOrder = 1
+            end
+            object btnOutP2: TBitBtn
+              Left = 80
+              Height = 40
+              Top = 0
+              Width = 40
+              Align = alLeft
+              AutoSize = True
+              Images = il24
+              ImageIndex = 8
+              OnClick = btnInP2Click
+              TabOrder = 2
+            end
+            object btnOutP1: TBitBtn
+              Left = 40
+              Height = 40
+              Top = 0
+              Width = 40
+              Align = alLeft
+              AutoSize = True
+              Images = il24
+              ImageIndex = 7
+              OnClick = btnInP1Click
+              TabOrder = 3
+            end
+          end
         end
       end
       object tsGate: TTabSheet
         Caption = 'Gate'
-        ClientHeight = 375
-        ClientWidth = 319
+        ClientHeight = 470
+        ClientWidth = 256
         object ScrollBox4: TScrollBox
           Left = 0
-          Height = 375
+          Height = 470
           Top = 0
-          Width = 319
-          HorzScrollBar.Page = 112
-          VertScrollBar.Page = 272
+          Width = 256
+          HorzScrollBar.Page = 160
+          VertScrollBar.Page = 344
           Align = alClient
-          ClientHeight = 371
-          ClientWidth = 315
+          ClientHeight = 468
+          ClientWidth = 254
           TabOrder = 0
           object Panel14: TPanel
             Left = 0
-            Height = 21
-            Top = 230
-            Width = 315
+            Height = 25
+            Top = 294
+            Width = 254
             Align = alTop
             AutoSize = True
             BevelOuter = bvNone
-            ClientHeight = 21
-            ClientWidth = 315
+            ClientHeight = 25
+            ClientWidth = 254
             TabOrder = 0
             object Label37: TLabel
               Left = 6
-              Height = 15
+              Height = 19
               Top = 6
-              Width = 25
+              Width = 33
               Align = alLeft
               BorderSpacing.Left = 6
               BorderSpacing.Top = 6
@@ -489,10 +631,10 @@ object fMainForm: TfMainForm
               ParentFont = False
             end
             object Label38: TLabel
-              Left = 37
-              Height = 15
+              Left = 45
+              Height = 19
               Top = 6
-              Width = 266
+              Width = 197
               Align = alClient
               BorderSpacing.Top = 6
               BorderSpacing.Right = 12
@@ -501,35 +643,11 @@ object fMainForm: TfMainForm
               ParentColor = False
             end
           end
-          object ComboBox3: TComboBox
-            Left = 6
-            Height = 23
-            Top = 15
-            Width = 303
-            Align = alTop
-            BorderSpacing.Left = 6
-            BorderSpacing.Right = 6
-            ItemHeight = 15
-            Style = csDropDownList
-            TabOrder = 1
-          end
-          object BitBtn6: TBitBtn
-            Left = 6
-            Height = 30
-            Top = 38
-            Width = 303
-            Align = alTop
-            BorderSpacing.Left = 6
-            BorderSpacing.Right = 6
-            Caption = 'Set gate'
-            OnClick = BitBtn6Click
-            TabOrder = 2
-          end
           object Label14: TLabel
             Left = 6
-            Height = 15
-            Top = 257
-            Width = 303
+            Height = 19
+            Top = 325
+            Width = 242
             Align = alTop
             BorderSpacing.Left = 6
             BorderSpacing.Top = 6
@@ -537,59 +655,11 @@ object fMainForm: TfMainForm
             Caption = 'Label14'
             ParentColor = False
           end
-          object ComboBox4: TComboBox
-            Left = 6
-            Height = 23
-            Top = 89
-            Width = 303
-            Align = alTop
-            BorderSpacing.Left = 6
-            BorderSpacing.Right = 6
-            ItemHeight = 15
-            Style = csDropDownList
-            TabOrder = 3
-          end
-          object ComboBox5: TComboBox
-            Left = 6
-            Height = 23
-            Top = 133
-            Width = 303
-            Align = alTop
-            BorderSpacing.Left = 6
-            BorderSpacing.Right = 6
-            ItemHeight = 15
-            Style = csDropDownList
-            TabOrder = 4
-          end
-          object ComboBox6: TComboBox
-            Left = 6
-            Height = 23
-            Top = 177
-            Width = 303
-            Align = alTop
-            BorderSpacing.Left = 6
-            BorderSpacing.Right = 6
-            ItemHeight = 15
-            Style = csDropDownList
-            TabOrder = 5
-          end
-          object BitBtn7: TBitBtn
-            Left = 6
-            Height = 30
-            Top = 200
-            Width = 303
-            Align = alTop
-            BorderSpacing.Left = 6
-            BorderSpacing.Right = 6
-            Caption = 'Set pin types'
-            OnClick = BitBtn7Click
-            TabOrder = 6
-          end
           object Label19: TLabel
             Left = 6
-            Height = 15
+            Height = 19
             Top = 0
-            Width = 303
+            Width = 242
             Align = alTop
             BorderSpacing.Left = 6
             BorderSpacing.Right = 6
@@ -598,9 +668,9 @@ object fMainForm: TfMainForm
           end
           object Label25: TLabel
             Left = 6
-            Height = 15
-            Top = 74
-            Width = 303
+            Height = 19
+            Top = 105
+            Width = 242
             Align = alTop
             BorderSpacing.Left = 6
             BorderSpacing.Top = 6
@@ -610,9 +680,9 @@ object fMainForm: TfMainForm
           end
           object Label26: TLabel
             Left = 6
-            Height = 15
-            Top = 162
-            Width = 303
+            Height = 19
+            Top = 235
+            Width = 242
             Align = alTop
             BorderSpacing.Left = 6
             BorderSpacing.Top = 6
@@ -622,9 +692,9 @@ object fMainForm: TfMainForm
           end
           object Label27: TLabel
             Left = 6
-            Height = 15
-            Top = 118
-            Width = 303
+            Height = 19
+            Top = 170
+            Width = 242
             Align = alTop
             BorderSpacing.Left = 6
             BorderSpacing.Top = 6
@@ -632,39 +702,339 @@ object fMainForm: TfMainForm
             Caption = 'Input pin #2:'
             ParentColor = False
           end
+          object Panel19: TPanel
+            Left = 0
+            Height = 40
+            Top = 124
+            Width = 254
+            Align = alTop
+            AutoSize = True
+            BevelOuter = bvNone
+            ClientHeight = 40
+            ClientWidth = 254
+            TabOrder = 1
+            object btnGateP10: TBitBtn
+              Left = 0
+              Height = 40
+              Top = 0
+              Width = 40
+              Align = alLeft
+              AutoSize = True
+              Images = il24
+              ImageIndex = 6
+              OnClick = btnGateP10Click
+              TabOrder = 0
+            end
+            object btnGateP13: TBitBtn
+              Left = 120
+              Height = 40
+              Top = 0
+              Width = 40
+              Align = alLeft
+              AutoSize = True
+              Images = il24
+              ImageIndex = 9
+              OnClick = btnGateP13Click
+              TabOrder = 1
+            end
+            object btnGateP12: TBitBtn
+              Left = 80
+              Height = 40
+              Top = 0
+              Width = 40
+              Align = alLeft
+              AutoSize = True
+              Images = il24
+              ImageIndex = 8
+              OnClick = btnGateP12Click
+              TabOrder = 2
+            end
+            object btnGateP11: TBitBtn
+              Left = 40
+              Height = 40
+              Top = 0
+              Width = 40
+              Align = alLeft
+              AutoSize = True
+              Images = il24
+              ImageIndex = 7
+              OnClick = btnGateP11Click
+              TabOrder = 3
+            end
+          end
+          object Panel20: TPanel
+            Left = 0
+            Height = 40
+            Top = 189
+            Width = 254
+            Align = alTop
+            AutoSize = True
+            BevelOuter = bvNone
+            ClientHeight = 40
+            ClientWidth = 254
+            TabOrder = 2
+            object btnGateP20: TBitBtn
+              Left = 0
+              Height = 40
+              Top = 0
+              Width = 40
+              Align = alLeft
+              AutoSize = True
+              Images = il24
+              ImageIndex = 6
+              OnClick = btnGateP20Click
+              TabOrder = 0
+            end
+            object btnGateP23: TBitBtn
+              Left = 120
+              Height = 40
+              Top = 0
+              Width = 40
+              Align = alLeft
+              AutoSize = True
+              Images = il24
+              ImageIndex = 9
+              OnClick = btnGateP23Click
+              TabOrder = 1
+            end
+            object btnGateP22: TBitBtn
+              Left = 80
+              Height = 40
+              Top = 0
+              Width = 40
+              Align = alLeft
+              AutoSize = True
+              Images = il24
+              ImageIndex = 8
+              OnClick = btnGateP22Click
+              TabOrder = 2
+            end
+            object btnGateP21: TBitBtn
+              Left = 40
+              Height = 40
+              Top = 0
+              Width = 40
+              Align = alLeft
+              AutoSize = True
+              Images = il24
+              ImageIndex = 7
+              OnClick = btnGateP21Click
+              TabOrder = 3
+            end
+          end
+          object Panel21: TPanel
+            Left = 0
+            Height = 40
+            Top = 254
+            Width = 254
+            Align = alTop
+            AutoSize = True
+            BevelOuter = bvNone
+            ClientHeight = 40
+            ClientWidth = 254
+            TabOrder = 3
+            object btnGateP30: TBitBtn
+              Left = 0
+              Height = 40
+              Top = 0
+              Width = 40
+              Align = alLeft
+              AutoSize = True
+              Images = il24
+              ImageIndex = 6
+              OnClick = btnGateP30Click
+              TabOrder = 0
+            end
+            object btnGateP33: TBitBtn
+              Left = 120
+              Height = 40
+              Top = 0
+              Width = 40
+              Align = alLeft
+              AutoSize = True
+              Images = il24
+              ImageIndex = 9
+              OnClick = btnGateP33Click
+              TabOrder = 1
+            end
+            object btnGateP32: TBitBtn
+              Left = 80
+              Height = 40
+              Top = 0
+              Width = 40
+              Align = alLeft
+              AutoSize = True
+              Images = il24
+              ImageIndex = 8
+              OnClick = btnGateP32Click
+              TabOrder = 2
+            end
+            object btnGateP31: TBitBtn
+              Left = 40
+              Height = 40
+              Top = 0
+              Width = 40
+              Align = alLeft
+              AutoSize = True
+              Images = il24
+              ImageIndex = 7
+              OnClick = btnGateP31Click
+              TabOrder = 3
+            end
+          end
+          object Panel22: TPanel
+            Left = 0
+            Height = 40
+            Top = 19
+            Width = 254
+            Align = alTop
+            AutoSize = True
+            BevelOuter = bvNone
+            ClientHeight = 40
+            ClientWidth = 254
+            TabOrder = 4
+            object BitBtn42: TBitBtn
+              Left = 0
+              Height = 40
+              Top = 0
+              Width = 40
+              Align = alLeft
+              AutoSize = True
+              Images = il24
+              ImageIndex = 10
+              OnClick = BitBtn42Click
+              TabOrder = 0
+            end
+            object BitBtn43: TBitBtn
+              Left = 120
+              Height = 40
+              Top = 0
+              Width = 40
+              Align = alLeft
+              AutoSize = True
+              Images = il24
+              ImageIndex = 13
+              OnClick = BitBtn43Click
+              TabOrder = 1
+            end
+            object BitBtn44: TBitBtn
+              Left = 80
+              Height = 40
+              Top = 0
+              Width = 40
+              Align = alLeft
+              AutoSize = True
+              Images = il24
+              ImageIndex = 12
+              OnClick = BitBtn44Click
+              TabOrder = 2
+            end
+            object BitBtn45: TBitBtn
+              Left = 40
+              Height = 40
+              Top = 0
+              Width = 40
+              Align = alLeft
+              AutoSize = True
+              Images = il24
+              ImageIndex = 11
+              OnClick = BitBtn45Click
+              TabOrder = 3
+            end
+          end
+          object Panel23: TPanel
+            Left = 0
+            Height = 40
+            Top = 59
+            Width = 254
+            Align = alTop
+            AutoSize = True
+            BevelOuter = bvNone
+            ClientHeight = 40
+            ClientWidth = 254
+            TabOrder = 5
+            object BitBtn46: TBitBtn
+              Left = 0
+              Height = 40
+              Top = 0
+              Width = 40
+              Align = alLeft
+              AutoSize = True
+              Images = il24
+              ImageIndex = 14
+              OnClick = BitBtn46Click
+              TabOrder = 0
+            end
+            object BitBtn47: TBitBtn
+              Left = 120
+              Height = 40
+              Top = 0
+              Width = 40
+              Align = alLeft
+              AutoSize = True
+              Images = il24
+              ImageIndex = 17
+              OnClick = BitBtn47Click
+              TabOrder = 1
+            end
+            object BitBtn48: TBitBtn
+              Left = 80
+              Height = 40
+              Top = 0
+              Width = 40
+              Align = alLeft
+              AutoSize = True
+              Images = il24
+              ImageIndex = 16
+              OnClick = BitBtn48Click
+              TabOrder = 2
+            end
+            object BitBtn49: TBitBtn
+              Left = 40
+              Height = 40
+              Top = 0
+              Width = 40
+              Align = alLeft
+              AutoSize = True
+              Images = il24
+              ImageIndex = 15
+              OnClick = BitBtn49Click
+              TabOrder = 3
+            end
+          end
         end
       end
       object tsMap: TTabSheet
         Caption = 'Map'
-        ClientHeight = 375
-        ClientWidth = 319
+        ClientHeight = 470
+        ClientWidth = 256
         object ScrollBox5: TScrollBox
           Left = 0
-          Height = 375
+          Height = 470
           Top = 0
-          Width = 319
-          HorzScrollBar.Page = 123
-          VertScrollBar.Page = 42
+          Width = 256
+          HorzScrollBar.Page = 148
+          VertScrollBar.Page = 50
           Align = alClient
-          ClientHeight = 371
-          ClientWidth = 315
+          ClientHeight = 468
+          ClientWidth = 254
           TabOrder = 0
           object Panel9: TPanel
             Left = 0
-            Height = 21
+            Height = 25
             Top = 0
-            Width = 315
+            Width = 254
             Align = alTop
             AutoSize = True
             BevelOuter = bvNone
-            ClientHeight = 21
-            ClientWidth = 315
+            ClientHeight = 25
+            ClientWidth = 254
             TabOrder = 0
             object Label20: TLabel
               Left = 6
-              Height = 15
+              Height = 19
               Top = 6
-              Width = 93
+              Width = 115
               Align = alLeft
               BorderSpacing.Left = 6
               BorderSpacing.Top = 6
@@ -676,10 +1046,10 @@ object fMainForm: TfMainForm
               ParentFont = False
             end
             object Label21: TLabel
-              Left = 105
-              Height = 15
+              Left = 127
+              Height = 19
               Top = 6
-              Width = 198
+              Width = 115
               Align = alClient
               BorderSpacing.Top = 6
               BorderSpacing.Right = 12
@@ -690,9 +1060,9 @@ object fMainForm: TfMainForm
           end
           object Label22: TLabel
             Left = 6
-            Height = 15
-            Top = 27
-            Width = 303
+            Height = 19
+            Top = 31
+            Width = 242
             Align = alTop
             BorderSpacing.Left = 6
             BorderSpacing.Top = 6
@@ -819,20 +1189,20 @@ object fMainForm: TfMainForm
     end
     object Panel3: TPanel
       Left = 2
-      Height = 21
-      Top = 94
+      Height = 25
+      Top = 84
       Width = 327
       Align = alTop
       AutoSize = True
       BevelOuter = bvNone
-      ClientHeight = 21
+      ClientHeight = 25
       ClientWidth = 327
       TabOrder = 2
       object Label3: TLabel
         Left = 6
-        Height = 15
+        Height = 19
         Top = 6
-        Width = 22
+        Width = 29
         Align = alLeft
         BorderSpacing.Left = 6
         BorderSpacing.Top = 6
@@ -844,10 +1214,10 @@ object fMainForm: TfMainForm
         ParentFont = False
       end
       object Label4: TLabel
-        Left = 34
-        Height = 15
+        Left = 41
+        Height = 19
         Top = 6
-        Width = 281
+        Width = 274
         Align = alClient
         BorderSpacing.Top = 6
         BorderSpacing.Right = 12
@@ -858,20 +1228,20 @@ object fMainForm: TfMainForm
     end
     object Panel4: TPanel
       Left = 2
-      Height = 21
+      Height = 32
       Top = 52
       Width = 327
       Align = alTop
       AutoSize = True
       BevelOuter = bvNone
-      ClientHeight = 21
+      ClientHeight = 32
       ClientWidth = 327
       TabOrder = 3
       object Label5: TLabel
         Left = 6
-        Height = 15
+        Height = 26
         Top = 6
-        Width = 36
+        Width = 44
         Align = alLeft
         BorderSpacing.Left = 6
         BorderSpacing.Top = 6
@@ -883,10 +1253,10 @@ object fMainForm: TfMainForm
         ParentFont = False
       end
       object Label6: TLabel
-        Left = 48
-        Height = 15
+        Left = 56
+        Height = 26
         Top = 6
-        Width = 192
+        Width = 227
         Align = alClient
         BorderSpacing.Top = 6
         BorderSpacing.Right = 12
@@ -895,70 +1265,34 @@ object fMainForm: TfMainForm
         ParentColor = False
       end
       object BitBtn17: TBitBtn
-        Left = 252
-        Height = 21
+        Left = 295
+        Height = 32
         Top = 0
-        Width = 75
+        Width = 32
         Align = alRight
+        AutoSize = True
+        Images = il16
+        ImageIndex = 0
         OnClick = BitBtn17Click
         TabOrder = 0
       end
     end
-    object Panel5: TPanel
-      Left = 2
-      Height = 21
-      Top = 73
-      Width = 327
-      Align = alTop
-      AutoSize = True
-      BevelOuter = bvNone
-      ClientHeight = 21
-      ClientWidth = 327
-      TabOrder = 4
-      object Label7: TLabel
-        Left = 6
-        Height = 15
-        Top = 6
-        Width = 56
-        Align = alLeft
-        BorderSpacing.Left = 6
-        BorderSpacing.Top = 6
-        BorderSpacing.Right = 6
-        Caption = 'Full name:'
-        Font.Style = [fsBold]
-        Layout = tlCenter
-        ParentColor = False
-        ParentFont = False
-      end
-      object Label8: TLabel
-        Left = 68
-        Height = 15
-        Top = 6
-        Width = 247
-        Align = alClient
-        BorderSpacing.Top = 6
-        BorderSpacing.Right = 12
-        Caption = 'map.w0'
-        Layout = tlCenter
-        ParentColor = False
-      end
-    end
     object Panel6: TPanel
       Left = 2
-      Height = 27
-      Top = 115
+      Height = 31
+      Top = 109
       Width = 327
       Align = alTop
       AutoSize = True
       BevelOuter = bvNone
-      ClientHeight = 27
+      ClientHeight = 31
       ClientWidth = 327
-      TabOrder = 5
+      TabOrder = 4
       object Label9: TLabel
         Left = 6
-        Height = 15
+        Height = 19
         Top = 6
-        Width = 26
+        Width = 31
         Align = alLeft
         BorderSpacing.Left = 6
         BorderSpacing.Top = 6
@@ -971,10 +1305,10 @@ object fMainForm: TfMainForm
         ParentFont = False
       end
       object Label10: TLabel
-        Left = 38
-        Height = 15
+        Left = 43
+        Height = 19
         Top = 6
-        Width = 277
+        Width = 272
         Align = alClient
         BorderSpacing.Top = 6
         BorderSpacing.Right = 12
@@ -987,7 +1321,7 @@ object fMainForm: TfMainForm
   end
   object splR: TSplitter
     Left = 922
-    Height = 527
+    Height = 616
     Top = 55
     Width = 5
     Align = alRight
@@ -1005,10 +1339,10 @@ object fMainForm: TfMainForm
     ClientWidth = 1258
     TabOrder = 2
     object BitBtn1: TBitBtn
-      Left = 164
+      Left = 168
       Height = 46
       Top = 2
-      Width = 47
+      Width = 42
       Align = alLeft
       AutoSize = True
       Caption = 'Tick'
@@ -1016,10 +1350,10 @@ object fMainForm: TfMainForm
       TabOrder = 0
     end
     object BitBtn8: TBitBtn
-      Left = 211
+      Left = 210
       Height = 46
       Top = 2
-      Width = 50
+      Width = 47
       Align = alLeft
       AutoSize = True
       Caption = 'Zero'
@@ -1027,10 +1361,10 @@ object fMainForm: TfMainForm
       TabOrder = 1
     end
     object BitBtn9: TBitBtn
-      Left = 261
+      Left = 257
       Height = 46
       Top = 2
-      Width = 63
+      Width = 61
       Align = alLeft
       AutoSize = True
       Caption = 'MCDef'
@@ -1038,18 +1372,18 @@ object fMainForm: TfMainForm
       TabOrder = 2
     end
     object Edit1: TEdit
-      Left = 324
+      Left = 318
       Height = 46
       Top = 2
-      Width = 485
+      Width = 497
       Align = alClient
       TabOrder = 3
     end
     object BitBtn10: TBitBtn
-      Left = 809
+      Left = 815
       Height = 46
       Top = 2
-      Width = 47
+      Width = 41
       Align = alRight
       AutoSize = True
       Caption = 'Run'
@@ -1065,10 +1399,10 @@ object fMainForm: TfMainForm
       TabOrder = 5
     end
     object BitBtn16: TBitBtn
-      Left = 84
+      Left = 85
       Height = 46
       Top = 2
-      Width = 80
+      Width = 83
       Align = alLeft
       AutoSize = True
       Caption = 'Clear map'
@@ -1079,7 +1413,7 @@ object fMainForm: TfMainForm
       Left = 2
       Height = 46
       Top = 2
-      Width = 82
+      Width = 83
       Align = alLeft
       AutoSize = True
       Caption = 'Open map'
@@ -1089,18 +1423,18 @@ object fMainForm: TfMainForm
   end
   object pnlL: TPanel
     Left = 0
-    Height = 527
+    Height = 616
     Top = 55
     Width = 170
     Align = alLeft
     BevelInner = bvRaised
     BevelOuter = bvLowered
-    ClientHeight = 527
+    ClientHeight = 616
     ClientWidth = 170
     TabOrder = 3
     object Label1: TLabel
       Left = 2
-      Height = 15
+      Height = 19
       Top = 8
       Width = 166
       Align = alTop
@@ -1116,7 +1450,7 @@ object fMainForm: TfMainForm
     object BitBtn2: TBitBtn
       Left = 8
       Height = 30
-      Top = 29
+      Top = 33
       Width = 154
       Align = alTop
       BorderSpacing.Left = 6
@@ -1128,7 +1462,7 @@ object fMainForm: TfMainForm
     object BitBtn12: TBitBtn
       Left = 8
       Height = 30
-      Top = 89
+      Top = 93
       Width = 154
       Align = alTop
       BorderSpacing.Left = 6
@@ -1140,7 +1474,7 @@ object fMainForm: TfMainForm
     object BitBtn13: TBitBtn
       Left = 8
       Height = 30
-      Top = 59
+      Top = 63
       Width = 154
       Align = alTop
       BorderSpacing.Left = 6
@@ -1151,8 +1485,8 @@ object fMainForm: TfMainForm
     end
     object ListView2: TListView
       Left = 8
-      Height = 406
-      Top = 119
+      Height = 461
+      Top = 153
       Width = 154
       Align = alClient
       BorderSpacing.Left = 6
@@ -1186,10 +1520,22 @@ object fMainForm: TfMainForm
       }
       TabOrder = 3
     end
+    object BitBtn50: TBitBtn
+      Left = 8
+      Height = 30
+      Top = 123
+      Width = 154
+      Align = alTop
+      BorderSpacing.Left = 6
+      BorderSpacing.Right = 6
+      Caption = 'Move'
+      OnClick = BitBtn12Click
+      TabOrder = 4
+    end
   end
   object splL: TSplitter
     Left = 170
-    Height = 527
+    Height = 616
     Top = 55
     Width = 5
   end
@@ -1205,7 +1551,7 @@ object fMainForm: TfMainForm
   object pnlB: TPanel
     Left = 0
     Height = 50
-    Top = 587
+    Top = 676
     Width = 1258
     Align = alBottom
     BevelInner = bvRaised
@@ -1250,7 +1596,7 @@ object fMainForm: TfMainForm
     Cursor = crVSplit
     Left = 0
     Height = 5
-    Top = 582
+    Top = 671
     Width = 1258
     Align = alBottom
     ResizeAnchor = akBottom
@@ -1262,7 +1608,7 @@ object fMainForm: TfMainForm
     Left = 392
     Top = 273
   end
-  object ImageList1: TImageList
+  object il32: TImageList
     Height = 32
     Width = 32
     Left = 489
@@ -1546,7 +1892,7 @@ object fMainForm: TfMainForm
       FC43
     }
   end
-  object ImageList2: TImageList
+  object il16: TImageList
     Left = 588
     Top = 191
     Bitmap = {
@@ -1584,5 +1930,71 @@ object fMainForm: TfMainForm
     Options = [ofPathMustExist, ofFileMustExist, ofEnableSizing, ofViewDetail]
     Left = 454
     Top = 216
+  end
+  object il24: TImageList
+    Height = 24
+    Width = 24
+    Left = 587
+    Top = 284
+    Bitmap = {
+      4C7A1200000018000000180000000B0700000000000078DAED5D5B6C1555143D
+      B7B72DF4DE165B1E42058518356A22FEA8C14463A2B4A2628C08517C256AE2A7
+      1A898A0F1290BE3425E2ABA83FC6C427C68854FD316A1A0591964241E5C34062
+      A48D7E157F7C5573DD9BD9D5B9C39D3933E781A55D3BD9E9CD69679DE93EFBEC
+      BDCE3EE7CE28954A4E57AAA957A9E251D251FABC3D687322845320DCAE31A546
+      4A4A0D93768C056D6A813D3CDF7727E1954AE5DA4E6D4D1FD8E3B34D464AC7E3
+      735BF11737F8C315F08F90D68F5A82E7C9CE83812DA2F86D6C9F6D76D8EA3552
+      C2AAFE23C01B96FB6EB31D5FC67E3DC01ED7C240E09BAC8DDB326247FCBB7E27
+      B5FD1DC2EF21CD19CE8F18FFAEFD55FA78598F9D343F92FCBBFE0B0D768AF961
+      EBDFBAEB6DFD5B773D8F4587857F6BAF97F16937F5EF34D72F90B130F56FDBEB
+      11FF2767FC57F6F3C3897FDB8AAD7FC3FFE1FF15FC7FC627FEFCBFE637FA1DF1
+      22B5DCBDFF4FDB1FE22EDC4FAB63FF5E487AB8BC8F86CFB3F11FAD7F9F417A48
+      F8E3EF66FC47EBDF8BC85607C17FC07F10FF11FFC17FE0FFF0FF29E9FFB6FE6D
+      50FFC99A1FBDF09F295CFFD9406D75FB08A0CA3DFFD9489FF37F0A377E83B4C6
+      2DFFA9DB5B5EFB541F92D6399C1F6C932DE57D4C3FE021FE3F1260B3AD3A3DC5
+      FF427FE5FA36E23FE23FF80FFC1FFE0FFE83FA4FBC34F469F6876DFCFBFAA006
+      9AD7ED0F9BF8F76AD2B1FFF8CBB4EF1CEE0FF3BEEA5F217E7490F43477F19F6D
+      C97BE6C7B0E9BE55B3FBF8CF36E6DAA79A85F80FFE03FE03FF07FF996CFCA7B0
+      5BD6D8095AFCDA9CFFE4C72275880ACA79CC94FFFC5B43D1E09BF21F3E33A6BA
+      9295EB07D8FF42FC47FC07FF81FFC3FF27AAFFD7EF08CEC9D49016767988EFF7
+      87F2EE660FFCE78110FE331EEA3F0F86F03779A8FFAC09E1777BA8FF3C14C27F
+      DA43FDE7E110FE5376FB5F15FD7B6D08BFD303FF792C84DFE19EFF300F643ECA
+      5AD883F88FF80FFE03FF87FF4F92FA4F53AE571573474947E9B3DBFA4F8170BB
+      1AC6D4C8DC921A3EB5A43AE833B7B9A8FFF07D77125EA9B954A6EDD4D694B3DF
+      FF629BF07D47F1B9AD98B3DFFF627CB64914FF08B5D5E7ECF7BF782C3B2AD8A7
+      ED987DDC9C7FE6B1647BF3FFC1F7DD6632BE1AFEC363C9BEC9DA9843FD07F11F
+      F11FFC07FE0FFFC7FE17CEFFE0FB5F137B7D908C6DB73ED00C9FEDFA40E77EB6
+      EB8314F856EB03AD7D2CD70729C7D77C7D90CEBFEDD607E03FE03FE03F36FC27
+      3E3FD8F39FC4FC60E9DFDAFC60E9DFDAFC60E9DFDAFC60E9DFFAFC60CF7FF4F9
+      C19EFFD8E507C47FC4FFA95DFF01FF07FF9FBCFC1FF51FD47F50FF01FF01FF01
+      FF81405CC856153CDB30E709FF00E94BA45F91AE50DAE7B8649601F9395705DF
+      05E2EF52DD495AED187F5CE690AE27E567BBDCEBA09F8198F659A17EF84CF774
+      0DCED2181DD25CD748BA4EFAE1B3D7D72560F9C4F76D9FACE33BE8787C7DF927
+      CFAF2D1EE797EFF8008140207152E5197FABE4A58227FCBE509E5AE3A19F3EC9
+      59B592AFF6497F331CE38F8BEB7EA2F8D17E8642FDF05AE95A15BC57242A2D31
+      BA3B067F5CEA843F703FFC7CBE652AF8DE594B4ACD82FF31E93531F82EEC335F
+      F0F30EC677C8F1F8FAF4CFF582CBF3AB7892C507DFF10D028140E28473EAAA0A
+      CA6BBE331DE033D6DB12FBC3CACFB5798B94DFDD71BE25FE7D09BF3F47D6E08B
+      353871CF96794783CF721E69BF612C5F95029FE57DD2251EF1F97BD91B13EA3C
+      B6F88F7BC6EFD5D8276E7CB906BF4E837D918C6FCE83FD19FB5BD20B1CCFAF27
+      C4269F8A7FBA8E0F5CC75B84F0098140C07FC07F4E00FF6995FA4CAD27FED327
+      B598E73DF11FC6BF9AF4394FFCA745F06BC07FC07F2010082441AEAC10D79649
+      2CCE3BC0E75CF4832A7F96F193A4AFAAE07C05EF83CCB3EC83CF469E5DA19D73
+      D54A15EC63DC9002272E3FBEA9CA9EE3779CF039942F496F36BC7FDE07D9A9F9
+      9B26159CF3586CD8C7508ABFB9547862D6FA8C6FFC5352D867660AFBC48DEF7B
+      A43D09D7CD91FE6F31B4FD76E1E051A9124CE63E2B0CB179AEFE18995F5C637B
+      97F47BD21754B027E8323EF0FEE285CADDF925080402F93FA42512DB6E925CE4
+      EA3B23CC3B0E8562F35AC939FCAEC91D12AB675AF6F1910ADEC11E15E66F77A8
+      E05CC4D2143871F9916B541B12AE6B96DAC072C3FB9F4DFA99E66FE6499EBC44
+      C62C2B37DD9B92AB0EC8BABE3B23FF4983CFB97A8F017E1AFBF018F0FBA72E26
+      BD2AC63E49F59F4D09D8F3E5BE4DC797CF3C2DACD0CE35AABB655C5B2DE6D7E1
+      D0FC7A54FE273EB3F38D0A9E8F3DDB437C3857E1DC0E0402393985DF81B8C463
+      FD87D786FCEEC5BB3CD67F2E237DC573FDE727E9C357FDA747D6D3BEEA3FFCAE
+      885B3DD667187FB547FCB4F631ADFFFC2CFCA7DB43FDE772F11D1FF59F6AF1B9
+      7B3CD57F92E203EA3F10086432F39FB32CF1D3F09F5DC27F4CDF199D85FFDC78
+      02F8CFED9EF90FFF1F57A86CE77FB2F29F7E59F33FEB89FF0C4A9D69B307FEB3
+      5F384796F33F59F8CF6D1EF9CF4A4FFCE74565F67C15F01FC884927F00AF0DD6
+      98
+    }
   end
 end
