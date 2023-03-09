@@ -10,10 +10,8 @@ uses
   athreads,
   {$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, umainform, ulogger,
-  umapcomponentinput, umapcomponentbase, umapcomponentpinned,
-  umapcomponentoutput, umapcomponentio, umapcomponentgate, umapcomponentwire,
-  umapcomponentmap, umcdef;
+  Forms, umainform
+  { you can add units after this };
 
 {$R *.res}
 
@@ -22,7 +20,6 @@ begin
   Application.Scaled:=True;
   Application.Initialize;
   Application.CreateForm(TfMainForm, fMainForm);
-  Application.CreateForm(TfMCDef, fMCDef);
   Application.Run;
 end.
 

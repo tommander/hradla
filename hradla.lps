@@ -11,7 +11,7 @@
         <WindowIndex Value="-1"/>
         <TopLine Value="-1"/>
         <CursorPos X="-1" Y="-1"/>
-        <UsageCount Value="201"/>
+        <UsageCount Value="23"/>
       </Unit>
       <Unit>
         <Filename Value="umainform.pas"/>
@@ -20,343 +20,163 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <IsVisibleTab Value="True"/>
-        <TopLine Value="337"/>
-        <CursorPos X="16" Y="259"/>
-        <UsageCount Value="201"/>
+        <TopLine Value="128"/>
+        <CursorPos X="21" Y="141"/>
+        <UsageCount Value="23"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit>
       <Unit>
-        <Filename Value="ulogger.pas"/>
-        <IsPartOfProject Value="True"/>
-        <EditorIndex Value="10"/>
-        <TopLine Value="53"/>
-        <CursorPos X="56" Y="59"/>
-        <UsageCount Value="185"/>
-        <Loaded Value="True"/>
+        <Filename Value="../../Apps/Lazarus/lcl/spin.pp"/>
+        <UnitName Value="Spin"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="10"/>
+        <CursorPos X="3" Y="32"/>
+        <UsageCount Value="10"/>
       </Unit>
       <Unit>
-        <Filename Value="umapcomponentinput.pas"/>
-        <IsPartOfProject Value="True"/>
-        <EditorIndex Value="3"/>
-        <TopLine Value="25"/>
-        <CursorPos X="41" Y="8"/>
-        <UsageCount Value="120"/>
-        <Loaded Value="True"/>
+        <Filename Value="../../Apps/Lazarus/lcl/stdctrls.pp"/>
+        <UnitName Value="StdCtrls"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="1589"/>
+        <CursorPos X="53" Y="1616"/>
+        <UsageCount Value="10"/>
       </Unit>
       <Unit>
-        <Filename Value="umapcomponentbase.pas"/>
-        <IsPartOfProject Value="True"/>
-        <EditorIndex Value="9"/>
-        <TopLine Value="36"/>
-        <CursorPos X="3" Y="34"/>
-        <UsageCount Value="120"/>
-        <Loaded Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="umapcomponentpinned.pas"/>
-        <IsPartOfProject Value="True"/>
-        <EditorIndex Value="8"/>
-        <TopLine Value="240"/>
-        <CursorPos X="3" Y="247"/>
-        <UsageCount Value="117"/>
-        <Loaded Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="umapcomponentoutput.pas"/>
-        <IsPartOfProject Value="True"/>
-        <EditorIndex Value="4"/>
-        <CursorPos X="30" Y="7"/>
-        <UsageCount Value="115"/>
-        <Loaded Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="umapcomponentio.pas"/>
-        <IsPartOfProject Value="True"/>
-        <EditorIndex Value="5"/>
-        <TopLine Value="84"/>
-        <CursorPos X="49" Y="95"/>
-        <UsageCount Value="115"/>
-        <Loaded Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="umapcomponentgate.pas"/>
-        <IsPartOfProject Value="True"/>
-        <EditorIndex Value="6"/>
-        <TopLine Value="230"/>
-        <CursorPos X="49" Y="242"/>
-        <UsageCount Value="107"/>
-        <Loaded Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="umapcomponentwire.pas"/>
-        <IsPartOfProject Value="True"/>
-        <EditorIndex Value="7"/>
-        <TopLine Value="268"/>
-        <CursorPos Y="173"/>
-        <UsageCount Value="106"/>
-        <Loaded Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="umapcomponentmap.pas"/>
-        <IsPartOfProject Value="True"/>
-        <EditorIndex Value="2"/>
-        <TopLine Value="1137"/>
-        <CursorPos X="48" Y="1148"/>
-        <UsageCount Value="104"/>
-        <Loaded Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="umcdef.pas"/>
-        <IsPartOfProject Value="True"/>
-        <ComponentName Value="fMCDef"/>
-        <HasResources Value="True"/>
-        <ResourceBaseClass Value="Form"/>
+        <Filename Value="gamegrid/ugamegrid.pas"/>
         <EditorIndex Value="1"/>
-        <TopLine Value="77"/>
-        <CursorPos X="40" Y="106"/>
-        <UsageCount Value="84"/>
+        <TopLine Value="1060"/>
+        <CursorPos X="16" Y="1064"/>
+        <UsageCount Value="12"/>
         <Loaded Value="True"/>
-        <LoadedDesigner Value="True"/>
       </Unit>
       <Unit>
-        <Filename Value="umapcomponent.pas"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="286"/>
-        <CursorPos X="12" Y="304"/>
-        <UsageCount Value="150"/>
-      </Unit>
-      <Unit>
-        <Filename Value="uhelper.pas"/>
-        <EditorIndex Value="-1"/>
-        <CursorPos Y="27"/>
-        <UsageCount Value="138"/>
-      </Unit>
-      <Unit>
-        <Filename Value="ueditpin.pas"/>
-        <ComponentName Value="Form2"/>
+        <Filename Value="gamegrid/umainform.pas"/>
+        <ComponentName Value="Form1"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <EditorIndex Value="-1"/>
-        <TopLine Value="138"/>
-        <CursorPos X="28" Y="178"/>
-        <UsageCount Value="77"/>
-      </Unit>
-      <Unit>
-        <Filename Value="../../Apps/Lazarus/lcl/graphics.pp"/>
-        <UnitName Value="Graphics"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="731"/>
-        <CursorPos X="28" Y="759"/>
-        <UsageCount Value="2"/>
-      </Unit>
-      <Unit>
-        <Filename Value="/usr/share/fpcsrc/rtl/inc/objpash.inc"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="60"/>
-        <CursorPos X="8" Y="79"/>
-        <UsageCount Value="2"/>
-      </Unit>
-      <Unit>
-        <Filename Value="../../Apps/Lazarus/components/lazutils/graphtype.pp"/>
-        <UnitName Value="GraphType"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="28"/>
-        <CursorPos X="96" Y="42"/>
-        <UsageCount Value="9"/>
-      </Unit>
-      <Unit>
-        <Filename Value="/usr/share/fpcsrc/rtl/objpas/classes/classesh.inc"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="91"/>
-        <CursorPos X="40" Y="102"/>
-        <UsageCount Value="2"/>
-      </Unit>
-      <Unit>
-        <Filename Value="/usr/share/fpcsrc/rtl/inc/objpas.inc"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="271"/>
-        <CursorPos X="12" Y="334"/>
-        <UsageCount Value="2"/>
-      </Unit>
-      <Unit>
-        <Filename Value="../../Apps/Lazarus/lcl/include/spinedit.inc"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="256"/>
-        <CursorPos Y="275"/>
-        <UsageCount Value="5"/>
-      </Unit>
-      <Unit>
-        <Filename Value="../../Apps/Lazarus/lcl/include/customlistview.inc"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="1444"/>
-        <CursorPos Y="1461"/>
-        <UsageCount Value="6"/>
-      </Unit>
-      <Unit>
-        <Filename Value="../_common/ulog.pas"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="238"/>
-        <CursorPos X="14" Y="246"/>
-        <UsageCount Value="9"/>
-      </Unit>
-      <Unit>
-        <Filename Value="/usr/share/fpcsrc/rtl/objpas/sysutils/sysstrh.inc"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="242"/>
-        <CursorPos X="15" Y="252"/>
-        <UsageCount Value="9"/>
-      </Unit>
-      <Unit>
-        <Filename Value="/usr/share/fpcsrc/rtl/objpas/sysutils/sysstr.inc"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="2551"/>
-        <CursorPos X="5" Y="2738"/>
-        <UsageCount Value="9"/>
-      </Unit>
-      <Unit>
-        <Filename Value="/usr/share/fpcsrc/packages/rtl-objpas/src/inc/variants.pp"/>
-        <UnitName Value="Variants"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="106"/>
-        <CursorPos X="10" Y="139"/>
-        <UsageCount Value="10"/>
-      </Unit>
-      <Unit>
-        <Filename Value="/usr/share/fpcsrc/rtl/inc/varianth.inc"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="13"/>
-        <CursorPos X="15" Y="27"/>
-        <UsageCount Value="10"/>
-      </Unit>
-      <Unit>
-        <Filename Value="../VariantTester/umainform.pas"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="358"/>
-        <CursorPos Y="373"/>
-        <UsageCount Value="9"/>
+        <TopLine Value="191"/>
+        <CursorPos Y="84"/>
+        <UsageCount Value="11"/>
       </Unit>
     </Units>
-    <JumpHistory HistoryIndex="29">
+    <JumpHistory HistoryIndex="28">
       <Position>
         <Filename Value="umainform.pas"/>
-        <Caret Line="865" TopLine="863"/>
-      </Position>
-      <Position>
-        <Filename Value="umainform.pas"/>
-        <Caret Line="864" TopLine="862"/>
+        <Caret Line="90" Column="21" TopLine="65"/>
       </Position>
       <Position>
         <Filename Value="umainform.pas"/>
-        <Caret Line="863" TopLine="861"/>
+        <Caret Line="9" Column="81"/>
       </Position>
       <Position>
         <Filename Value="umainform.pas"/>
-        <Caret Line="869" TopLine="867"/>
+        <Caret Line="46" Column="29" TopLine="30"/>
       </Position>
       <Position>
         <Filename Value="umainform.pas"/>
-        <Caret Line="738" TopLine="735"/>
+        <Caret Line="352" Column="8" TopLine="312"/>
       </Position>
       <Position>
         <Filename Value="umainform.pas"/>
-        <Caret Line="748" Column="21" TopLine="736"/>
+        <Caret Line="353" Column="27" TopLine="314"/>
       </Position>
       <Position>
         <Filename Value="umainform.pas"/>
-        <Caret Line="749" Column="21" TopLine="737"/>
+        <Caret Line="359" Column="27" TopLine="323"/>
       </Position>
       <Position>
         <Filename Value="umainform.pas"/>
-        <Caret Line="745" Column="22" TopLine="738"/>
+        <Caret Line="361" Column="27" TopLine="325"/>
       </Position>
       <Position>
         <Filename Value="umainform.pas"/>
-        <Caret Line="761" Column="20" TopLine="739"/>
+        <Caret Line="374" TopLine="336"/>
       </Position>
       <Position>
         <Filename Value="umainform.pas"/>
-        <Caret Line="772" Column="21" TopLine="740"/>
+        <Caret Line="104" Column="51" TopLine="102"/>
       </Position>
       <Position>
         <Filename Value="umainform.pas"/>
-        <Caret Line="773" Column="21" TopLine="741"/>
+        <Caret Line="121" TopLine="103"/>
       </Position>
       <Position>
         <Filename Value="umainform.pas"/>
-        <Caret Line="597" Column="16" TopLine="544"/>
+        <Caret Line="62" Column="32" TopLine="62"/>
       </Position>
       <Position>
         <Filename Value="umainform.pas"/>
-        <Caret Line="343" TopLine="344"/>
+        <Caret Line="80" TopLine="212"/>
       </Position>
       <Position>
         <Filename Value="umainform.pas"/>
-        <Caret Line="407" Column="35" TopLine="390"/>
-      </Position>
-      <Position>
-        <Filename Value="umapcomponentwire.pas"/>
-        <Caret Line="36" Column="16" TopLine="20"/>
-      </Position>
-      <Position>
-        <Filename Value="umapcomponentwire.pas"/>
-        <Caret Line="248" Column="38" TopLine="241"/>
-      </Position>
-      <Position>
-        <Filename Value="umapcomponentwire.pas"/>
-        <Caret Line="36" Column="16" TopLine="20"/>
-      </Position>
-      <Position>
-        <Filename Value="umapcomponentwire.pas"/>
-        <Caret Line="204" Column="8" TopLine="197"/>
-      </Position>
-      <Position>
-        <Filename Value="umapcomponentwire.pas"/>
-        <Caret Line="231" Column="12" TopLine="214"/>
-      </Position>
-      <Position>
-        <Filename Value="umapcomponentwire.pas"/>
-        <Caret Line="173" TopLine="268"/>
+        <Caret Line="257" TopLine="241"/>
       </Position>
       <Position>
         <Filename Value="umainform.pas"/>
-        <Caret Line="407" Column="57" TopLine="390"/>
-      </Position>
-      <Position>
-        <Filename Value="umapcomponentmap.pas"/>
-        <Caret Line="75" Column="22" TopLine="49"/>
+        <Caret Line="258" TopLine="242"/>
       </Position>
       <Position>
         <Filename Value="umainform.pas"/>
-        <Caret Line="478" Column="13" TopLine="472"/>
+        <Caret Line="259" TopLine="243"/>
       </Position>
       <Position>
         <Filename Value="umainform.pas"/>
-        <Caret Line="479" Column="13" TopLine="473"/>
+        <Caret Line="260" TopLine="244"/>
       </Position>
       <Position>
         <Filename Value="umainform.pas"/>
-        <Caret Line="478" Column="13" TopLine="472"/>
+        <Caret Line="261" TopLine="245"/>
       </Position>
       <Position>
         <Filename Value="umainform.pas"/>
-        <Caret Line="477" Column="13" TopLine="471"/>
+        <Caret Line="262" TopLine="246"/>
       </Position>
       <Position>
         <Filename Value="umainform.pas"/>
-        <Caret Line="476" Column="13" TopLine="470"/>
+        <Caret Line="263" TopLine="247"/>
       </Position>
       <Position>
-        <Filename Value="umapcomponentbase.pas"/>
-        <Caret Line="34" Column="18" TopLine="25"/>
+        <Filename Value="umainform.pas"/>
+        <Caret Line="262" TopLine="246"/>
       </Position>
       <Position>
-        <Filename Value="umapcomponentbase.pas"/>
-        <Caret Line="231" Column="6" TopLine="215"/>
+        <Filename Value="umainform.pas"/>
+        <Caret Line="263" TopLine="247"/>
       </Position>
       <Position>
-        <Filename Value="umapcomponentbase.pas"/>
-        <Caret Line="34" Column="3" TopLine="36"/>
+        <Filename Value="umainform.pas"/>
+        <Caret Line="264" TopLine="248"/>
+      </Position>
+      <Position>
+        <Filename Value="umainform.pas"/>
+        <Caret Line="265" TopLine="249"/>
+      </Position>
+      <Position>
+        <Filename Value="umainform.pas"/>
+        <Caret Line="268" TopLine="252"/>
+      </Position>
+      <Position>
+        <Filename Value="umainform.pas"/>
+        <Caret Line="271" TopLine="255"/>
+      </Position>
+      <Position>
+        <Filename Value="umainform.pas"/>
+        <Caret Line="274" TopLine="258"/>
+      </Position>
+      <Position>
+        <Filename Value="umainform.pas"/>
+        <Caret Line="277" TopLine="261"/>
+      </Position>
+      <Position>
+        <Filename Value="umainform.pas"/>
+        <Caret Line="356" Column="61" TopLine="337"/>
+      </Position>
+      <Position>
+        <Filename Value="umainform.pas"/>
+        <Caret Line="401" Column="24" TopLine="182"/>
       </Position>
     </JumpHistory>
     <RunParams>

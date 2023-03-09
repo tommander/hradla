@@ -1,0 +1,3 @@
+[submodule "gamegrid"]
+	path = gamegrid
+	url = https://github.com/tommander/gamegrid
